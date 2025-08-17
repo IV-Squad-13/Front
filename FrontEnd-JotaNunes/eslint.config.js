@@ -1,14 +1,14 @@
-import globals from "globals";
-import js from "@eslint/js";
-import pluginReact from "eslint-plugin-react";
-import pluginReactHooks from "eslint-plugin-react-hooks";
-import eslintConfigPrettier from "eslint-config-prettier";
+import globals from 'globals';
+import js from '@eslint/js';
+import pluginReact from 'eslint-plugin-react';
+import pluginReactHooks from 'eslint-plugin-react-hooks';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
   {
     languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...globals.browser,
       },
@@ -18,10 +18,10 @@ export default [
   js.configs.recommended,
 
   {
-    files: ["src/**/*.{js,jsx}"],
+    files: ['src/**/*.{js,jsx}'],
     plugins: {
       react: pluginReact,
-      "react-hooks": pluginReactHooks,
+      'react-hooks': pluginReactHooks,
     },
     languageOptions: {
       parserOptions: {
@@ -31,27 +31,25 @@ export default [
       },
     },
     rules: {
-      ...pluginReact.configs["jsx-runtime"].rules,
+      ...pluginReact.configs['jsx-runtime'].rules,
       ...pluginReactHooks.configs.recommended.rules,
-      "react/prop-types": "off",
+      'react/prop-types': 'off',
 
-      "no-unused-vars": [
-        "warn",
+      'no-unused-vars': [
+        'warn',
         {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
         },
       ],
+      'react/jsx-uses-vars': 'warn',
     },
     settings: {
       react: {
-        version: "detect",
+        version: 'detect',
       },
     },
-    
   },
-
-
 
   eslintConfigPrettier,
 ];
