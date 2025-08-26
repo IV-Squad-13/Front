@@ -1,5 +1,6 @@
 import styles from './PasswordRecoveryForm.module.css';
 import recuperacaoDeSenha from '@/assets/recuperacao-de-conta-img.svg';
+import { Link } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import Input from '@/components/input/Input';
 
@@ -23,7 +24,9 @@ const PasswordRecoveryForm = () => {
 
       <form className={styles.form}>
         <Input type="email" id="email" placeholder="E-mail" />
-        <Button type="submit">Enviar</Button>
+        <Link className={styles.link} to="/reset-password">
+          <Button type="submit">Enviar</Button>
+        </Link>
       </form>
     </div>
   );
