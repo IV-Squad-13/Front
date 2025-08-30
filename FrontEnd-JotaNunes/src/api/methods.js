@@ -1,25 +1,24 @@
-const ENVIRONMENT = import.meta.env.VITE_CLIENT_ENVIRONMENT || 'CLIENT_TEST';
-const API_URL = ENVIRONMENT === 'CLIENT_TEST' ? 'http://localhost:5173/mock/' : import.meta.env.VITE_API_URL;
+const ENVIRONMENT = import.meta.env.VITE_CLIENT_ENVIRONMENT || 'TEST_CLIENT';
+const API_URL = ENVIRONMENT === 'TEST_CLIENT' ? 'http://localhost:5173/mock/' : import.meta.env.VITE_API_URL;
 
 export const getToApi = async (path, options) => {
-    const res = await fetch(`${API_URL}${path}`, {
-        ...options,
-        headers: {  
-            'Content-Type': 'application/json',
-            ...options?.headers,
-        },
-        next: { revalidate: 0 },
-    });
-
-    if (!res.ok) {
-        throw new Error(`API error: ${res.status}`);
+    try {
+        const res = await fetch(`${API_URL}${path}`, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        return await res.json();
+    } catch (error) {
+        console.error('Error fetching API:', error);
+        throw error;
     }
-
-    return res;
 };
 
 export const postToApi = async (path, body) => {
-    console.log(API_URL+path);
+    console.log(body);
     const res = await fetch(`${API_URL}${path}`, {
         method: 'POST',
         headers: {

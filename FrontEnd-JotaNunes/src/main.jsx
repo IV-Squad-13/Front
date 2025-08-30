@@ -5,9 +5,10 @@ import App from './App.jsx';
 import './styles/global.css';
 import { makeServer } from './mirage/server.js';
 
-const VITE_CLIENT_ENVIRONMENT = import.meta.env.VITE_CLIENT_ENVIRONMENT;
+const CLIENT_ENVIRONMENT = import.meta.env.VITE_CLIENT_ENVIRONMENT;
 
-if (VITE_CLIENT_ENVIRONMENT === 'TEST_CLIENT') {
+if (CLIENT_ENVIRONMENT === 'TEST_CLIENT') {
+  console.log("Starting Mirage mock server...");
   makeServer();
 }
 

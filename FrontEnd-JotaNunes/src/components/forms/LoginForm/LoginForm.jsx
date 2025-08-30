@@ -19,8 +19,9 @@ const LoginForm = () => {
     }
 
     try {
-      await loginUser({ email, password });
-      alert("Login successful");
+      await loginUser(email, password)
+        .then(() => alert("Login successful"))
+        .catch(err => alert(err.message || "Login failed"));
     } catch (err) {
       alert("Login failed");
     }

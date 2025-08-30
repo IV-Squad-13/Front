@@ -11,7 +11,7 @@ export const fetchUsers = async () => {
 
 export const loginUser = async (email, password) => {
     try {
-        return await getToApi(`user/login?email=${email}&password=${password}`);
+        return await postToApi('user/login', { email, password });
     } catch (error) {
         console.error('Error logging in user:', error);
         throw error;
