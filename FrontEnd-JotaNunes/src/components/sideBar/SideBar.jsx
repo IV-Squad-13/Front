@@ -1,4 +1,4 @@
-import styles from './Sidebar.module.css';
+import styles from './SideBar.module.css';
 import logo from '@/assets/LogoBranca.svg';
 import SideBarMenu from './SideBarMenu';
 
