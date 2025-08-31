@@ -1,0 +1,21 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background: #DF1A1A;
+  color: #FFF;
+  width: 300px;
+  padding-top: 1rem;
+}
+
+.logoImage {
+  height: 40px;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 350;
+  margin-bottom: 2rem;
+}
