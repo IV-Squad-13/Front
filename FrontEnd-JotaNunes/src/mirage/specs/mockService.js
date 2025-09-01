@@ -1,118 +1,117 @@
 import { pluralize } from "inflection";
 
-const getNodeLevel = (schema, levelName) => {
+const getSpecLevel = (schema, levelName) => {
     const collection = schema.db[pluralize(levelName)];
-    console.log(schema);
     if (!collection) throw new Error(`Nível '${levelName}' não encontrado`);
     return collection;
 };
 
-const getNodeById = (schema, levelName, nodeId) => {
-    const node = schema.db[pluralize(levelName)].find(nodeId);
-    if (!node) throw new Error(`Nó '${nodeId}' não encontrado em '${levelName}'`);
-    return node;
+const getSpecById = (schema, levelName, specId) => {
+    const spec = schema.db[pluralize(levelName)].find(specId);
+    if (!spec) throw new Error(`Nó '${specId}' não encontrado em '${levelName}'`);
+    return spec;
 };
 
-const getNodeByName = (schema, levelName, nodeName) => {
-    const node = schema.db[pluralize(levelName)].findBy({ name: nodeName });
-    if (!node) throw new Error(`Nó '${nodeName}' não encontrado em '${levelName}'`);
-    return node;
+const getSpecByName = (schema, levelName, specName) => {
+    const spec = schema.db[pluralize(levelName)].findBy({ name: specName });
+    if (!spec) throw new Error(`Nó '${specName}' não encontrado em '${levelName}'`);
+    return spec;
 };
 
-const addNodeToLevel = (schema, levelName, nodeData) => {
-    const collection = getNodeLevel(schema, levelName);
+const addSpecToLevel = (schema, levelName, specData) => {
+    const collection = getSpecLevel(schema, levelName);
 
-    if (nodeData.id && collection.find(nodeData.id)) {
-        throw new Error(`Nó com id '${nodeData.id}' já existe em '${levelName}'`);
+    if (specData.id && collection.find(specData.id)) {
+        throw new Error(`Nó com id '${specData.id}' já existe em '${levelName}'`);
     }
 
-    return schema[levelName].create(nodeData);
+    return schema[levelName].create(specData);
 };
 
-const addNodeRel = (getNodeFn, schema, sourceLevel, source, targetLevel, target, relType) => {
-    const node = getNodeFn(schema, sourceLevel, source);
-    const relNode = getNodeFn(schema, targetLevel, target);
+const addSpecRel = (getSpecFn, schema, sourceLevel, source, targetLevel, target, relType) => {
+    const spec = getSpecFn(schema, sourceLevel, source);
+    const relSpec = getSpecFn(schema, targetLevel, target);
 
-    if (!node || !relNode) throw new Error("Nó ou nó relacionado não encontrado");
+    if (!spec || !relSpec) throw new Error("Nó ou nó relacionado não encontrado");
 
     const relKey = relType === "next" ? "relNextIds" : "relPrevIds";
     const inverseKey = relType === "next" ? "relPrevIds" : "relNextIds";
 
-    const updatedNode = {
-        ...node.attrs,
-        [relKey]: [...new Set([...(node.attrs[relKey] || []), relNode.id])],
+    const updatedSpec = {
+        ...spec.attrs,
+        [relKey]: [...new Set([...(spec.attrs[relKey] || []), relSpec.id])],
     };
 
-    const updatedRelNode = {
-        ...relNode.attrs,
-        [inverseKey]: [...new Set([...(relNode.attrs[inverseKey] || []), node.id])],
+    const updatedRelSpec = {
+        ...relSpec.attrs,
+        [inverseKey]: [...new Set([...(relSpec.attrs[inverseKey] || []), spec.id])],
     };
 
-    node.update(updatedNode);
-    relNode.update(updatedRelNode);
+    spec.update(updatedSpec);
+    relSpec.update(updatedRelSpec);
 
-    return { source: node.attrs, target: relNode.attrs };
+    return { source: spec.attrs, target: relSpec.attrs };
 };
 
-const addNodeRelById = (schema, nodeLevel, nodeId, relNodeLevel, relNodeId, relType) =>
-    addNodeRel(getNodeById, schema, nodeLevel, nodeId, relNodeLevel, relNodeId, relType);
+const addSpecRelById = (schema, specLevel, specId, relSpecLevel, relSpecId, relType) =>
+    addSpecRel(getSpecById, schema, specLevel, specId, relSpecLevel, relSpecId, relType);
 
-const addNodeRelByName = (schema, nodeLevel, nodeName, relNodeLevel, relNodeName, relType) =>
-    addNodeRel(getNodeByName, schema, nodeLevel, nodeName, relNodeLevel, relNodeName, relType);
+const addSpecRelByName = (schema, specLevel, specName, relSpecLevel, relSpecName, relType) =>
+    addSpecRel(getSpecByName, schema, specLevel, specName, relSpecLevel, relSpecName, relType);
 
-const updateNode = (schema, levelName, nodeData) => {
-    const node = getNodeById(schema, levelName, nodeData.id);
-    node.update(nodeData);
-    return node.attrs;
+const updateSpec = (schema, levelName, specData) => {
+    const spec = getSpecById(schema, levelName, specData.id);
+    spec.update(specData);
+    return spec.attrs;
 };
 
-const deleteNode = (schema, levelName, nodeId) => {
-    const node = getNodeById(schema, levelName, nodeId);
+const deleteSpec = (schema, levelName, specId) => {
+    const spec = getSpecById(schema, levelName, specId);
 
-    (node.attrs.relNextIds || []).forEach((relId) => {
-        const relNode = getNodeById(schema, levelName, relId);
-        relNode.update({
-        relPrevIds: (relNode.attrs.relPrevIds || []).filter((id) => id !== nodeId),
+    (spec.attrs.relNextIds || []).forEach((relId) => {
+        const relSpec = getSpecById(schema, levelName, relId);
+        relSpec.update({
+        relPrevIds: (relSpec.attrs.relPrevIds || []).filter((id) => id !== specId),
         });
     });
 
-    (node.attrs.relPrevIds || []).forEach((relId) => {
-        const relNode = getNodeById(schema, levelName, relId);
-        relNode.update({
-        relNextIds: (relNode.attrs.relNextIds || []).filter((id) => id !== nodeId),
+    (spec.attrs.relPrevIds || []).forEach((relId) => {
+        const relSpec = getSpecById(schema, levelName, relId);
+        relSpec.update({
+        relNextIds: (relSpec.attrs.relNextIds || []).filter((id) => id !== specId),
         });
     });
 
-    node.destroy();
-    return { id: nodeId, removed: true };
+    spec.destroy();
+    return { id: specId, removed: true };
 };
 
-const delNodeRel = (schema, nodeLevel, nodeId, relNodeLevel, relNodeId, relType) => {
-    const node = getNodeById(schema, nodeLevel, nodeId);
-    const relNode = getNodeById(schema, relNodeLevel, relNodeId);
+const delSpecRel = (schema, specLevel, specId, relSpecLevel, relSpecId, relType) => {
+    const spec = getSpecById(schema, specLevel, specId);
+    const relSpec = getSpecById(schema, relSpecLevel, relSpecId);
 
     const relKey = relType === "next" ? "relNextIds" : "relPrevIds";
     const inverseKey = relType === "next" ? "relPrevIds" : "relNextIds";
 
-    node.update({
-        [relKey]: (node.attrs[relKey] || []).filter((id) => id !== relNodeId),
+    spec.update({
+        [relKey]: (spec.attrs[relKey] || []).filter((id) => id !== relSpecId),
     });
 
-    relNode.update({
-        [inverseKey]: (relNode.attrs[inverseKey] || []).filter((id) => id !== nodeId),
+    relSpec.update({
+        [inverseKey]: (relSpec.attrs[inverseKey] || []).filter((id) => id !== specId),
     });
 
-    return { source: node.attrs, target: relNode.attrs, relationRemoved: true };
+    return { source: spec.attrs, target: relSpec.attrs, relationRemoved: true };
 };
 
 export const specService = {
-    getNodeLevel,
-    getNodeById,
-    getNodeByName,
-    addNodeToLevel,
-    addNodeRelById,
-    addNodeRelByName,
-    updateNode,
-    deleteNode,
-    delNodeRel,
+    getSpecLevel,
+    getSpecById,
+    getSpecByName,
+    addSpecToLevel,
+    addSpecRelById,
+    addSpecRelByName,
+    updateSpec,
+    deleteSpec,
+    delSpecRel,
 };
