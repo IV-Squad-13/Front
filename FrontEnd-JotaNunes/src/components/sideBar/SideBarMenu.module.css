@@ -15,7 +15,7 @@
   gap: 1rem;
   height: 100%;
   padding: 1.5rem;
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.823) 0%, #fff 100%);
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.823) 30%, #fff 100%);
 }
 
 .navItem {

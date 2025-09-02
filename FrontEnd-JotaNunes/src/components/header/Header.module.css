@@ -1,0 +1,76 @@
+.container {
+  display: flex;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  padding-left: 1.5rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.userImg {
+  width: 30px;
+  height: auto;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.logoutButton {
+  width: 100%;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 0 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  background-color: #df1a1a;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  color: #fff;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
+}
+
+.notificationButton {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  width: 50px;
+  height: 30px;
+  margin-right: 1rem;
+}
+
+.notificationImg {
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: contain;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.iconDefault {
+  opacity: 1;
+}
+
+.iconHover {
+  opacity: 0;
+}
+
+.notificationButton:hover .iconDefault {
+  opacity: 0;
+}
+
+.notificationButton:hover .iconHover {
+  opacity: 1;
+}

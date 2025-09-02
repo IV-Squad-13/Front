@@ -14,7 +14,9 @@ const LoginForm = () => {
       <form className={styles.form}>
         <Input type="email" id="email" placeholder="E-mail" />
         <Input type="password" id="password" placeholder="Password" />
-        <Button type="submit">Entrar</Button>
+        <Link to="/home">
+          <Button type="submit">Entrar</Button>
+        </Link>
       </form>
 
       <p>
