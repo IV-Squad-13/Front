@@ -8,7 +8,6 @@ const MainPage = () => {
       <SideBar />
       <div className={styles.mainContainer}>
         <Header /> 
-        <div>main content</div>
       </div>
     </div>
   );
