@@ -12,20 +12,25 @@
 .navigation ul {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   height: 100%;
-  padding: 1.5rem;
+  padding: 1.5rem 0.5rem;
   background: linear-gradient(180deg, rgba(255, 0, 0, 0.823) 30%, #fff 100%);
 }
 
 .navItem {
-  cursor: pointer;
+  size: 1rem;
   list-style-type: none;
   display: flex;
   align-items: center;
   color: #000;
   gap: 0.5rem;
   transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.navIcon{
+  width: 35px;
 }
 
 .navItem:hover {
