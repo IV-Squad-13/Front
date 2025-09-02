@@ -1,0 +1,28 @@
+.container {
+  cursor: pointer;
+  width: 94px;
+  height: 38px;
+  background-color: transparent;
+  border-radius: 38px;
+  border: 1px solid #888;
+  padding: 3px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.slider {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: absolute;
+  left: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.slider:not(.toggledOn) {
+  transform: translateX(56px);
+}

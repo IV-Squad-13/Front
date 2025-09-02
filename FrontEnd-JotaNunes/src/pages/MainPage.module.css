@@ -1,5 +1,8 @@
 .container{
-    background-color:bisque;
     height: 100vh;
     display: flex;
+}
+
+.mainContainer{
+    width: 100%;
 }
