@@ -40,3 +40,17 @@
 .navItem:hover .navIcon {
   filter: brightness(0) invert(1);
 }
+
+.navLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.navLink:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}

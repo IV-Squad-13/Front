@@ -1,0 +1,10 @@
+.container {
+  padding: 1rem;
+  padding-left: 1.5rem;
+  list-style: none;
+  font-weight: 500;
+  font-size: 20px;
+  border-bottom: 2px solid #a7a7a7;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  cursor: pointer;
+}
