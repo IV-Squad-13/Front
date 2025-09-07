@@ -1,23 +1,29 @@
 import { useState, useEffect } from 'react';
 import ItemCard from '@/components/ItemCard/ItemCard';
-import styles from './Especificacoes.module.css';
-import { getAllAmbientes } from '@/services/specService';
+import styles from './Catalogo.module.css';
+import { getSpecsByLevel } from '@/services/specService';
 
 const itemsPerPage = 8;
 
-const Especificacoes = () => {
-  const [ambientes, setAmbientes] = useState([]);
-  const [ambientesPaginados, setAmbientesPaginados] = useState([]);
+const Catalogo = () => {
+  const [spec, setSpec] = useState([]);
+  const [specsPaginados, setSpecsPaginados] = useState([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [activeButton, setActiveButton] = useState('ambiente');
+
+  const specs = ['ambiente', 'item', 'material', 'marca'];
 
   useEffect(() => {
-    const fetchAmbientes = async () => {
+    const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const data = await getAllAmbientes();
-        setAmbientes(data);
+        const data = await getSpecsByLevel(activeButton);
+
+        setSpec(data);
         setTotalPages(Math.ceil(data.length / itemsPerPage));
       } catch (err) {
         setError(err.message);
@@ -26,16 +32,20 @@ const Especificacoes = () => {
       }
     };
 
-    fetchAmbientes();
-  }, []);
+    fetchData();
+  }, [activeButton]);
 
-  useEffect(() => {
+    useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
+    const paginatedData = spec.slice(startIndex, endIndex);
+    setSpecsPaginados(paginatedData);
+  }, [currentPage, spec]);
 
-    const paginatedData = ambientes.slice(startIndex, endIndex);
-    setAmbientesPaginados(paginatedData);
-  }, [currentPage, ambientes]);
+  const handleSpecChange = (newSpec) => {
+    setActiveButton(newSpec);
+    setCurrentPage(1);
+  };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -49,41 +59,43 @@ const Especificacoes = () => {
     }
   };
 
-  if (isLoading) {
-    return <p>Carregando...</p>;
-  }
-
-  if (error) {
-    return <p style={{ color: 'red' }}>Erro ao buscar dados: {error}</p>;
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
         <div className={styles.titleArea}>
-          <h1 className={styles.title}>Consulta de especificações</h1>
+          <h1 className={styles.title}>Catálogo</h1>
           <p className={styles.subtitle}>
-            Gerencie os membros da sua equipe e suas permissões de conta aqui
+            Gerencie os seus itens aqui
           </p>
         </div>
         <div className={styles.buttonsArea}>
           <input placeholder="buscar" />
-          <button>Padrão</button>
-          <button>Ambiente</button>
-          <button>Item</button>
-          <button>Materia</button>
-          <button>Marca</button>
+          {specs.map((spec) => (
+            <button
+              key={spec}
+              onClick={() => handleSpecChange(spec)}
+              className={activeButton === spec ? styles.activeButton : ''}
+            >
+              {spec.charAt(0).toUpperCase() + spec.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
-
       <div className={styles.itemsArea}>
-        <ul>
-          {ambientesPaginados.map((ambiente) => (
-            <ItemCard key={ambiente.id} text={ambiente.name} />
-          ))}
-        </ul>
+        {isLoading ? (
+          <p>Carregando itens...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>Erro: {error}</p>
+        ) : specsPaginados.length > 0 ? (
+          <ul>
+            {specsPaginados.map((item) => (
+              <ItemCard key={item.id} text={item.name} />
+            ))}
+          </ul>
+        ) : (
+          <p>Nenhum item encontrado para "{activeButton}".</p>
+        )}
       </div>
-
       <div className={styles.paginationArea}>
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
           Anterior
@@ -99,4 +111,4 @@ const Especificacoes = () => {
   );
 };
 
-export default Especificacoes;
+export default Catalogo;

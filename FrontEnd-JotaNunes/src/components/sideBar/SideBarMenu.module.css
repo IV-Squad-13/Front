@@ -4,9 +4,9 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: #ff4641;
   border-radius: 1rem 1rem 0 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 .navigation ul {
@@ -15,7 +15,7 @@
   gap: 1.5rem;
   height: 100%;
   padding: 1.5rem 0.5rem;
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.823) 30%, #fff 100%);
+  width: 100%;
 }
 
 .navItem {

@@ -1,8 +1,7 @@
 .container {
-  min-height: 100vh;
-  background-color: #fff;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 .title {
@@ -53,14 +52,27 @@
   justify-content: center;
   flex: 1;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.buttonsArea > button:hover {
+  background-color: #A7A7A7;
+  color: #FFF;
+  border-color: #A7A7A7;
+}
+
+.buttonsArea > button.activeButton {
+  background-color: #df1a1a;
+  color: white;
+  border-color: #df1a1a;
 }
 
 .itemsArea {
   padding: 1rem;
-  flex-grow: 1;
 }
 
 .paginationArea {
+  margin-top: auto;
   display: flex;
   justify-content: center;
   align-items: center;
