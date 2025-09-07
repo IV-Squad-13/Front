@@ -9,3 +9,7 @@ body {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background-color: #f0f2f5;
 }
+
+html, body{
+    height: 100%;
+}

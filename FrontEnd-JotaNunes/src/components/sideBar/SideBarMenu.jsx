@@ -12,37 +12,42 @@ const items = [
     icon: dashboard,
     text: 'DashBoard',
     alt: 'Dashboard',
-    path: '/home',
+    path: '/home/dashboard',
   },
   {
     id: 2,
     icon: lupa,
-    text: 'Consulta De Empresas',
-    alt: 'Consulta de Empresas',
-    path: '/consulta-de-empresas',
+    text: 'Catálogo',
+    alt: 'Catálogo',
+    path: '/home/catalogo',
   },
   {
     id: 3,
     icon: especificacoes,
     text: 'Especificações',
     alt: 'Especificações',
-    path: '/especificacoes',
+    path: '/home/especificacoes',
   },
   {
     id: 4,
     icon: historico,
     text: 'Histórico',
     alt: 'Histórico',
-    path: '/historico',
+    path: '/home/historico',
   },
 ];
 
-const SideBarMenu = () => {
+const SideBarMenu = ({onTitleChange}) => {
+
+  const handleItemClick = (title) => {
+    onTitleChange(title)
+  }
+
   return (
     <div className={styles.navigation}>
       <ul>
         {items.map((item) => (
-          <li key={item.id} className={styles.navItem}>
+          <li key={item.id} className={styles.navItem} onClick={() => handleItemClick(item.text)}>
             <Link to={item.path} className={styles.navLink}>
               <img src={item.icon} alt={item.alt} className={styles.navIcon} />
               <span>{item.text}</span>
