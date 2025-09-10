@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import Catalogo from './pages/Catalogo';
+import GerenciadorDeUsuarios from './pages/GerenciadorDeUsuarios';
 
 const App = () => {
   return (
@@ -12,6 +13,8 @@ const App = () => {
 
         <Route path="/home" element={<MainPage />}>
           <Route path="catalogo" element={<Catalogo />} />
+          <Route path="usuarios" element={<GerenciadorDeUsuarios />} />
+
         </Route>
       </Routes>
     </div>
