@@ -1,0 +1,211 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.error {
+  color: #df1a1a;
+}
+
+.centeredMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #a7a7a7;
+}
+
+.title {
+  font-size: 25px;
+}
+
+.subtitle {
+  color: #a7a7a7;
+}
+
+.headerContainer {
+  padding: 1rem 1rem 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actionBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.actionsButtons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-grow: 1;
+}
+
+.actionText p {
+  font-weight: 500;
+}
+
+.actionText .value {
+  color: #a7a7a7;
+}
+
+.addButton {
+  background-color: #df1a1a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 17px;
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.addButton:hover {
+  background-color: #bc1f1b;
+}
+
+.filterButton {
+  background-color: #fff;
+  color: #a7a7a7;
+  border: 1px solid #a7a7a7;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.filterButton:hover {
+  background-color: #a7a7a725;
+}
+
+.filterButton img {
+  width: 20px;
+  height: 20px;
+}
+
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  width: 16px;
+  height: 16px;
+}
+
+.searchInput {
+  border: 1px solid #a7a7a7;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  flex-grow: 0.4;
+}
+
+.usersTable {
+  margin: 0 2.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  cursor: default;
+}
+
+.usersTable input {
+    cursor: pointer;
+}
+
+.usersTable th,
+.usersTable td {
+  text-align: center;
+  font-weight: 600;
+}
+
+.usersTable th {
+  background-color: #f8f8f8;
+  padding: 1rem;
+}
+
+.usersTable th:first-child {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+}
+
+.usersTable th:last-child {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+
+.usersTable td {
+  border-bottom: 1px solid #a7a7a7;
+}
+
+.roleItem {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.administrador {
+  background-color: #df1a1a56;
+  color: #DF1A1A;
+  border: 1px solid #DF1A1A;
+}
+.redator {
+  background-color: #1adf4835;
+  color: #1ADF48;
+      border: 1px solid #1ADF48;
+
+}
+.gestor {
+  background-color: #DFB11A25;
+  color: #DFB11A;
+  border: 1px solid #DFB11A;
+}
+
+.menuButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.paginationArea {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.paginationArea > button {
+  color: #df1a1a;
+  border: 1px solid #df1a1a;
+  border-radius: 0.2rem;
+  background-color: transparent;
+  font-size: 15px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.paginationArea > button:disabled {
+  cursor: not-allowed;
+  color: #a7a7a7;
+  border: 1px solid #a7a7a7;
+}

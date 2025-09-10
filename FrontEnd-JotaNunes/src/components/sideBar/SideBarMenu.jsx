@@ -5,6 +5,7 @@ import dashboard from '@/assets/Dashboard.svg';
 import lupa from '@/assets/lupa.svg';
 import especificacoes from '@/assets/Especificacoes.svg';
 import historico from '@/assets/Historico.svg';
+import users from '@/assets/User.svg'
 
 const items = [
   {
@@ -34,7 +35,16 @@ const items = [
     text: 'Histórico',
     alt: 'Histórico',
     path: '/home/historico',
+  },  
+  // Deve ser exclusivo para o admin
+  {
+    id: 5,
+    icon: users,
+    text: 'Usuários',
+    alt: 'usuários',
+    path: '/home/usuarios',
   },
+  
 ];
 
 const SideBarMenu = ({onTitleChange}) => {
