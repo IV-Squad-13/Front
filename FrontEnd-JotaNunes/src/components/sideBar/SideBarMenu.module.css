@@ -23,23 +23,25 @@
   list-style-type: none;
   display: flex;
   align-items: center;
-  color: #000;
-  gap: 0.5rem;
+  color: var(--font_color);
+  gap: 1rem;
   transition: color 0.3s ease;
   cursor: pointer;
 }
 
 .navIcon{
   width: 35px;
-}
+  filter: var(--icon-filter);
+  transition: filter 0.3s ease;}
 
 .navItem:hover {
-  color: #fff;
+  color: var(--font_color-secondary);
 }
 
 .navItem:hover .navIcon {
-  filter: brightness(0) invert(1);
+  filter: var(--icon-filter-hover);
 }
+
 
 .navLink {
   display: flex;

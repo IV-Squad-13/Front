@@ -5,7 +5,7 @@
 }
 
 .error {
-  color: #df1a1a;
+  color: var(--vermelho);
 }
 
 .centeredMessage {
@@ -13,15 +13,16 @@
   justify-content: center;
   align-items: center;
   font-size: 1.5rem;
-  color: #a7a7a7;
+  color: var(--cinza);
 }
 
 .title {
   font-size: 25px;
+  color: var(--font_color-secondary);
 }
 
 .subtitle {
-  color: #a7a7a7;
+  color: var(--cinza);
 }
 
 .headerContainer {
@@ -52,15 +53,16 @@
 
 .actionText p {
   font-weight: 500;
+  color: var(--font_color-secondary);
 }
 
 .actionText .value {
-  color: #a7a7a7;
+  color: var(--cinza);
 }
 
 .addButton {
-  background-color: #df1a1a;
-  color: #fff;
+  background-color: var(--vermelho);
+  color: var(--font_color-primary);
   font-weight: 600;
   font-size: 17px;
   border: none;
@@ -74,9 +76,9 @@
 }
 
 .filterButton {
-  background-color: #fff;
-  color: #a7a7a7;
-  border: 1px solid #a7a7a7;
+  background-color: var(--background-color);
+  color: var(--cinza);
+  border: 1px solid var(--cinza);
   border-radius: 6px;
   padding: 0.5rem 1rem;
   display: flex;
@@ -112,10 +114,11 @@
 }
 
 .searchInput {
-  border: 1px solid #a7a7a7;
+  border: 1px solid var(--cinza);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
   flex-grow: 0.4;
+  background-color: transparent;
 }
 
 .usersTable {
@@ -133,10 +136,11 @@
 .usersTable td {
   text-align: center;
   font-weight: 600;
+  color: var(--font_color-secondary);
 }
 
 .usersTable th {
-  background-color: #f8f8f8;
+  background-color: var(--cinza_medio);
   padding: 1rem;
 }
 
@@ -151,7 +155,7 @@
 }
 
 .usersTable td {
-  border-bottom: 1px solid #a7a7a7;
+  border-bottom: 1px solid var(--cinza);
 }
 
 .roleItem {
@@ -192,11 +196,12 @@
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  color: var(--font_color-secondary);
 }
 
 .paginationArea > button {
-  color: #df1a1a;
-  border: 1px solid #df1a1a;
+  color: var(--vermelho);
+  border: 1px solid var(--vermelho);
   border-radius: 0.2rem;
   background-color: transparent;
   font-size: 15px;
@@ -206,6 +211,6 @@
 
 .paginationArea > button:disabled {
   cursor: not-allowed;
-  color: #a7a7a7;
-  border: 1px solid #a7a7a7;
+  color: var(--cinza);
+  border: 1px solid var(--cinza);
 }

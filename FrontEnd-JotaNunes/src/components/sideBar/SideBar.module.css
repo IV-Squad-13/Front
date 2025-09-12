@@ -3,8 +3,8 @@
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  background: #DF1A1A;
-  color: #FFF;
+  background: var(--vermelho);
+  color: var(--font_color-primary);
   width: 300px;
   padding-top: 1rem;
 }
@@ -12,6 +12,7 @@
 .logoImage {
   height: 40px;
   margin-bottom: 2rem;
+  filter: var(--logo-filter);
 }
 
 .title {
