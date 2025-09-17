@@ -6,12 +6,16 @@ import userImg from '@/assets/Placeholder_userImg.png';
 import notificationGray from '@/assets/sinoNotCinza.png';
 import notificationRed from '@/assets/sinoNotVermelho.png';
 
+import { useAuth } from '@/context/AuthContext';
+
 const Header = () => {
+  const { user, logout } = useAuth();
+
   return (
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <img src={userImg} alt="userImg" className={styles.userImg} />
-        <p className={styles.username}>Nome do usuário</p>
+        <p className={styles.username}>{user ? user.name : ''}</p>
       </div>
 
       <div className={styles.buttons}>
@@ -28,7 +32,9 @@ const Header = () => {
         <div>
           <ThemeButton />
         </div>
-        <button className={styles.logoutButton}>Logout</button>
+        <button className={styles.logoutButton} onClick={logout}>
+          Logout
+        </button>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import App from './App.jsx';
 import './styles/global.css';
 import { makeServer } from './mirage/server.js';
 import { ThemeProvider } from './context/ThemeContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 
 const CLIENT_ENVIRONMENT = import.meta.env.VITE_CLIENT_ENVIRONMENT;
 
@@ -15,10 +16,12 @@ if (CLIENT_ENVIRONMENT === 'TEST_CLIENT') {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <BrowserRouter>
+    <BrowserRouter>
       <ThemeProvider>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ThemeProvider>
-      </BrowserRouter>
+    </BrowserRouter>
   </StrictMode>,
 );
