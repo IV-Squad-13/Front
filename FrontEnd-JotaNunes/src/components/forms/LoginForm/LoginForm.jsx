@@ -4,32 +4,22 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import Input from '@/components/input/Input';
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
     try {
-      const response = await fetch('/mock/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Falha no login');
-      }
-      console.log('Login bem-sucedido:', data.user);
-      navigate("/home")
+      await login(email, password);
+      navigate('/home');
     } catch (err) {
       setError(err.message);
     }
@@ -57,7 +47,7 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <p className={styles.error}>{error}</p>
-        
+
         <Button type="submit">Entrar</Button>
       </form>
     </div>

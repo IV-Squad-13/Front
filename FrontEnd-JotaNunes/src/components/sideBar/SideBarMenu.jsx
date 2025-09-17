@@ -5,7 +5,9 @@ import dashboard from '@/assets/Dashboard.svg';
 import lupa from '@/assets/lupa.svg';
 import especificacoes from '@/assets/Especificacoes.svg';
 import historico from '@/assets/Historico.svg';
-import users from '@/assets/User.svg'
+import users from '@/assets/User.svg';
+
+import { useAuth } from '@/context/AuthContext';
 
 const items = [
   {
@@ -35,35 +37,48 @@ const items = [
     text: 'Histórico',
     alt: 'Histórico',
     path: '/home/historico',
-  },  
-  // Deve ser exclusivo para o admin
+  },
   {
     id: 5,
     icon: users,
     text: 'Usuários',
     alt: 'usuários',
     path: '/home/usuarios',
+    adminOnly: true,
   },
-  
 ];
 
-const SideBarMenu = ({onTitleChange}) => {
+const SideBarMenu = ({ onTitleChange }) => {
+  const { user } = useAuth();
 
   const handleItemClick = (title) => {
-    onTitleChange(title)
-  }
+    onTitleChange(title);
+  };
 
   return (
     <div className={styles.navigation}>
       <ul>
-        {items.map((item) => (
-          <li key={item.id} className={styles.navItem} onClick={() => handleItemClick(item.text)}>
-            <Link to={item.path} className={styles.navLink}>
-              <img src={item.icon} alt={item.alt} className={styles.navIcon} />
-              <span>{item.text}</span>
-            </Link>
-          </li>
-        ))}
+        {items
+          .filter(
+            (item) =>
+              !item.adminOnly || (user && user.role === 'Administrador'),
+          )
+          .map((item) => (
+            <li
+              key={item.id}
+              className={styles.navItem}
+              onClick={() => handleItemClick(item.text)}
+            >
+              <Link to={item.path} className={styles.navLink}>
+                <img
+                  src={item.icon}
+                  alt={item.alt}
+                  className={styles.navIcon}
+                />
+                <span>{item.text}</span>
+              </Link>
+            </li>
+          ))}
       </ul>
     </div>
   );

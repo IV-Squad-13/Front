@@ -1,24 +1,26 @@
-import { useState } from 'react';
 import styles from './ThemeButton.module.css';
+import { useTheme } from '@/context/ThemeContext';
 
 import lampOn from '@/assets/lampadaAcesa.png';
 import lampOff from '@/assets/lampadaApagada.png';
 
 const ThemeButton = () => {
-  const [isToggled, setIsToggled] = useState(true);
+  const { theme, toggleTheme } = useTheme();
+  
+  const isLightMode = theme === 'light';
 
   const handleToggle = () => {
-    setIsToggled(!isToggled);
-  };
+    toggleTheme();
+  }
 
-  const sliderClassName = `${styles.slider} ${isToggled ? styles.toggledOn : ''}`;
+  const sliderClassName = `${styles.slider} ${isLightMode ? styles.toggledOn : ''}`;
 
   return (
     <button className={styles.container} onClick={handleToggle}>
       <div className={sliderClassName}>
         <img
-          src={isToggled ? lampOn : lampOff}
-          alt={isToggled ? 'Lâmpada acesa' : 'Lâmpada apagada'}
+          src={isLightMode ? lampOn : lampOff}
+          alt={isLightMode ? 'Lâmpada acesa' : 'Lâmpada apagada'}
         />
       </div>
     </button>

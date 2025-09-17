@@ -1,6 +1,5 @@
 .container {
   height: 100vh;
-  background: #fff;
   display: flex;
 }
 
@@ -8,5 +7,5 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* ocupa todo o espaço que sobrar do sidebar */
+  flex-grow: 1;
 }

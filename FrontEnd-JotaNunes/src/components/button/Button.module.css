@@ -10,8 +10,8 @@
   }
   
   .primary {
-    background-color: #DF1A1A;
-    color: #FFF;
+    background-color: var(--vermelho);
+    color: var(--font_color);
   }
   
   .primary:hover:not(:disabled) {
