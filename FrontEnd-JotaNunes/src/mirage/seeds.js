@@ -1,4 +1,4 @@
-import { specs } from "./specs/mockData";
+import { specs } from "./catalogo/mockData";
 
 const createNode = (server, node) => {
     const baseAttrs = {

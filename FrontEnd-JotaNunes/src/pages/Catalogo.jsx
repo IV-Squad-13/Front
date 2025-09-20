@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import ItemCard from '@/components/ItemCard/ItemCard';
 import styles from './Catalogo.module.css';
-import { getSpecsByLevel } from '@/services/specService';
+import { getCatalogBySpec } from '@/services/CatalogService';
 
 const itemsPerPage = 8;
 
@@ -21,7 +21,7 @@ const Catalogo = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const data = await getSpecsByLevel(activeButton);
+        const data = await getCatalogBySpec(activeButton);
 
         setSpec(data);
         setTotalPages(Math.ceil(data.length / itemsPerPage));

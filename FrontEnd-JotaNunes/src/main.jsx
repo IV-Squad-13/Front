@@ -8,6 +8,9 @@ import { ThemeProvider } from './context/ThemeContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 
 const CLIENT_ENVIRONMENT = import.meta.env.VITE_CLIENT_ENVIRONMENT;
+export const API_URL = CLIENT_ENVIRONMENT === 'TEST_CLIENT' ? '/mock/' : import.meta.env.VITE_API_URL;
+console.log('API_URL:', API_URL);
+console.log(import.meta.env.VITE_API_URL);
 
 if (CLIENT_ENVIRONMENT === 'TEST_CLIENT') {
   console.log('Starting Mirage mock server...');

@@ -1,5 +1,7 @@
+import { API_URL } from '../main.jsx';
+
 export const getAllUsers = async () => {
-  const response = await fetch('/mock/users');
+  const response = await fetch(`${API_URL}/users`);
 
   const data = await response.json();
 
