@@ -3,6 +3,9 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import Catalogo from './pages/Catalogo';
 import GerenciadorDeUsuarios from './pages/GerenciadorDeUsuarios';
+import Historico from './pages/Historico';
+import Especificacoes from './pages/Especificacoes';
+import Dashboard from './pages/Dashboard';
 
 const App = () => {
   return (
@@ -14,7 +17,9 @@ const App = () => {
         <Route path="/home" element={<MainPage />}>
           <Route path="catalogo" element={<Catalogo />} />
           <Route path="usuarios" element={<GerenciadorDeUsuarios />} />
-
+          <Route path="historico" element={<Historico />} />
+          <Route path="especificacoes" element={<Especificacoes />} />
+          <Route path="dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </div>
