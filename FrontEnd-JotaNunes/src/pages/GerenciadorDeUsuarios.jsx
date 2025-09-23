@@ -4,16 +4,19 @@ import { getAllUsers } from '@/services/UserService';
 import filtro from '@/assets/filtro.svg';
 import pontos from '@/assets/pontos.svg';
 import lupa from '@/assets/lupa.svg';
+import EditModal from '@/components/forms/EditModal/EditModal';
 
 const itemsPerPage = 8;
 
 const GerenciadorDeUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
   const [usuariosPaginados, setUsuariosPaginados] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -49,6 +52,20 @@ const GerenciadorDeUsuarios = () => {
     if (currentPage > 1) {
       setCurrentPage((currentPage) => currentPage - 1);
     }
+  };
+
+  const handleEdit = (usuario) => {
+    setUsuarioSelecionado(usuario);
+    setIsModalOpen(true);
+  };
+
+  const handleSave = (usuarioAtualizado) => {
+    setUsuarios(
+      usuarios.map((u) =>
+        u.id === usuarioAtualizado.id ? usuarioAtualizado : u,
+      ),
+    );
+    setIsModalOpen(false);
   };
 
   return (
@@ -122,7 +139,10 @@ const GerenciadorDeUsuarios = () => {
                   {new Date(usuario.createdAt).toLocaleDateString('pt-BR')}
                 </td>
                 <td>
-                  <button className={styles.menuButton}>
+                  <button
+                    onClick={() => handleEdit(usuario)}
+                    className={styles.menuButton}
+                  >
                     <img src={pontos} alt="Ações" />
                   </button>
                 </td>
@@ -143,6 +163,14 @@ const GerenciadorDeUsuarios = () => {
           Próximo
         </button>
       </div>
+
+      {isModalOpen && (
+        <EditModal
+          user={usuarioSelecionado}
+          onSave={handleSave}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 };
