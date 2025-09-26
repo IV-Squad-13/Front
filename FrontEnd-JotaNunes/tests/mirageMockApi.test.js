@@ -18,7 +18,7 @@ describe("Testes de Usuários", () => {
 
     expect(res.status).toBe(200);
     expect(json.users).toBeDefined();
-    expect(json.users[0].name).toBe("admin");
+    expect(json.users[0].name).toBe("Paulo Silva");
   });
 });
 
@@ -33,20 +33,20 @@ describe("Testes de Especificações", () => {
 
   const levelList = ["marca", "material", "item", "ambiente", "padrao"];
 
-  test("GET /mock/specs/:level retorna especificações pré-definidas em cada nível", async () => {
+  test("GET /mock/catalogo/:level retorna especificações pré-definidas em cada nível", async () => {
     for (const level of levelList) {
-      const res = await fetch(`/mock/specs/${level}`);
+      const res = await fetch(`/mock/catalogo/${level}`);
       const json = await res.json();
 
       expect(res.status).toBe(200);
-      expect(json.specs).toBeDefined();
-      expect(Array.isArray(json.specs)).toBe(true);
+      expect(json).toBeDefined();
+      expect(Array.isArray(json)).toBe(true);
     }
   });
 
-  test("GET /mock/specs/:level/id/:id retorna uma especificação pelo id fornecido", async () => {
+  test("GET /mock/catalogo/:level/id/:id retorna uma especificação pelo id fornecido", async () => {
     for (const level of levelList) {
-      const res = await fetch(`/mock/specs/${level}/id/1`);
+      const res = await fetch(`/mock/catalogo/${level}/id/1`);
       const json = await res.json();
 
       expect(res.status).toBe(200);
@@ -55,8 +55,8 @@ describe("Testes de Especificações", () => {
     }
   });
 
-  test("GET /mock/specs/:level/name/:name retorna uma especificação pelo nome fornecido", async () => {
-    const res = await fetch(`/mock/specs/marca/name/Marca A`);
+  test("GET /mock/catalogo/:level/name/:name retorna uma especificação pelo nome fornecido", async () => {
+    const res = await fetch(`/mock/catalogo/marca/name/Marca A`);
     const json = await res.json();
 
     expect(res.status).toBe(200);
@@ -64,47 +64,47 @@ describe("Testes de Especificações", () => {
     expect(json.spec.name).toBe("Marca A");
   });
 
-  test("POST /mock/specs/:level cria uma nova especificação", async () => {
+  test("POST /mock/catalogo/:level cria uma nova especificação", async () => {
     const newSpec = { name: "Nova Marca", active: true };
-    const res = await fetch(`/mock/specs/marca`, {
+    const res = await fetch(`/mock/catalogo/marca`, {
       method: "POST",
       body: JSON.stringify(newSpec),
     });
     const json = await res.json();
 
     expect(res.status).toBe(201);
-    expect(json.spec).toBeDefined();
-    expect(json.spec.name).toBe("Nova Marca");
-    expect(json.spec.active).toBe(true);
+    expect(json).toBeDefined();
+    expect(json.marca.name).toBe("Nova Marca");
+    expect(json.marca.active).toBe(true);
   });
 
-  test("PUT /mock/specs/:level/:id atualiza uma especificação existente", async () => {
+  test("PUT /mock/catalogo/:level/:id atualiza uma especificação existente", async () => {
     const update = { name: "Marca Atualizada" };
-    const res = await fetch(`/mock/specs/marca/1`, {
+    const res = await fetch(`/mock/catalogo/marca/1`, {
       method: "PUT",
       body: JSON.stringify(update),
     });
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json.spec).toBeDefined();
-    expect(json.spec.name).toBe("Marca Atualizada");
+    expect(json).toBeDefined();
+    expect(json.name).toBe("Marca Atualizada");
   });
 
-  test("DELETE /mock/specs/:level/:id inativa uma especificação", async () => {
-    const res = await fetch(`/mock/specs/marca/1`, { method: "DELETE" });
+  test("DELETE /mock/catalogo/:level/:id inativa uma especificação", async () => {
+    const res = await fetch(`/mock/catalogo/marca/1`, { method: "DELETE" });
     const json = await res.json();
 
     expect(res.status).toBe(200);
     expect(json.deleted.inactive).toBe(true);
 
-    const checkRes = await fetch(`/mock/specs/marca/id/1`);
+    const checkRes = await fetch(`/mock/catalogo/marca/id/1`);
     expect(checkRes.status).toBe(404);
   });
 
-  test("POST /mock/specs/:level/:id/rels adiciona relação entre especificações", async () => {
+  test("POST /mock/catalogo/:level/:id/rels adiciona relação entre especificações", async () => {
     const rel = { relSpecId: "3", relSpecLevel: "material", relType: "next" };
-    const res = await fetch(`/mock/specs/marca/1/rels`, {
+    const res = await fetch(`/mock/catalogo/marca/1/rels`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(rel),
@@ -113,19 +113,19 @@ describe("Testes de Especificações", () => {
 
     expect(res.status).toBe(200);
 
-    expect(json.specs.source).toBeDefined();
-    expect(Array.isArray(json.specs.source.nextRelIds)).toBe(true);
-    expect(json.specs.source.nextRelIds.length).toBeGreaterThan(0);
+    expect(json.source).toBeDefined();
+    expect(Array.isArray(json.source.nextRelIds)).toBe(true);
+    expect(json.source.nextRelIds.length).toBeGreaterThan(0);
 
-    expect(json.specs.target).toBeDefined();
-    expect(Array.isArray(json.specs.target.prevRelIds)).toBe(true);
-    expect(json.specs.target.prevRelIds.length).toBeGreaterThan(0);
+    expect(json.target).toBeDefined();
+    expect(Array.isArray(json.target.prevRelIds)).toBe(true);
+    expect(json.target.prevRelIds.length).toBeGreaterThan(0);
   });
 
-  test("DELETE /mock/specs/:level/:id/rels removes relação entre especificações", async () => {
+  test("DELETE /mock/catalogo/:level/:id/rels removes relação entre especificações", async () => {
     const rel = { relSpecId: 1, relSpecLevel: "material", relType: "next" };
 
-    const res = await fetch(`/mock/specs/marca/1/rels`, {
+    const res = await fetch(`/mock/catalogo/marca/1/rels`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(rel),

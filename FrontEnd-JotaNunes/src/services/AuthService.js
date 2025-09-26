@@ -1,5 +1,7 @@
+import { API_URL } from '../main.jsx';
+
 export const loginUser = async (email, password) => {
-  const response = await fetch('/mock/users/login', {
+  const response = await fetch(`${API_URL}/users/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

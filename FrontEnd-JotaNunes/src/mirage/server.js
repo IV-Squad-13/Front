@@ -1,6 +1,6 @@
 import { createServer, Response } from "miragejs";
 import { userService } from "./user/mockService";
-import { specService } from "./specs/mockService";
+import { specService } from "./catalogo/mockService";
 import { users } from "./user/mockData";
 import { models } from "./models";
 import { populateSchema } from "./seeds";
@@ -33,40 +33,40 @@ export const makeServer = () => {
       this.put("/users/:id", safeHandler(userService.updateUser));
 
 
-      this.get("/specs/:level", safeHandler((schema, req) => {
+      this.get("/catalogo/:level", safeHandler((schema, req) => {
         const { level } = req.params;
-        return new Response(200, {}, { specs: specService.getSpecLevel(schema, level) });
+        return new Response(200, {}, specService.getSpecLevel(schema, level));
       }));
 
-      this.get("/specs/:level/id/:id", safeHandler((schema, req) => {
+      this.get("/catalogo/:level/id/:id", safeHandler((schema, req) => {
         const spec = specService.getSpecById(schema, req.params.level, parseInt(req.params.id));
         return new Response(200, {}, { spec });
       }));
 
-      this.get("/specs/:level/name/:name", safeHandler((schema, req) => {
+      this.get("/catalogo/:level/name/:name", safeHandler((schema, req) => {
         const spec = specService.getSpecByName(schema, req.params.level, req.params.name);
         return new Response(200, {}, { spec });
       }));
 
-      this.post("/specs/:level", safeHandler((schema, req) => {
+      this.post("/catalogo/:level", safeHandler((schema, req) => {
         const spec = JSON.parse(req.requestBody);
         const created = specService.addSpecToLevel(schema, req.params.level, spec);
-        return new Response(201, {}, { spec: created });
+        return new Response(201, {}, created );
       }));
 
-      this.put("/specs/:level/:id", safeHandler((schema, req) => {
+      this.put("/catalogo/:level/:id", safeHandler((schema, req) => {
         const spec = JSON.parse(req.requestBody);
         spec.id = parseInt(req.params.id);
         const updated = specService.updateSpec(schema, req.params.level, spec);
-        return new Response(200, {}, { spec: updated });
+        return new Response(200, {}, updated );
       }));
 
-      this.delete("/specs/:level/:id", safeHandler((schema, req) => {
+      this.delete("/catalogo/:level/:id", safeHandler((schema, req) => {
         const deleted = specService.deleteSpec(schema, req.params.level, parseInt(req.params.id));
         return new Response(200, {}, { deleted });
       }));
 
-      this.post("/specs/:level/:id/rels", safeHandler((schema, req) => {
+      this.post("/catalogo/:level/:id/rels", safeHandler((schema, req) => {
         const { relSpecId, relSpecLevel, relType } = JSON.parse(req.requestBody);
         const updated = specService.addSpecRelById(
           schema,
@@ -76,10 +76,10 @@ export const makeServer = () => {
           parseInt(relSpecId),
           relType
         );
-        return new Response(200, {}, { specs: updated });
+        return new Response(200, {}, updated );
       }));
 
-      this.delete("/specs/:level/:id/rels", safeHandler((schema, req) => {
+      this.delete("/catalogo/:level/:id/rels", safeHandler((schema, req) => {
         const { relSpecId, relSpecLevel, relType } = JSON.parse(req.requestBody);
 
         const updated = specService.delSpecRel(
