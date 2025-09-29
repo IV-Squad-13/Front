@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import ItemCard from '@/components/ItemCard/ItemCard';
 import styles from './Catalogo.module.css';
 import { getCatalogBySpec } from '@/services/CatalogService';
-
-const itemsPerPage = 8;
 
 const Catalogo = () => {
   const [spec, setSpec] = useState([]);
@@ -15,6 +13,10 @@ const Catalogo = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [activeButton, setActiveButton] = useState('ambiente');
 
+  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const containerRef = useRef(null);
+  const itemRef = useRef(null);
+
   const specs = ['ambiente', 'item', 'material', 'marca'];
 
   useEffect(() => {
@@ -22,9 +24,7 @@ const Catalogo = () => {
       setIsLoading(true);
       try {
         const data = await getCatalogBySpec(activeButton);
-
         setSpec(data);
-        setTotalPages(Math.ceil(data.length / itemsPerPage));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -35,12 +35,35 @@ const Catalogo = () => {
     fetchData();
   }, [activeButton]);
 
-    useEffect(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedData = spec.slice(startIndex, endIndex);
+  useLayoutEffect(() => {
+    const calculateItems = () => {
+      if (containerRef.current && itemRef.current) {
+        const containerHeight = containerRef.current.clientHeight;
+        const itemHeight = itemRef.current.offsetHeight;
+        const count = Math.max(1, Math.floor(containerHeight / itemHeight));
+        setItemsPerPage(count);
+      }
+    };
+
+    if (spec.length > 0) {
+      calculateItems();
+    }
+
+    const resizeObserver = new ResizeObserver(calculateItems);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+    return () => resizeObserver.disconnect();
+  }, [spec]);
+
+  useEffect(() => {
+    const paginatedData = spec.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    );
     setSpecsPaginados(paginatedData);
-  }, [currentPage, spec]);
+    setTotalPages(Math.ceil(spec.length / itemsPerPage));
+  }, [currentPage, spec, itemsPerPage]);
 
   const handleSpecChange = (newSpec) => {
     setActiveButton(newSpec);
@@ -64,9 +87,7 @@ const Catalogo = () => {
       <div className={styles.headerContainer}>
         <div className={styles.titleArea}>
           <h1 className={styles.title}>Catálogo</h1>
-          <p className={styles.subtitle}>
-            Gerencie os seus itens aqui
-          </p>
+          <p className={styles.subtitle}>Gerencie os seus itens aqui</p>
         </div>
         <div className={styles.buttonsArea}>
           <input placeholder="buscar" />
@@ -81,15 +102,20 @@ const Catalogo = () => {
           ))}
         </div>
       </div>
-      <div className={styles.itemsArea}>
+      <div className={styles.itemsArea} ref={containerRef}>
         {isLoading ? (
           <p>Carregando itens...</p>
         ) : error ? (
           <p style={{ color: 'red' }}>Erro: {error}</p>
         ) : specsPaginados.length > 0 ? (
           <ul>
-            {specsPaginados.map((item) => (
-              <ItemCard key={item.id} text={item.name} />
+            {specsPaginados.map((item, index) => (
+              <li key={item.id} ref={index === 0 ? itemRef : null}>
+                <ItemCard text={item.name} />
+                {/* <ItemCard
+                  text={`${item.name}${activeButton === 'item' ? ` - ${item.desc}` : ''}`}
+                /> */}
+              </li>
             ))}
           </ul>
         ) : (
