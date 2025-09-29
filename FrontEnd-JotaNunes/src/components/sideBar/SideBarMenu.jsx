@@ -5,7 +5,7 @@ import dashboard from '@/assets/Dashboard.svg';
 import lupa from '@/assets/lupa.svg';
 import especificacoes from '@/assets/Especificacoes.svg';
 import historico from '@/assets/Historico.svg';
-import users from '@/assets/User.svg';
+// import users from '@/assets/User.svg';
 
 import { useAuth } from '@/context/AuthContext';
 
@@ -38,14 +38,17 @@ const items = [
     alt: 'Histórico',
     path: '/home/historico',
   },
-  {
-    id: 5,
-    icon: users,
-    text: 'Usuários',
-    alt: 'usuários',
-    path: '/home/usuarios',
-    adminOnly: true,
-  },
+
+  // desativado temporariamente devido a falta de um getUsers
+
+  // {
+  //   id: 5,
+  //   icon: users,
+  //   text: 'Usuários',
+  //   alt: 'usuários',
+  //   path: '/home/usuarios',
+  //   // adminOnly: true,
+  // },
 ];
 
 const SideBarMenu = ({ onTitleChange }) => {
