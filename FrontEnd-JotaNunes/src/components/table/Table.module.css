@@ -1,0 +1,31 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+th,
+td {
+  border: 1px solid var(--cinza);
+  padding: 8px;
+  color: var(--font_color-secondary);
+}
+
+input {
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  color: var(--font_color-secondary);
+}
+
+.addMore {
+  width: 100%;
+  color: var(--font_color-primary);
+  border: none;
+  border-radius: 0.2rem;
+  background-color: var(--vermelho);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+}
