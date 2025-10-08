@@ -39,7 +39,7 @@
   font-size: 17px;
   background-color: transparent;
   width: 30%;
-  margin-right: 3rem;
+  margin-right: 0.3rem;
 }
 
 .buttonsArea > input::placeholder {
@@ -67,9 +67,16 @@
 }
 
 .buttonsArea > button.activeButton {
+  background-color: #BC1F1B;
+  color: var(--font_color-primary);
+  border-color: var(--vermelho);
+}
+
+.buttonsArea > button.addButton {
   background-color: var(--vermelho);
   color: var(--font_color-primary);
   border-color: var(--vermelho);
+  margin-right: 3rem;
 }
 
 .itemsArea {

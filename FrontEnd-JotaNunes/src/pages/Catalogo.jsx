@@ -91,6 +91,7 @@ const Catalogo = () => {
         </div>
         <div className={styles.buttonsArea}>
           <input placeholder="buscar" />
+          <button className={styles.addButton}>Adicionar</button>
           {specs.map((spec) => (
             <button
               key={spec}

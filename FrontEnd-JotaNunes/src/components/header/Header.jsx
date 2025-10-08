@@ -15,7 +15,8 @@ const Header = () => {
     <div className={styles.container}>
       <div className={styles.userInfo}>
         <img src={userImg} alt="userImg" className={styles.userImg} />
-        <p className={styles.username}>{user ? user.name : ''}</p>
+        {/* temporario enquanto nao tem users */}
+        <p className={styles.username}>{user ? user.name : 'Paulo Silva'}</p> 
       </div>
 
       <div className={styles.buttons}>

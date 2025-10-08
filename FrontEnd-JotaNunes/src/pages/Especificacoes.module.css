@@ -1,0 +1,126 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+.title {
+  font-size: 25px;
+  color: var(--font_color-secondary);
+}
+
+.subtitle {
+  color: var(--cinza);
+  padding: 0.3rem 0 0 0.7rem;
+}
+
+.headerContainer {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: 1px solid var(--cinza);
+  margin: 0 1rem;
+}
+
+.mainArea {
+  padding: 1.5rem 1rem 0.5rem 1rem;
+  margin: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.inputArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.inputArea input,
+textarea {
+  padding: 0.8rem;
+  border: 1px solid var(--cinza);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  background-color: transparent;
+  transition: border-color 0.2s ease;
+  color: var(--font_color-secondary);
+}
+
+.inputArea > *:focus {
+  outline: none;
+}
+
+label {
+  color: var(--font_color-secondary);
+  padding-left: 1rem;
+}
+
+.descriptionInput {
+  resize: none;
+  min-height: 10rem;
+}
+
+.buttonsArea {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  color: var(--font_color-primary);
+  border-radius: 0.2rem;
+  font-size: 17px;
+  background-color: var(--vermelho);
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  color: var(--cinza);
+  border: 1px solid var(--cinza);
+  background-color: transparent;
+}
+
+.resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  color: var(--font_color-secondary);
+}
+
+.resumo h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.25rem;
+}
+
+.resumoSection {
+  background-color: transparent;
+  border: 1px solid var(--cinza);
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.resumoSection h3 {
+  font-size: 1rem;
+}
+
+.resumo ul {
+  margin: 0.25rem 0 0 1.2rem;
+  padding: 0;
+}
+
+.resumo li {
+  margin-bottom: 0.25rem;
+}
