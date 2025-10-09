@@ -13,7 +13,7 @@ describe("Testes de Usuários", () => {
   });
 
   test("GET /mock/users retorna usuários pré-definidos", async () => {
-    const res = await fetch("/mock/users");
+    const res = await fetch("/mock/auth/users");
     const json = await res.json();
 
     expect(res.status).toBe(200);
