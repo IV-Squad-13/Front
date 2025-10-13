@@ -27,10 +27,10 @@ export const makeServer = () => {
     routes() {
       this.namespace = "mock";
 
-      this.get("/users", safeHandler(userService.getAllUsers));
-      this.post("/users/login", safeHandler(userService.loginUser));
-      this.post("/users", safeHandler(userService.createUser));
-      this.put("/users/:id", safeHandler(userService.updateUser));
+      this.get("/auth/users", safeHandler(userService.getAllUsers));
+      this.post("/auth/login", safeHandler(userService.loginUser));
+      this.post("/auth/register", safeHandler(userService.createUser));
+      this.put("/auth/:id", safeHandler(userService.updateUser));
 
 
       this.get("/catalogo/:level", safeHandler((schema, req) => {

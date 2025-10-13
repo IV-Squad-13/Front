@@ -1,6 +1,7 @@
 import { createContext, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '@/services/AuthService';
+import { getMe } from '@/services/UserService';
 
 const AuthContext = createContext(null);
 
@@ -10,7 +11,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const userData = await loginUser(email, password);
+      const userData = await loginUser(email, password)
+        .then(() => {
+          return getMe();
+        });
       setUser(userData);
     } catch (error) {
       setUser(null);

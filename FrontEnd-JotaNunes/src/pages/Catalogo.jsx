@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import ItemCard from '@/components/ItemCard/ItemCard';
 import styles from './Catalogo.module.css';
-import { getCatalogBySpec } from '@/services/CatalogService';
+import { getCatalogByResource } from '@/services/CatalogService';
 
 const Catalogo = () => {
   const [spec, setSpec] = useState([]);
@@ -23,7 +23,7 @@ const Catalogo = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const data = await getCatalogBySpec(activeButton);
+        const data = await getCatalogByResource(activeButton);
         setSpec(data);
       } catch (err) {
         setError(err.message);

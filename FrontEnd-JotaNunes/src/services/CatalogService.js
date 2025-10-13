@@ -1,12 +1,16 @@
 import { API_URL } from '../main.jsx';
+import { authFetch } from './AuthService';
 
-export const getCatalogBySpec = async (spec = 'ambiente') => {
-  const response = await fetch(`${API_URL}/catalogo/${spec}`);
+export const getCatalogByResource = async (resource = 'ambiente') => {
+  const response = await authFetch(`${API_URL}/catalogo/${resource}`, {
+    method: 'GET'
+  });
 
-  const data = await response.json();
+  const data = response;
 
-  if (!response.ok) {
-    throw new Error(data.error || `Falha ao buscar dados: ${spec}`);
+  if (!response) {
+    throw new Error(data.error || `Falha ao buscar dados: ${resource}`);
   }
+
   return data;
 };
