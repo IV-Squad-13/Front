@@ -7,6 +7,16 @@
   color: var(--font_color-primary);
   width: 300px;
   padding-top: 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
 }
 
 .logoImage {

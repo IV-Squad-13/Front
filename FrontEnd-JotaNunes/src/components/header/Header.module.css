@@ -7,6 +7,24 @@
   padding-left: 1.5rem;
 }
 
+.leftContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: var(--font_color-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .userInfo {
   display: flex;
   align-items: center;
@@ -32,7 +50,7 @@
   font-size: 1rem;
   cursor: pointer;
   text-align: center;
-  background-color:var(--vermelho);
+  background-color: var(--vermelho);
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   color: var(--font_color-primary);
   transition:
