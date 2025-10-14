@@ -8,15 +8,20 @@ import notificationRed from '@/assets/sinoNotVermelho.png';
 
 import { useAuth } from '@/context/AuthContext';
 
-const Header = () => {
+const Header = ({ toggleSidebar }) => {
   const { user, logout } = useAuth();
 
   return (
     <div className={styles.container}>
-      <div className={styles.userInfo}>
-        <img src={userImg} alt="userImg" className={styles.userImg} />
-        {/* temporario enquanto nao tem users */}
-        <p className={styles.username}>{user ? user.name : 'Paulo Silva'}</p> 
+      <div className={styles.leftContent}>
+        <button onClick={toggleSidebar} className={styles.toggleButton}>
+          ☰
+        </button>
+        <div className={styles.userInfo}>
+          <img src={userImg} alt="userImg" className={styles.userImg} />
+          {/* temporario enquanto nao tem users */}
+          <p className={styles.username}>{user ? user.name : 'Paulo Silva'}</p>
+        </div>
       </div>
 
       <div className={styles.buttons}>

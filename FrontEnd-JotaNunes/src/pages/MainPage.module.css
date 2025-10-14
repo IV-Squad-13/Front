@@ -6,6 +6,12 @@
 .mainContainer {
   width: 100%;
   display: flex;
+  margin-left: 300px;
   flex-direction: column;
   flex-grow: 1;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.mainContainer.sidebarClosed {
+  margin-left: 0;
 }
