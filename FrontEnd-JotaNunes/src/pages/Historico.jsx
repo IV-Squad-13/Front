@@ -92,30 +92,30 @@ const Historico = () => {
           <p className={styles.error}>Erro: {error}</p>
         </div>
       ) : (
-        <table className={styles.docsTable}>
-          <thead>
-            <tr>
-              <th>Documento</th>
-              <th>Versão</th>
-              <th>Data</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {docsPaginados.map((doc) => (
-              <tr key={doc.id}>
-                <td>{doc.name}</td>
-                <td>{doc.version}</td>
-                <td>{doc.date}</td>
-                <td>
-                  <button className={styles.menuButton}>
-                    Detalhes
-                  </button>
-                </td>
+        <div className={styles.tableContainer}>
+          <table className={styles.docsTable}>
+            <thead>
+              <tr>
+                <th>Documento</th>
+                <th>Versão</th>
+                <th>Data</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {docsPaginados.map((doc) => (
+                <tr key={doc.id}>
+                  <td>{doc.name}</td>
+                  <td>{doc.version}</td>
+                  <td>{doc.date}</td>
+                  <td>
+                    <button className={styles.menuButton}>Detalhes</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className={styles.paginationArea}>

@@ -21,7 +21,6 @@
   color: var(--font_color-secondary);
 }
 
-
 .headerContainer {
   padding: 1rem 1rem 0 1rem;
   display: flex;
@@ -57,7 +56,6 @@
   color: var(--cinza);
 }
 
-
 .filterButton {
   background-color: var(--background-color);
   color: var(--cinza);
@@ -86,7 +84,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  flex-grow: 1;
+  width: 70%;
 }
 
 .searchIcon {
@@ -104,15 +102,15 @@
   background-color: transparent;
 }
 
+.tableContainer {
+  padding: 0 2rem;
+}
+
 .docsTable {
-  margin: 0 2.5rem;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   cursor: default;
-}
-
-.docsTable input {
-    cursor: pointer;
 }
 
 .docsTable th,
@@ -120,11 +118,15 @@
   text-align: center;
   font-weight: 600;
   color: var(--font_color-secondary);
+  border: 0px;
 }
 
 .docsTable th {
   background-color: var(--cinza_medio);
-  padding: 1rem;
+}
+
+.docsTable td {
+  border-bottom: 1px solid var(--cinza);
 }
 
 .docsTable th:first-child {
@@ -137,16 +139,11 @@
   border-bottom-right-radius: 0.75rem;
 }
 
-.docsTable td {
-  border-bottom: 1px solid var(--cinza);
-}
-
 .menuButton {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0rem 1rem;
-  margin: 0.5rem;
   border: 1px solid var(--cinza);
   border-radius: 0.3rem;
   color: var(--font_color-secondary);
