@@ -58,17 +58,17 @@
   cursor: pointer;
 }
 
-.administrador {
+.ADMIN {
   background-color: #df1a1a56;
   color: #df1a1a;
   border: 1px solid #df1a1a;
 }
-.redator {
+.RELATOR {
   background-color: #1adf4835;
   color: #1adf48;
   border: 1px solid #1adf48;
 }
-.gestor {
+.REVISOR {
   background-color: #dfb11a25;
   color: #dfb11a;
   border: 1px solid #dfb11a;

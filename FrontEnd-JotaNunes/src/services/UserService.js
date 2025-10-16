@@ -9,22 +9,26 @@ export const getMe = async () => {
 
 export const getAllUsers = async () => {
   const data = await authFetch(`${API_URL}/user`);
-
   return data;
 };
 
+const adaptData = (data) => {
+  const payload = {};
+  if (data.name !== undefined) payload.nome = data.name;
+  if (data.email !== undefined) payload.email = data.email;
+  if (data.password !== undefined) payload.senha = data.password;
+  if (data.role !== undefined) payload.papel = data.role;
+  return payload;
+};
+
 export const updateUser = async (userId, userData) => {
-  const response = await fetch(`${API_URL}/auth/${userId}`, {
+
+  const payload = adaptData(userData)
+
+  const updatedUser = await authFetch(`${API_URL}/user/${userId}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(userData)
+    body: JSON.stringify(payload)
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Falha ao atualizar usuário');
-  }
-
-  return data.user;
+  return updatedUser;
 };

@@ -35,15 +35,33 @@ const EditModal = ({ user, onSave, onClose }) => {
       role: newRole,
     });
   };
+
   const handleSubmit = async () => {
+    const newData = {};
+
+    if (userData.name != user.name) {
+      newData.name = userData.name;
+    }
+
+    if (userData.email != user.email) {
+      newData.email = userData.email;
+    }
+
+    if (userData.role != user.role) {
+      newData.role = userData.role;
+    }
+
+    if (userData.password && userData.password.trim() !== '') {
+      newData.password = userData.password;
+    }
+
+    if (Object.keys(newData).length === 0) {
+      onClose();
+      return;
+    }
+
     try {
-      const data = { ...userData };
-      if (!data.password || data.password.trim() === '') {
-        delete data.password;
-      }
-
-      const updatedUser = await updateUser(user.id, data);
-
+      const updatedUser = await updateUser(user.id, newData);
       onSave(updatedUser);
       onClose();
     } catch (error) {
@@ -83,22 +101,24 @@ const EditModal = ({ user, onSave, onClose }) => {
           <p className={styles.roleArea_title}>Cargos</p>
           <div className={styles.roles}>
             <p
-              onClick={() => handleRoleChange('Administrador')}
-              className={`${styles.roleItem} ${styles.administrador} ${userData.role === 'Admin' ? styles.active : ''}`}
+              onClick={() => handleRoleChange('ADMIN')}
+              className={`${styles.roleItem} ${
+                styles.ADMIN
+              } ${userData.role === 'ADMIN' ? styles.active : ''}`}
             >
               Admin
             </p>
             <p
-              onClick={() => handleRoleChange('Redator')}
-              className={`${styles.roleItem} ${styles.redator} ${userData.role === 'Redator' ? styles.active : ''}`}
+              onClick={() => handleRoleChange('RELATOR')}
+              className={`${styles.roleItem} ${styles.RELATOR} ${userData.role === 'RELATOR' ? styles.active : ''}`}
             >
-              Redator
+              Relator
             </p>
             <p
-              onClick={() => handleRoleChange('Gestor')}
-              className={`${styles.roleItem} ${styles.gestor} ${userData.role === 'Gestor' ? styles.active : ''}`}
+              onClick={() => handleRoleChange('REVISOR')}
+              className={`${styles.roleItem} ${styles.REVISOR} ${userData.role === 'REVISOR' ? styles.active : ''}`}
             >
-              Gestor
+              Revisor
             </p>
           </div>
         </div>
