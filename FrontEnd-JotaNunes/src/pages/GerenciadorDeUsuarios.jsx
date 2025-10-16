@@ -107,49 +107,45 @@ const GerenciadorDeUsuarios = () => {
           <p className={styles.error}>Erro: {error}</p>
         </div>
       ) : (
-        <table className={styles.usersTable}>
-          <thead>
-            <tr>
-              <th>
-                <input type="checkbox" />
-              </th>
-              <th>Nome Completo</th>
-              <th>E-mail</th>
-              <th>Acesso</th>
-              <th>Data de Adição</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuariosPaginados.map((usuario) => (
-              <tr key={usuario.id}>
-                <td>
-                  <input type="checkbox" />
-                </td>
-                <td>{usuario.name}</td>
-                <td>{usuario.email}</td>
-                <td>
-                  <span
-                    className={`${styles.roleItem} ${styles[usuario.role.toLowerCase()]}`}
-                  >
-                    {usuario.role}
-                  </span>
-                </td>
-                <td>
-                  {new Date(usuario.createdAt).toLocaleDateString('pt-BR')}
-                </td>
-                <td>
-                  <button
-                    onClick={() => handleEdit(usuario)}
-                    className={styles.menuButton}
-                  >
-                    <img src={pontos} alt="Ações" />
-                  </button>
-                </td>
+        <div className={styles.tableContainer}>
+          <table className={styles.usersTable}>
+            <thead>
+              <tr>
+                <th>Nome Completo</th>
+                <th>E-mail</th>
+                <th>Acesso</th>
+                {/* <th>Data de Adição</th> */}
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {usuariosPaginados.map((usuario) => (
+                <tr key={usuario.id}>
+                  <td>{usuario.name}</td>
+                  <td>{usuario.email}</td>
+                  <td>
+                    <span
+                      className={`${styles.roleItem} ${styles[usuario.role]}`}
+                    >
+                      {usuario.role}
+                    </span>
+                  </td>
+                  {/* <td>
+                    {new Date(usuario.createdAt).toLocaleDateString('pt-BR')}
+                  </td> */}
+                  <td>
+                    <button
+                      onClick={() => handleEdit(usuario)}
+                      className={styles.menuButton}
+                    >
+                      <img src={pontos} alt="Ações" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className={styles.paginationArea}>

@@ -103,8 +103,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  flex-grow: 1;
-}
+width: 70%;}
 
 .searchIcon {
   position: absolute;
@@ -121,8 +120,12 @@
   background-color: transparent;
 }
 
+.tableContainer {
+  padding: 0 2rem;
+}
+
 .usersTable {
-  margin: 0 2.5rem;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   cursor: default;
@@ -137,6 +140,7 @@
   text-align: center;
   font-weight: 600;
   color: var(--font_color-secondary);
+  border: 0px;
 }
 
 .usersTable th {
@@ -165,18 +169,18 @@
   font-size: 0.8rem;
 }
 
-.administrador {
+.ADMIN {
   background-color: #df1a1a56;
   color: #DF1A1A;
   border: 1px solid #DF1A1A;
 }
-.redator {
+.RELATOR {
   background-color: #1adf4835;
   color: #1ADF48;
       border: 1px solid #1ADF48;
 
 }
-.gestor {
+.REVISOR {
   background-color: #DFB11A25;
   color: #DFB11A;
   border: 1px solid #DFB11A;

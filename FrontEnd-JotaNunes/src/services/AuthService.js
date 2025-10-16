@@ -1,7 +1,7 @@
 import { API_URL } from '../main.jsx';
 
 export const loginUser = async (email, password) => {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const response = await fetch(`${API_URL}/user/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

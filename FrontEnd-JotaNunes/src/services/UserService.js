@@ -2,21 +2,15 @@ import { API_URL } from '../main.jsx';
 import { authFetch } from './AuthService';
 
 export const getMe = async () => {
-  return await authFetch(`${API_URL}/auth/me`, {
+  return await authFetch(`${API_URL}/user/auth/me`, {
     method: 'GET'
   });
 };
 
 export const getAllUsers = async () => {
-  const response = await fetch(`${API_URL}/auth/users`);
+  const data = await authFetch(`${API_URL}/user`);
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Falha ao buscar os usuários');
-  }
-
-  return data.users;
+  return data;
 };
 
 export const updateUser = async (userId, userData) => {
