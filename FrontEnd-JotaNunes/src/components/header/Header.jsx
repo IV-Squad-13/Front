@@ -19,8 +19,7 @@ const Header = ({ toggleSidebar }) => {
         </button>
         <div className={styles.userInfo}>
           <img src={userImg} alt="userImg" className={styles.userImg} />
-          {/* temporario enquanto nao tem users */}
-          <p className={styles.username}>{user ? user.name : 'Paulo Silva'}</p>
+          <p className={styles.username}>{user ? user.username : ''}</p>
         </div>
       </div>
 

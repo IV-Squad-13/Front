@@ -5,7 +5,7 @@ import dashboard from '@/assets/Dashboard.svg';
 import lupa from '@/assets/lupa.svg';
 import especificacoes from '@/assets/Especificacoes.svg';
 import historico from '@/assets/Historico.svg';
-// import users from '@/assets/User.svg';
+import users from '@/assets/User.svg';
 
 import { useAuth } from '@/context/AuthContext';
 
@@ -39,16 +39,14 @@ const items = [
     path: '/home/historico',
   },
 
-  // desativado temporariamente devido a falta de um getUsers
-
-  // {
-  //   id: 5,
-  //   icon: users,
-  //   text: 'Usuários',
-  //   alt: 'usuários',
-  //   path: '/home/usuarios',
-  //   // adminOnly: true,
-  // },
+  {
+    id: 5,
+    icon: users,
+    text: 'Usuários',
+    alt: 'usuários',
+    path: '/home/usuarios',
+    adminOnly: true,
+  },
 ];
 
 const SideBarMenu = ({ onTitleChange }) => {
@@ -64,7 +62,7 @@ const SideBarMenu = ({ onTitleChange }) => {
         {items
           .filter(
             (item) =>
-              !item.adminOnly || (user && user.role === 'Administrador'),
+              !item.adminOnly || (user && user.papel?.nome === 'ADMIN'),
           )
           .map((item) => (
             <li
