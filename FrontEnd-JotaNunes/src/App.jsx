@@ -6,6 +6,7 @@ import GerenciadorDeUsuarios from './pages/GerenciadorDeUsuarios';
 import Historico from './pages/Historico';
 import Especificacoes from './pages/Especificacoes';
 import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 
 const App = () => {
   return (
@@ -14,7 +15,14 @@ const App = () => {
         <Route path="/" element={<Navigate replace to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/home" element={<MainPage />}>
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <MainPage />
+            </ProtectedRoute>
+          }
+        >
           <Route path="catalogo" element={<Catalogo />} />
           <Route path="usuarios" element={<GerenciadorDeUsuarios />} />
           <Route path="historico" element={<Historico />} />

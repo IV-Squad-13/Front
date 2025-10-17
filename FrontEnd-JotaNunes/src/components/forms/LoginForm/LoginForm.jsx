@@ -3,7 +3,7 @@ import Logo from '@/assets/LogoPreta2.png';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import Input from '@/components/input/Input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
 const LoginForm = () => {
@@ -11,7 +11,13 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/home', {replace: true});
+    }
+  }, [user, navigate])
 
   const handleSubmit = async (event) => {
     event.preventDefault();
