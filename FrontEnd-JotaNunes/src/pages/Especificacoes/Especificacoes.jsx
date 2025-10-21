@@ -2,7 +2,7 @@
 import styles from './Especificacoes.module.css';
 import { useState, useEffect } from 'react';
 import Table from '@/components/table/Table';
-import { startProcess } from '@/services/SpecificationService';
+import { createSpecification, startProcess } from '@/services/SpecificationService';
 import { useAuth } from '@/context/AuthContext';
 
 const Especificacoes = () => {
@@ -31,16 +31,14 @@ const Especificacoes = () => {
 
   const voltar = () => step > 0 && setStep(step - 1);
   const handleAvancar = async () => {
-    if (step === 0)  {
-      if (!user || !user.id){
+    if (step === 0) {
+      if (!user || !user.id) {
         console.error('Usuário não autenticado.');
         return;
       }
 
       try {
-        const payload = { name: title,
-          creatorId: user.id
-         };
+        const payload = { name: title, creatorId: user.id };
         const response = await startProcess(payload);
 
         if (response && response.id) {
@@ -49,6 +47,22 @@ const Especificacoes = () => {
         }
       } catch (error) {
         console.error('Erro ao iniciar o processo:', error);
+      }
+    } else if (step === 1) {
+      if (!empId) {
+        console.error('id do empreendimento nao foi definido');
+        return;
+      }
+
+      try {
+        const payload = { name: nomeEmpreendimento, desc: descricaoEmpreendimento, empId: empId };
+        const response = await createSpecification(payload);
+
+        if (response && response.id) {
+          setStep(step + 1);
+        }
+      } catch (error) {
+        console.error(error);
       }
     } else if (step < totalSteps) {
       setStep(step + 1);
