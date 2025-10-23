@@ -11,7 +11,7 @@ td {
   color: var(--font_color-secondary);
 }
 
-input {
+input, .cellButton {
   background-color: transparent;
   border: none;
   width: 100%;
