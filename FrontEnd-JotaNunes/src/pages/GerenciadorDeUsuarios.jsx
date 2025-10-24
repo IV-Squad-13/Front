@@ -5,6 +5,7 @@ import filtro from '@/assets/filtro.svg';
 import pontos from '@/assets/pontos.svg';
 import lupa from '@/assets/lupa.svg';
 import EditModal from '@/components/forms/EditModal/EditModal';
+import CreateModal from '@/components/forms/CreateModal/CreateModal';
 
 const itemsPerPage = 8;
 
@@ -17,6 +18,7 @@ const GerenciadorDeUsuarios = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -59,6 +61,10 @@ const GerenciadorDeUsuarios = () => {
     setIsModalOpen(true);
   };
 
+  const handleCreate = () => {
+    setIsCreateModalOpen(true);
+  }
+
   const handleSave = (usuarioAtualizado) => {
     setUsuarios(
       usuarios.map((u) =>
@@ -79,7 +85,7 @@ const GerenciadorDeUsuarios = () => {
         </div>
         <div className={styles.actionBar}>
           <div className={styles.actionsButtons}>
-            <button className={styles.addButton}>Adicionar</button>
+            <button onClick={() => handleCreate()} className={styles.addButton}>Adicionar</button>
             <button className={styles.filterButton}>
               <img src={filtro} alt="Filtros" />
               Filtros
@@ -165,6 +171,12 @@ const GerenciadorDeUsuarios = () => {
           user={usuarioSelecionado}
           onSave={handleSave}
           onClose={() => setIsModalOpen(false)}
+        />
+      )}
+      {isCreateModalOpen && (
+        <CreateModal
+          onSave={handleSave}
+          onClose={() => setIsCreateModalOpen(false)}
         />
       )}
     </div>
