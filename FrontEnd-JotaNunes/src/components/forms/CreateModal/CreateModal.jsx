@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './CreateModal.module.css';
 import Input from '@/components/input/Input';
-import { updateUser } from '@/services/UserService';
+import { createUser } from '@/services/UserService';
 
 const CreateModal = ({onSave, onClose }) => {
   const [userData, setUserData] = useState({
@@ -36,11 +36,7 @@ const CreateModal = ({onSave, onClose }) => {
       newData.email = userData.email;
     }
 
-    if (userData.role != user.role) {
-      newData.role = userData.role;
-    }
-
-    if (userData.password && userData.password.trim() !== '') {
+    if (userData.password && userData.password.trim() !== '' && userData.password == userData.confirmPassword) {
       newData.password = userData.password;
     }
 
@@ -50,11 +46,11 @@ const CreateModal = ({onSave, onClose }) => {
     }
 
     try {
-      const updatedUser = await updateUser(user.id, newData);
-      onSave(updatedUser);
+      const createUser = await createUser(user.id, newData);
+      onSave(createUser);
       onClose();
     } catch (error) {
-      console.error('Erro ao editar usuário: ', error);
+      console.error('Erro ao criar usuário: ', error);
     }
   };
 
@@ -70,6 +66,7 @@ const CreateModal = ({onSave, onClose }) => {
             value={userData.name}
             placeholder = "Nome do Usuario"
             onChange={handleChange}
+            autocomplete = "off"
           />
           <Input
             type="email"
@@ -78,6 +75,7 @@ const CreateModal = ({onSave, onClose }) => {
             value={userData.email}
             placeholder = "usuario@email.com"
             onChange={handleChange}
+            autocomplete = "off"
           />
           <Input
             type="password"
@@ -86,6 +84,16 @@ const CreateModal = ({onSave, onClose }) => {
             placeholder="Senha"
             value={userData.password}
             onChange={handleChange}
+            autocomplete="off"
+          />
+          <Input
+            type="password"
+            name="confirmPassword"
+            id="confirmPassword"
+            placeholder="Confirmar senha"
+            value={userData.confirmPassword}
+            onChange={handleChange}
+            autocomplete="off"
           />
         </div>
         <div className={styles.roleArea}>
