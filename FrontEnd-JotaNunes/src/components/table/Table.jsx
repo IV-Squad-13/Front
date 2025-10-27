@@ -5,6 +5,7 @@ import { useState } from 'react';
 const Table = ({ columns, data, setData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
+  const [activeRowIndex, setActiveRowIndex] = useState(null);
 
   const addLine = () => {
     const newLine = columns.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
@@ -17,10 +18,26 @@ const Table = ({ columns, data, setData }) => {
     setData(newData);
   };
 
-  const handleOpenModal = (title) => {
+  const handleOpenModal = (title, rowIndex) => {
     setIsModalOpen(true);
-    setTitle(title)
-  }
+    setTitle(title);
+    setActiveRowIndex(rowIndex);
+
+  };
+
+const handleSelectedItems = (items, column) => {
+  if (activeRowIndex === null) return;
+
+  const updatedData = [...data];
+
+  updatedData.splice(activeRowIndex, 1, ...items.map((item) => {
+    const newRow = columns.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
+    newRow[column] = item.name;
+    return newRow;
+  }));
+
+  setData(updatedData);
+};
 
   return (
     <div className={styles.container}>
@@ -37,7 +54,10 @@ const Table = ({ columns, data, setData }) => {
             <tr key={i}>
               {columns.map((column) => (
                 <td key={column}>
-                  <button className={styles.cellButton} onClick={() => handleOpenModal(column.toLowerCase())}>
+                  <button
+                    className={styles.cellButton}
+                    onClick={() => handleOpenModal(column, i)}
+                  >
                     <input
                       type="text"
                       value={line[column]}
@@ -53,7 +73,13 @@ const Table = ({ columns, data, setData }) => {
       <button className={styles.addMore} onClick={addLine}>
         Adicionar mais
       </button>
-      {isModalOpen && <SelectItemModal header={title} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <SelectItemModal
+          header={title}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSelectedItems}
+        />
+      )}
     </div>
   );
 };

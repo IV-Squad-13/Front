@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import styles from './SelectItemModal.module.css';
 import { getCatalogByResource } from '@/services/CatalogService';
 
-const SelectItemModal = ({ header, onClose }) => {
+const SelectItemModal = ({ header, onClose, onSave }) => {
   const [resource, setResource] = useState([]);
-//   const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     const fetchResource = async () => {
       try {
-        const data = await getCatalogByResource(header);
+        const data = await getCatalogByResource(header.toLowerCase());
         setResource(data);
       } catch (err) {
         console.error('Erro ao buscar recurso: ', err);
@@ -17,6 +17,17 @@ const SelectItemModal = ({ header, onClose }) => {
     };
     fetchResource();
   }, [header]);
+
+  const toggleItem = (item) => {
+    setSelectedItems((prev) =>
+      prev.includes(item) ? prev.filter((i) => i != item) : [...prev, item],
+    );
+  };
+
+  const handleSave = () => {
+    onSave(selectedItems, header);
+    onClose();
+  };
 
   return (
     <div className={styles.container}>
@@ -34,7 +45,11 @@ const SelectItemModal = ({ header, onClose }) => {
               {resource.map((item) => (
                 <tr key={item.id}>
                   <td>
-                    <input type="checkbox" name="checkboxItem" />
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(item)}
+                      onChange={() => toggleItem(item)}
+                    />
                   </td>
                   <td>{item.name}</td>
                 </tr>
@@ -47,10 +62,7 @@ const SelectItemModal = ({ header, onClose }) => {
           <button className={styles.cancelButton} onClick={onClose}>
             Cancelar
           </button>
-          <button
-            className={styles.saveButton}
-            onClick={() => console.log('selecionando item')}
-          >
+          <button className={styles.saveButton} onClick={handleSave}>
             Salvar
           </button>
         </div>

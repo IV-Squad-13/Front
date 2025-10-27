@@ -21,6 +21,7 @@
   height: 70%;
   width: 40%;
   border-radius: 1rem;
+  overflow: hidden;
 }
 
 .title {
@@ -32,6 +33,8 @@
   flex-direction: column;
   width: 80%;
   gap: 0.5rem;
+  overflow-y: auto;
+  max-height: 60%;
 }
 
 
