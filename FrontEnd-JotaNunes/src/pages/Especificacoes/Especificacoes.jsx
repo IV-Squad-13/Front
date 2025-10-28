@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 
 const Especificacoes = () => {
   const { user } = useAuth();
-  const [step, setStep] = useState(2); // step iniciando em 2 para evitar cadastrar um novo empreendimento para cada teste
+  const [step, setStep] = useState(0);
   const [subtitle, setSubtitle] = useState('');
   const [nomeEmpreendimento, setNomeEmpreendimento] = useState('');
   const [descricaoEmpreendimento, setDescricaoEmpreendimento] = useState('');
