@@ -26,18 +26,26 @@ const Table = ({ columns, data, setData }) => {
   };
 
 const handleSelectedItems = (items, column) => {
-  if (activeRowIndex === null) return;
-
   const updatedData = [...data];
 
-  updatedData.splice(activeRowIndex, 1, ...items.map((item) => {
-    const newRow = columns.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
-    newRow[column] = item.name;
-    return newRow;
-  }));
+  const isFirstColumn = columns.indexOf(column) === 0;
+
+  if (isFirstColumn) {
+    const newRows = items.map((item) => {
+      const newRow = columns.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
+      newRow[column] = item.name;
+      return newRow;
+    });
+
+    updatedData.splice(activeRowIndex, 1, ...newRows);
+  } else {
+    const joinedItems = items.map((item) => item.name).join('; ');
+    updatedData[activeRowIndex][column] = joinedItems;
+  }
 
   setData(updatedData);
 };
+
 
   return (
     <div className={styles.container}>
