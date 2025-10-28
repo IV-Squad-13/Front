@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './GerenciadorDeUsuarios.module.css';
 import { getAllUsers } from '@/services/UserService';
+import { getUsersByRole } from '@/services/UserService';
 import filtro from '@/assets/filtro.svg';
 import pontos from '@/assets/pontos.svg';
 import lupa from '@/assets/lupa.svg';
@@ -11,6 +12,7 @@ const itemsPerPage = 8;
 const GerenciadorDeUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('');
   const [usuariosPaginados, setUsuariosPaginados] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -68,6 +70,31 @@ const GerenciadorDeUsuarios = () => {
     setIsModalOpen(false);
   };
 
+  // Carrega os Usuários baseado em uma Role selecionada disponível, trazendo getAll se não for selecionado nenhum.
+  const handleFilter = async (role) => {
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    if (!role) {
+      const data = await getAllUsers();
+      setUsuarios(data);
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
+      setSelectedRole('');
+      return;
+    }
+
+    const data = await getUsersByRole(role);
+    setUsuarios(data);
+    setTotalPages(Math.ceil(data.length / itemsPerPage));
+    setSelectedRole(role);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+ };
+
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
@@ -80,10 +107,20 @@ const GerenciadorDeUsuarios = () => {
         <div className={styles.actionBar}>
           <div className={styles.actionsButtons}>
             <button className={styles.addButton}>Adicionar</button>
-            <button className={styles.filterButton}>
-              <img src={filtro} alt="Filtros" />
-              Filtros
-            </button>
+            <div className={styles.filterContainer}>
+
+              <img src={filtro} alt="Filtros" className={styles.filterIcon} />
+              <select
+                 className={styles.filterSelect}
+                 value={selectedRole}
+                 onChange={(e) => handleFilter(e.target.value)}
+              >
+                  <option value="">Todos</option>
+                  <option value="ADMIN">Admin</option>
+                  <option value="REVISOR">Revisor</option>
+                  <option value="RELATOR">Relator</option>
+              </select>
+            </div>
             <div className={styles.searchContainer}>
               <img src={lupa} alt="Buscar" className={styles.searchIcon} />
               <input className={styles.searchInput} placeholder="Buscar" />
