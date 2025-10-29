@@ -85,7 +85,7 @@ const GerenciadorDeUsuarios = () => {
         </div>
         <div className={styles.actionBar}>
           <div className={styles.actionsButtons}>
-            <button onClick={() => handleCreate()} className={styles.addButton}>Adicionar</button>
+            <button onClick={() => handleEdit()} className={styles.addButton}>Adicionar</button>
             <button className={styles.filterButton}>
               <img src={filtro} alt="Filtros" />
               Filtros

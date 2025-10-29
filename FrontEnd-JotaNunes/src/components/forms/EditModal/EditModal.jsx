@@ -96,6 +96,17 @@ const EditModal = ({ user, onSave, onClose }) => {
             value={userData.password}
             onChange={handleChange}
           />
+          { !user && 
+            <Input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="Confirmar senha"
+              value={userData.confirmPassword}
+              onChange={handleChange}
+              autocomplete="off"
+            />
+          }
         </div>
         <div className={styles.roleArea}>
           <p className={styles.roleArea_title}>Cargos</p>
