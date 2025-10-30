@@ -1,11 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage';
-import Catalogo from './pages/Catalogo';
-import GerenciadorDeUsuarios from './pages/GerenciadorDeUsuarios';
-import Historico from './pages/Historico';
-import Especificacoes from './pages/Especificacoes';
-import Dashboard from './pages/Dashboard';
+import MainPage from './pages/MainPage/MainPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import Catalogo from './pages/Catalogo/Catalogo';
+import GerenciadorDeUsuarios from './pages/GerenciadorDeUsuarios/GerenciadorDeUsuarios';
+import Historico from './pages/Historico/Historico';
+import Especificacoes from './pages/Especificacoes/Especificacoes';
+import Dashboard from './pages/Dashboard/Dashboard';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 
 const App = () => {

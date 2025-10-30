@@ -12,6 +12,15 @@ export const getAllUsers = async () => {
   return data;
 };
 
+// usa o método do backend para puxar usuários do banco pela sua role (papel).
+
+export const getUsersByRole = async (role) => {
+  const data = await authFetch(`${API_URL}/user/papel/${role.toUpperCase()}`, {
+    method: 'GET'
+  });
+  return data;
+}
+
 const adaptData = (data) => {
   const payload = {};
   if (data.name !== undefined) payload.nome = data.name;
@@ -31,4 +40,15 @@ export const updateUser = async (userId, userData) => {
   });
 
   return updatedUser;
+};
+
+export const createUser = async (userData) =>{
+  const payload = adaptData(userData)
+
+  const createUser = await authFetch(`${API_URL}/user/auth/register`,{
+    method:'POST',
+    body: JSON.stringify(payload)
+  });
+
+  return createUser;
 };

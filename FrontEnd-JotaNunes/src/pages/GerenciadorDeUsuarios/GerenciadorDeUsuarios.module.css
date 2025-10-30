@@ -8,6 +8,47 @@
   color: var(--vermelho);
 }
 
+.filterContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterIcon {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.filterSelect {
+  background-color: var(--cinza);
+  color: var(--font_color-primary);
+  font-weight: 600;
+  font-size: 17px;
+  border: none;
+  border-radius: 2rem; 
+  padding: 0.6rem 2rem 0.6rem 1rem; 
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+}
+
+.filterSelect:hover {
+  background-color: var(--cinza); 
+  border: 1px solid #e53935;
+}
+
+
+.filterSelect option:checked,
+.filterSelect option:hover {
+  background-color: var(--vermelho) !important;
+  color: white;
+}
+
+
 .centeredMessage {
   display: flex;
   justify-content: center;
@@ -75,24 +116,6 @@
   background-color: #bc1f1b;
 }
 
-.filterButton {
-  background-color: var(--background-color);
-  color: var(--cinza);
-  border: 1px solid var(--cinza);
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.filterButton:hover {
-  background-color: #a7a7a725;
-}
 
 .filterButton img {
   width: 20px;
