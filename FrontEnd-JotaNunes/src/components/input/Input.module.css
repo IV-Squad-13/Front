@@ -9,7 +9,7 @@
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
-  color: var(--font_color-secondary);
+  color: black;
 }
 
 input:focus {

@@ -2,9 +2,12 @@
 import styles from './Especificacoes.module.css';
 import { useState, useEffect } from 'react';
 import Table from '@/components/table/Table';
+import { createSpecification, startProcess } from '@/services/SpecificationService';
+import { useAuth } from '@/context/AuthContext';
 
 const Especificacoes = () => {
-  const [step, setStep] = useState(1);
+  const { user } = useAuth();
+  const [step, setStep] = useState(0);
   const [subtitle, setSubtitle] = useState('');
   const [nomeEmpreendimento, setNomeEmpreendimento] = useState('');
   const [descricaoEmpreendimento, setDescricaoEmpreendimento] = useState('');
@@ -12,6 +15,8 @@ const Especificacoes = () => {
   const [areaComum, setAreaComum] = useState([]);
   const [ambientesDetalhados, setAmbientesDetalhados] = useState({});
   const [materiaisMarcas, setMateriaisMarcas] = useState([]);
+  const [title, setTitle] = useState('');
+  const [empId, setEmpId] = useState(null);
 
   const ambientesTotais = [
     ...new Set([
@@ -20,12 +25,49 @@ const Especificacoes = () => {
     ]),
   ].filter(Boolean);
 
-  const totalSteps = 5 + ambientesTotais.length;
+  const totalSteps = 6 + ambientesTotais.length;
 
   const ambienteAtual = ambientesTotais[step - 4];
 
-  const avancar = () => step < totalSteps && setStep(step + 1);
-  const voltar = () => step > 1 && setStep(step - 1);
+  const voltar = () => step > 0 && setStep(step - 1);
+  const handleAvancar = async () => {
+    if (step === 0) {
+      if (!user || !user.id) {
+        console.error('Usuário não autenticado.');
+        return;
+      }
+
+      try {
+        const payload = { name: title, creatorId: user.id };
+        const response = await startProcess(payload);
+
+        if (response && response.id) {
+          setEmpId(response.id);
+          setStep(step + 1);
+        }
+      } catch (error) {
+        console.error('Erro ao iniciar o processo:', error);
+      }
+    } else if (step === 1) {
+      if (!empId) {
+        console.error('id do empreendimento nao foi definido');
+        return;
+      }
+
+      try {
+        const payload = { name: nomeEmpreendimento, desc: descricaoEmpreendimento, empId: empId };
+        const response = await createSpecification(payload);
+
+        if (response && response.id) {
+          setStep(step + 1);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (step < totalSteps) {
+      setStep(step + 1);
+    }
+  };
 
   const initAmbiente = (nome) => {
     if (!ambientesDetalhados[nome]) {
@@ -55,7 +97,9 @@ const Especificacoes = () => {
   };
 
   useEffect(() => {
-    if (step === 1) setSubtitle('Insira aqui os dados do novo empreendimento');
+    if (step === 0) setSubtitle('Bem vindo ao cadastro de especificações');
+    else if (step === 1)
+      setSubtitle('Insira aqui os dados do novo empreendimento');
     else if (step === 2)
       setSubtitle(`${nomeEmpreendimento} - Unidades privativas`);
     else if (step === 3) setSubtitle(`${nomeEmpreendimento} - Área comum`);
@@ -72,6 +116,21 @@ const Especificacoes = () => {
   }, [ambienteAtual]);
 
   const renderStep = () => {
+    if (step === 0) {
+      return (
+        <>
+          <div className={styles.inputArea}>
+            <label htmlFor="title">Título</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+        </>
+      );
+    }
+
     if (step === 1) {
       return (
         <>
@@ -243,13 +302,13 @@ const Especificacoes = () => {
       <div className={styles.buttonsArea}>
         <button
           onClick={voltar}
-          disabled={step === 1}
+          disabled={step === 0}
           className={styles.button}
         >
           Voltar
         </button>
         {step < totalSteps ? (
-          <button onClick={avancar} className={styles.button}>
+          <button onClick={handleAvancar} className={styles.button}>
             Avançar
           </button>
         ) : (
