@@ -1,0 +1,153 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.mainForm {
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  min-height: 400px;
+  width: 40%;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  color: var(--font_color-secondary);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+}
+
+.inputArea {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+/* Added input row for side-by-side fields */
+.inputRow {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.inputRow .inputGroup {
+  flex: 1;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  color: var(--font_color-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--cinza);
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: var(--font_color-secondary);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.textarea::placeholder {
+  color: var(--cinza);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--vermelho);
+}
+
+/* Added required field indicator */
+.required {
+  color: var(--vermelho);
+  margin-left: 0.25rem;
+}
+
+/* Added error message styling */
+.errorMessage {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid var(--vermelho);
+  border-radius: 0.5rem;
+  color: var(--vermelho);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.buttonsArea {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionButtons button {
+  flex: 1;
+  padding: 0.7rem 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background-color: transparent;
+  border: 1px solid var(--cinza);
+  color: var(--cinza);
+}
+
+.cancelButton:hover {
+  background-color: var(--cinza);
+  color: var(--font_color-primary);
+}
+
+.saveButton {
+  border: none;
+  background-color: var(--vermelho);
+  color: var(--font_color-primary);
+}
+
+.saveButton:hover {
+  background-color: #a01815;
+}
+
+/* Added disabled button state */
+.saveButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
