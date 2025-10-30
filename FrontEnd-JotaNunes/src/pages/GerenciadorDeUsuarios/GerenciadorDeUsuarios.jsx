@@ -106,6 +106,13 @@ const GerenciadorDeUsuarios = () => {
         </div>
         <div className={styles.actionBar}>
           <div className={styles.actionsButtons}>
+<<<<<<< HEAD:FrontEnd-JotaNunes/src/pages/GerenciadorDeUsuarios.jsx
+            <button onClick={() => handleEdit()} className={styles.addButton}>Adicionar</button>
+            <button className={styles.filterButton}>
+              <img src={filtro} alt="Filtros" />
+              Filtros
+            </button>
+=======
             <button className={styles.addButton}>Adicionar</button>
             <div className={styles.filterContainer}>
 
@@ -121,6 +128,7 @@ const GerenciadorDeUsuarios = () => {
                   <option value="RELATOR">Relator</option>
               </select>
             </div>
+>>>>>>> main:FrontEnd-JotaNunes/src/pages/GerenciadorDeUsuarios/GerenciadorDeUsuarios.jsx
             <div className={styles.searchContainer}>
               <img src={lupa} alt="Buscar" className={styles.searchIcon} />
               <input className={styles.searchInput} placeholder="Buscar" />

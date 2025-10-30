@@ -41,3 +41,14 @@ export const updateUser = async (userId, userData) => {
 
   return updatedUser;
 };
+
+export const createUser = async (userData) =>{
+  const payload = adaptData(userData)
+
+  const createUser = await authFetch(`${API_URL}/user/auth/register`,{
+    method:'POST',
+    body: JSON.stringify(payload)
+  });
+
+  return createUser;
+};

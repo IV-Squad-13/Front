@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './EditModal.module.css';
 import Input from '@/components/input/Input';
-import { updateUser } from '@/services/UserService';
+import { updateUser, createUser } from '@/services/UserService';
 
 const EditModal = ({ user, onSave, onClose }) => {
   const [userData, setUserData] = useState({
@@ -38,31 +38,45 @@ const EditModal = ({ user, onSave, onClose }) => {
 
   const handleSubmit = async () => {
     const newData = {};
-
-    if (userData.name != user.name) {
-      newData.name = userData.name;
+    if (user){
+      if (userData.name != user.name) {
+        newData.name = userData.name;
+      }
+      
+      if (userData.email != user.email) {
+        newData.email = userData.email;
+      }
+      
+      if (userData.role != user.role) {
+        newData.role = userData.role;
+      }
+      if (userData.password && userData.password.trim() !== '') {
+        newData.password = userData.password;
+      }
     }
-
-    if (userData.email != user.email) {
-      newData.email = userData.email;
+    else{
+      if (userData.password && userData.password.trim() !== '' && userData.password == userData.confirmPassword) {
+        newData.name = userData.name;
+        newData.email = userData.email;
+        newData.role = userData.role;
+        newData.password = userData.password;
+      }
     }
-
-    if (userData.role != user.role) {
-      newData.role = userData.role;
-    }
-
-    if (userData.password && userData.password.trim() !== '') {
-      newData.password = userData.password;
-    }
-
+    
     if (Object.keys(newData).length === 0) {
       onClose();
       return;
     }
 
     try {
-      const updatedUser = await updateUser(user.id, newData);
-      onSave(updatedUser);
+      if (user){
+        const updatedUser = await updateUser(user.id, newData);
+        onSave(updatedUser); 
+      }
+      else{
+        const registerUser = await createUser(newData);
+        onSave(registerUser);
+      }
       onClose();
     } catch (error) {
       console.error('Erro ao editar usuário: ', error);
@@ -72,7 +86,7 @@ const EditModal = ({ user, onSave, onClose }) => {
   return (
     <div className={styles.container}>
       <div className={styles.mainForm}>
-        <h2 className={styles.title}>Editar usuário</h2>
+        <h2 className={styles.title}>{user ? "Editar Usuário" : "Criar Usuário"}</h2>
         <div className={styles.inputArea}>
           <Input
             type="text"
@@ -96,6 +110,17 @@ const EditModal = ({ user, onSave, onClose }) => {
             value={userData.password}
             onChange={handleChange}
           />
+          { !user && 
+            <Input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="Confirmar senha"
+              value={userData.confirmPassword}
+              onChange={handleChange}
+              autocomplete="off"
+            />
+          }
         </div>
         <div className={styles.roleArea}>
           <p className={styles.roleArea_title}>Cargos</p>
@@ -124,7 +149,7 @@ const EditModal = ({ user, onSave, onClose }) => {
         </div>
 
         <div className={styles.buttonsArea}>
-          <button className={styles.deleteButton}>Excluir usuário</button>
+          {user? <button className={styles.deleteButton} >Excluir usuário</button>:""}
           <div className={styles.bottonButtons}>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancelar
