@@ -2,7 +2,13 @@
 import styles from './Especificacoes.module.css';
 import { useState, useEffect } from 'react';
 import Table from '@/components/table/Table';
-import { createSpecification, startProcess } from '@/services/SpecificationService';
+import {
+  startProcess,
+  addRawDocElement,
+  getAllEmpreendimentos,
+} from '@/services/SpecificationService';
+
+import { getCatalogByResource } from '@/services/CatalogService';
 import { useAuth } from '@/context/AuthContext';
 
 const Especificacoes = () => {
@@ -26,7 +32,6 @@ const Especificacoes = () => {
   ].filter(Boolean);
 
   const totalSteps = 6 + ambientesTotais.length;
-
   const ambienteAtual = ambientesTotais[step - 4];
 
   const voltar = () => step > 0 && setStep(step - 1);
@@ -43,26 +48,96 @@ const Especificacoes = () => {
 
         if (response && response.id) {
           setEmpId(response.id);
-          setStep(step + 1);
+          setStep(step + 2); // pula para o passo 2 (erros por enquanto)
         }
       } catch (error) {
         console.error('Erro ao iniciar o processo:', error);
       }
-    } else if (step === 1) {
-      if (!empId) {
-        console.error('id do empreendimento nao foi definido');
-        return;
-      }
+    }
+    
+    // else if (step === 1) {
+    //   if (!empId) {
+    //     console.error('id do empreendimento nao foi definido');
+    //     return;
+    //   }
 
+    //   try {
+    //     const payload = { name: nomeEmpreendimento, desc: descricaoEmpreendimento, empId: empId };
+    //     const response = await createSpecification(payload);
+
+    //     if (response && response.id) {
+    //       setStep(step + 1);
+    //     }
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
+
+    else if (step === 2) {
       try {
-        const payload = { name: nomeEmpreendimento, desc: descricaoEmpreendimento, empId: empId };
-        const response = await createSpecification(payload);
+        const empreendimentos = await getAllEmpreendimentos();
 
-        if (response && response.id) {
-          setStep(step + 1);
+        const emp = empreendimentos.find(
+          (e) => e.id === empId || e.id === Number(empId),
+        );
+        if (!emp) throw new Error(`Empreendimento ID ${empId} não encontrado.`);
+
+        const specId = emp.docs?.id;
+
+        const localPrivativo = emp.docs?.locais?.find(
+          (l) => l.local === 'UNIDADES_PRIVATIVAS',
+        );
+        const parentId = localPrivativo?.id;
+
+        if (!specId || !parentId) {
+          throw new Error('specId ou parentId não encontrados.');
         }
-      } catch (error) {
-        console.error(error);
+
+        const catalogoAmbientes = await getCatalogByResource('ambiente');
+
+        const normalize = (str) =>
+          str
+            ?.normalize('NFD')
+            ?.replace(/[\u0300-\u036f]/g, '')
+            ?.replace(/[^\w]/g, '')
+            ?.toLowerCase()
+            ?.trim();
+
+        const mapCatalogo = {};
+        catalogoAmbientes.forEach((item) => {
+          mapCatalogo[normalize(item.name)] = item.id;
+        });
+
+        const ambientesValidos = areaPrivativa
+          .filter((a) => a['Ambiente'])
+          .map((a) => {
+            const key = normalize(a['Ambiente']);
+            const catalogId = mapCatalogo[key];
+            return {
+              name: a['Ambiente'].trim(),
+              catalogId: catalogId || null,
+              parentId: parentId,
+              docType: 'AMBIENTE',
+              local: 'UNIDADES_PRIVATIVAS',
+            };
+          });
+
+        if (ambientesValidos.length === 0) {
+          console.warn('Nenhum ambiente válido encontrado para enviar.');
+          return;
+        }
+
+        console.log('Criando ambientes:', ambientesValidos);
+
+        for (const ambiente of ambientesValidos) {
+          await addRawDocElement(ambiente, specId);
+          console.log("Ambiente criado: ", ambiente.name);
+        }
+
+        console.log('Ambientes criados');
+        setStep(step + 1);
+      } catch (err) {
+        console.error('Erro ao criar ambientes', err);
       }
     } else if (step < totalSteps) {
       setStep(step + 1);
