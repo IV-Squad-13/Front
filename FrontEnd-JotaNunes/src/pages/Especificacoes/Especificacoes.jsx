@@ -195,9 +195,7 @@ const Especificacoes = () => {
 
         const currentSpecId = spec.id;
 
-        const unidadeComum = spec.locais?.find(
-          (l) => l.local === 'AREA_COMUM',
-        );
+        const unidadeComum = spec.locais?.find((l) => l.local === 'AREA_COMUM');
         const parentId = unidadeComum?.id;
 
         if (!currentSpecId || !parentId) {
@@ -287,6 +285,103 @@ const Especificacoes = () => {
         setStep(step + 1);
       } catch (err) {
         console.error('Erro ao cadastrar área comum', err);
+      }
+    } else if (step === totalSteps - 1) {
+      try {
+        const specs = await getAllSpecifications();
+        const spec = specs.find((s) => s.empreendimentoId === empId);
+
+        if (!spec)
+          throw new Error(`Empreendimento ID ${empId} não encontrado.`);
+
+        const currentSpecId = spec.id;
+
+        if (!currentSpecId) {
+          throw new Error('specId não encontrados.');
+        }
+
+        const catalogMateriais = await getCatalogByResource('material');
+        const catalogMarcas = await getCatalogByResource('marca');
+
+        const bulkMateriais = [];
+
+        for (const linha of materiaisMarcas) {
+          const nomeMaterial = linha['Material']?.trim();
+
+          if (!nomeMaterial) continue;
+
+          const materialCatalog = catalogMateriais.find(
+            (m) => m.name === nomeMaterial,
+          );
+
+          if (!materialCatalog) {
+            console.warn('Ambiente nao encontrado: ', nomeMaterial);
+            continue;
+          }
+
+          bulkMateriais.push({
+            type: 'MATERIAL',
+            elementId: materialCatalog.id,
+          });
+        }
+
+        if (bulkMateriais.length === 0) {
+          console.warn('nenhum material para envio');
+          return;
+        }
+
+        const payloadMateriais = { elements: bulkMateriais };
+        const responseMateriais = await addDocElementBulk(
+          payloadMateriais,
+          currentSpecId,
+        );
+        console.log(
+          'bulk de materiais enviado com sucesso: ',
+          responseMateriais,
+        );
+
+        const materiaisId = responseMateriais.MATERIAL.map(
+          (material) => material.id,
+        );
+
+        let iterator = 0;
+
+        for (const linha of materiaisMarcas) {
+          const id = materiaisId[iterator];
+          const marcas =
+            linha['Marca']
+              ?.split(';')
+              .map((i) => i.trim())
+              .filter(Boolean) || [];
+
+          for (const marcaNome of marcas) {
+            const bulkMarcas = [];
+            const marcaCatalog = catalogMarcas.find((m) => m.name === marcaNome);
+
+            if (!marcaCatalog) {
+              console.warn(`Item "${marcaCatalog}" não encontrado no catálogo.`);
+              continue;
+            }
+
+            bulkMarcas.push({
+              type: 'MARCA',
+              elementId: marcaCatalog.id,
+              parentId: id,
+            });
+
+            const payloadMarcas = { elements: bulkMarcas };
+            const responseMarcas = await addDocElementBulk(
+              payloadMarcas,
+              currentSpecId,
+            );
+            console.log('bulk de marcas enviado com sucesso: ', responseMarcas);
+          }
+          iterator += 1;
+        }
+
+        setStep(step + 1);
+      } catch (err) {
+        console.error('Erro ao cadastrar materiais e marcas', err);
       }
     } else if (step < totalSteps) {
       setStep(step + 1);
@@ -398,20 +493,20 @@ const Especificacoes = () => {
       );
     }
 
-    if (ambienteAtual) {
-      return (
-        <Table
-          columns={['Item', 'Descrição']}
-          data={ambientesDetalhados[ambienteAtual] || []}
-          setData={(novaTabela) =>
-            setAmbientesDetalhados((prev) => ({
-              ...prev,
-              [ambienteAtual]: novaTabela,
-            }))
-          }
-        />
-      );
-    }
+    // if (ambienteAtual) {
+    //   return (
+    //     <Table
+    //       columns={['Item', 'Descrição']}
+    //       data={ambientesDetalhados[ambienteAtual] || []}
+    //       setData={(novaTabela) =>
+    //         setAmbientesDetalhados((prev) => ({
+    //           ...prev,
+    //           [ambienteAtual]: novaTabela,
+    //         }))
+    //       }
+    //     />
+    //   );
+    // }
 
     if (step === totalSteps - 1) {
       return (
