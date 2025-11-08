@@ -356,10 +356,14 @@ const Especificacoes = () => {
 
           for (const marcaNome of marcas) {
             const bulkMarcas = [];
-            const marcaCatalog = catalogMarcas.find((m) => m.name === marcaNome);
+            const marcaCatalog = catalogMarcas.find(
+              (m) => m.name === marcaNome,
+            );
 
             if (!marcaCatalog) {
-              console.warn(`Item "${marcaCatalog}" não encontrado no catálogo.`);
+              console.warn(
+                `Item "${marcaCatalog}" não encontrado no catálogo.`,
+              );
               continue;
             }
 
@@ -388,7 +392,7 @@ const Especificacoes = () => {
     }
   };
 
-  const initAmbiente = (nome) => {
+  const initAmbiente = async (nome) => {
     if (!ambientesDetalhados[nome]) {
       const todasAsLinhas = [...areaPrivativa, ...areaComum];
 
@@ -403,10 +407,15 @@ const Especificacoes = () => {
           .filter(Boolean),
       );
 
-      const novaTabela = itensSeparados.map((item) => ({
-        Item: item,
-        Descrição: '',
-      }));
+      const catalogItens = await getCatalogByResource('item');
+
+      const novaTabela = itensSeparados.map((item) => {
+        const itemCatalog = catalogItens.find((it) => it.name === item);
+        return {
+          Item: item,
+          Descrição: itemCatalog?.desc || '',
+        };
+      });
 
       setAmbientesDetalhados((prev) => ({
         ...prev,
@@ -430,7 +439,9 @@ const Especificacoes = () => {
 
   useEffect(() => {
     if (ambienteAtual && !ambientesDetalhados[ambienteAtual]) {
-      initAmbiente(ambienteAtual);
+      (async () => {
+        await initAmbiente(ambienteAtual);
+      })();
     }
   }, [ambienteAtual]);
 
@@ -493,20 +504,20 @@ const Especificacoes = () => {
       );
     }
 
-    // if (ambienteAtual) {
-    //   return (
-    //     <Table
-    //       columns={['Item', 'Descrição']}
-    //       data={ambientesDetalhados[ambienteAtual] || []}
-    //       setData={(novaTabela) =>
-    //         setAmbientesDetalhados((prev) => ({
-    //           ...prev,
-    //           [ambienteAtual]: novaTabela,
-    //         }))
-    //       }
-    //     />
-    //   );
-    // }
+    if (ambienteAtual) {
+      return (
+        <Table
+          columns={['Item', 'Descrição']}
+          data={ambientesDetalhados[ambienteAtual] || []}
+          setData={(novaTabela) =>
+            setAmbientesDetalhados((prev) => ({
+              ...prev,
+              [ambienteAtual]: novaTabela,
+            }))
+          }
+        />
+      );
+    }
 
     if (step === totalSteps - 1) {
       return (
