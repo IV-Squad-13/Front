@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import Table from '@/components/table/Table';
 import {
   startProcess,
-  addRawDocElement,
-  getAllEmpreendimentos,
+  updateSpecification,
+  getAllSpecifications,
+  addDocElementBulk,
 } from '@/services/SpecificationService';
 
 import { getCatalogByResource } from '@/services/CatalogService';
@@ -48,103 +49,350 @@ const Especificacoes = () => {
 
         if (response && response.id) {
           setEmpId(response.id);
-          setStep(step + 2); // pula para o passo 2 (erros por enquanto)
+          setStep(step + 1);
         }
       } catch (error) {
         console.error('Erro ao iniciar o processo:', error);
       }
-    }
-    
-    // else if (step === 1) {
-    //   if (!empId) {
-    //     console.error('id do empreendimento nao foi definido');
-    //     return;
-    //   }
+    } else if (step === 1) {
+      if (!empId) {
+        console.error('id do empreendimento nao foi definido');
+        return;
+      }
 
-    //   try {
-    //     const payload = { name: nomeEmpreendimento, desc: descricaoEmpreendimento, empId: empId };
-    //     const response = await createSpecification(payload);
-
-    //     if (response && response.id) {
-    //       setStep(step + 1);
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // }
-
-    else if (step === 2) {
       try {
-        const empreendimentos = await getAllEmpreendimentos();
+        const specs = await getAllSpecifications();
+        const spec = specs.find((s) => s.empreendimentoId == empId);
 
-        const emp = empreendimentos.find(
-          (e) => e.id === empId || e.id === Number(empId),
-        );
-        if (!emp) throw new Error(`Empreendimento ID ${empId} não encontrado.`);
-
-        const specId = emp.docs?.id;
-
-        const localPrivativo = emp.docs?.locais?.find(
-          (l) => l.local === 'UNIDADES_PRIVATIVAS',
-        );
-        const parentId = localPrivativo?.id;
-
-        if (!specId || !parentId) {
-          throw new Error('specId ou parentId não encontrados.');
-        }
-
-        const catalogoAmbientes = await getCatalogByResource('ambiente');
-
-        const normalize = (str) =>
-          str
-            ?.normalize('NFD')
-            ?.replace(/[\u0300-\u036f]/g, '')
-            ?.replace(/[^\w]/g, '')
-            ?.toLowerCase()
-            ?.trim();
-
-        const mapCatalogo = {};
-        catalogoAmbientes.forEach((item) => {
-          mapCatalogo[normalize(item.name)] = item.id;
-        });
-
-        const ambientesValidos = areaPrivativa
-          .filter((a) => a['Ambiente'])
-          .map((a) => {
-            const key = normalize(a['Ambiente']);
-            const catalogId = mapCatalogo[key];
-            return {
-              name: a['Ambiente'].trim(),
-              catalogId: catalogId || null,
-              parentId: parentId,
-              docType: 'AMBIENTE',
-              local: 'UNIDADES_PRIVATIVAS',
-            };
-          });
-
-        if (ambientesValidos.length === 0) {
-          console.warn('Nenhum ambiente válido encontrado para enviar.');
+        if (!spec) {
+          console.error('nao foi encontrado nenhum empreendimento com esse id');
           return;
         }
 
-        console.log('Criando ambientes:', ambientesValidos);
+        const payload = {
+          name: nomeEmpreendimento,
+          desc: descricaoEmpreendimento,
+          empId: empId,
+        };
+        const response = await updateSpecification(payload, spec.id);
 
-        for (const ambiente of ambientesValidos) {
-          await addRawDocElement(ambiente, specId);
-          console.log("Ambiente criado: ", ambiente.name);
+        if (response && response.id) {
+          setStep(step + 1);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (step === 2) {
+      try {
+        const specs = await getAllSpecifications();
+        const spec = specs.find((s) => s.empreendimentoId === empId);
+
+        if (!spec)
+          throw new Error(`Empreendimento ID ${empId} não encontrado.`);
+
+        const currentSpecId = spec.id;
+
+        const unidadePrivativa = spec.locais?.find(
+          (l) => l.local === 'UNIDADES_PRIVATIVAS',
+        );
+        const parentId = unidadePrivativa?.id;
+
+        if (!currentSpecId || !parentId) {
+          throw new Error('specId ou parentId não encontrados.');
         }
 
-        console.log('Ambientes criados');
+        const catalogAmbientes = await getCatalogByResource('ambiente');
+        const catalogItens = await getCatalogByResource('item');
+
+        const bulkAmbientes = [];
+
+        for (const linha of areaPrivativa) {
+          const nomeAmbiente = linha['Ambiente']?.trim();
+
+          if (!nomeAmbiente) continue;
+
+          const ambienteCatalog = catalogAmbientes.find(
+            (a) => a.name === nomeAmbiente,
+          );
+
+          if (!ambienteCatalog) {
+            console.warn('Ambiente nao encontrado: ', nomeAmbiente);
+            continue;
+          }
+
+          bulkAmbientes.push({
+            type: 'AMBIENTE',
+            elementId: ambienteCatalog.id,
+            parentId: parentId,
+          });
+        }
+
+        if (bulkAmbientes.length === 0) {
+          console.warn('nenhum ambiente para envio');
+          return;
+        }
+
+        const payloadAmbientes = { elements: bulkAmbientes };
+        const responseAmbientes = await addDocElementBulk(
+          payloadAmbientes,
+          currentSpecId,
+        );
+        console.log(
+          'bulk de ambientes enviado com sucesso: ',
+          responseAmbientes,
+        );
+
+        const ambientesIds = responseAmbientes.AMBIENTE.map(
+          (ambiente) => ambiente.id,
+        );
+
+        let iterator = 0;
+
+        for (const linha of areaPrivativa) {
+          const id = ambientesIds[iterator];
+          const itens =
+            linha['Item']
+              ?.split(';')
+              .map((i) => i.trim())
+              .filter(Boolean) || [];
+
+          for (const itemNome of itens) {
+            const bulkItens = [];
+            const itemCatalog = catalogItens.find((it) => it.name === itemNome);
+
+            if (!itemCatalog) {
+              console.warn(`Item "${itemNome}" não encontrado no catálogo.`);
+              continue;
+            }
+
+            bulkItens.push({
+              type: 'ITEM',
+              elementId: itemCatalog.id,
+              parentId: id,
+            });
+
+            const payloadItens = { elements: bulkItens };
+            const responseItens = await addDocElementBulk(
+              payloadItens,
+              currentSpecId,
+            );
+            console.log('bulk de itens enviado com sucesso: ', responseItens);
+          }
+          iterator += 1;
+        }
+
         setStep(step + 1);
       } catch (err) {
-        console.error('Erro ao criar ambientes', err);
+        console.error('Erro ao cadastrar área privativa', err);
+      }
+    } else if (step === 3) {
+      try {
+        const specs = await getAllSpecifications();
+        const spec = specs.find((s) => s.empreendimentoId === empId);
+
+        if (!spec)
+          throw new Error(`Empreendimento ID ${empId} não encontrado.`);
+
+        const currentSpecId = spec.id;
+
+        const unidadeComum = spec.locais?.find((l) => l.local === 'AREA_COMUM');
+        const parentId = unidadeComum?.id;
+
+        if (!currentSpecId || !parentId) {
+          throw new Error('specId ou parentId não encontrados.');
+        }
+
+        const catalogAmbientes = await getCatalogByResource('ambiente');
+        const catalogItens = await getCatalogByResource('item');
+
+        const bulkAmbientes = [];
+
+        for (const linha of areaComum) {
+          const nomeAmbiente = linha['Ambiente']?.trim();
+
+          if (!nomeAmbiente) continue;
+
+          const ambienteCatalog = catalogAmbientes.find(
+            (a) => a.name === nomeAmbiente,
+          );
+
+          if (!ambienteCatalog) {
+            console.warn('Ambiente nao encontrado: ', nomeAmbiente);
+            continue;
+          }
+
+          bulkAmbientes.push({
+            type: 'AMBIENTE',
+            elementId: ambienteCatalog.id,
+            parentId: parentId,
+          });
+        }
+
+        if (bulkAmbientes.length === 0) {
+          console.warn('nenhum ambiente para envio');
+          return;
+        }
+
+        const payloadAmbientes = { elements: bulkAmbientes };
+        const responseAmbientes = await addDocElementBulk(
+          payloadAmbientes,
+          currentSpecId,
+        );
+        console.log(
+          'bulk de ambientes enviado com sucesso: ',
+          responseAmbientes,
+        );
+
+        const ambientesIds = responseAmbientes.AMBIENTE.map(
+          (ambiente) => ambiente.id,
+        );
+
+        let iterator = 0;
+
+        for (const linha of areaComum) {
+          const id = ambientesIds[iterator];
+          const itens =
+            linha['Item']
+              ?.split(';')
+              .map((i) => i.trim())
+              .filter(Boolean) || [];
+
+          for (const itemNome of itens) {
+            const bulkItens = [];
+            const itemCatalog = catalogItens.find((it) => it.name === itemNome);
+
+            if (!itemCatalog) {
+              console.warn(`Item "${itemNome}" não encontrado no catálogo.`);
+              continue;
+            }
+
+            bulkItens.push({
+              type: 'ITEM',
+              elementId: itemCatalog.id,
+              parentId: id,
+            });
+
+            const payloadItens = { elements: bulkItens };
+            const responseItens = await addDocElementBulk(
+              payloadItens,
+              currentSpecId,
+            );
+            console.log('bulk de itens enviado com sucesso: ', responseItens);
+          }
+          iterator += 1;
+        }
+
+        setStep(step + 1);
+      } catch (err) {
+        console.error('Erro ao cadastrar área comum', err);
+      }
+    } else if (step === totalSteps - 1) {
+      try {
+        const specs = await getAllSpecifications();
+        const spec = specs.find((s) => s.empreendimentoId === empId);
+
+        if (!spec)
+          throw new Error(`Empreendimento ID ${empId} não encontrado.`);
+
+        const currentSpecId = spec.id;
+
+        if (!currentSpecId) {
+          throw new Error('specId não encontrados.');
+        }
+
+        const catalogMateriais = await getCatalogByResource('material');
+        const catalogMarcas = await getCatalogByResource('marca');
+
+        const bulkMateriais = [];
+
+        for (const linha of materiaisMarcas) {
+          const nomeMaterial = linha['Material']?.trim();
+
+          if (!nomeMaterial) continue;
+
+          const materialCatalog = catalogMateriais.find(
+            (m) => m.name === nomeMaterial,
+          );
+
+          if (!materialCatalog) {
+            console.warn('Ambiente nao encontrado: ', nomeMaterial);
+            continue;
+          }
+
+          bulkMateriais.push({
+            type: 'MATERIAL',
+            elementId: materialCatalog.id,
+          });
+        }
+
+        if (bulkMateriais.length === 0) {
+          console.warn('nenhum material para envio');
+          return;
+        }
+
+        const payloadMateriais = { elements: bulkMateriais };
+        const responseMateriais = await addDocElementBulk(
+          payloadMateriais,
+          currentSpecId,
+        );
+        console.log(
+          'bulk de materiais enviado com sucesso: ',
+          responseMateriais,
+        );
+
+        const materiaisId = responseMateriais.MATERIAL.map(
+          (material) => material.id,
+        );
+
+        let iterator = 0;
+
+        for (const linha of materiaisMarcas) {
+          const id = materiaisId[iterator];
+          const marcas =
+            linha['Marca']
+              ?.split(';')
+              .map((i) => i.trim())
+              .filter(Boolean) || [];
+
+          for (const marcaNome of marcas) {
+            const bulkMarcas = [];
+            const marcaCatalog = catalogMarcas.find(
+              (m) => m.name === marcaNome,
+            );
+
+            if (!marcaCatalog) {
+              console.warn(
+                `Item "${marcaCatalog}" não encontrado no catálogo.`,
+              );
+              continue;
+            }
+
+            bulkMarcas.push({
+              type: 'MARCA',
+              elementId: marcaCatalog.id,
+              parentId: id,
+            });
+
+            const payloadMarcas = { elements: bulkMarcas };
+            const responseMarcas = await addDocElementBulk(
+              payloadMarcas,
+              currentSpecId,
+            );
+            console.log('bulk de marcas enviado com sucesso: ', responseMarcas);
+          }
+          iterator += 1;
+        }
+
+        setStep(step + 1);
+      } catch (err) {
+        console.error('Erro ao cadastrar materiais e marcas', err);
       }
     } else if (step < totalSteps) {
       setStep(step + 1);
     }
   };
 
-  const initAmbiente = (nome) => {
+  const initAmbiente = async (nome) => {
     if (!ambientesDetalhados[nome]) {
       const todasAsLinhas = [...areaPrivativa, ...areaComum];
 
@@ -159,10 +407,15 @@ const Especificacoes = () => {
           .filter(Boolean),
       );
 
-      const novaTabela = itensSeparados.map((item) => ({
-        Item: item,
-        Descrição: '',
-      }));
+      const catalogItens = await getCatalogByResource('item');
+
+      const novaTabela = itensSeparados.map((item) => {
+        const itemCatalog = catalogItens.find((it) => it.name === item);
+        return {
+          Item: item,
+          Descrição: itemCatalog?.desc || '',
+        };
+      });
 
       setAmbientesDetalhados((prev) => ({
         ...prev,
@@ -186,7 +439,9 @@ const Especificacoes = () => {
 
   useEffect(() => {
     if (ambienteAtual && !ambientesDetalhados[ambienteAtual]) {
-      initAmbiente(ambienteAtual);
+      (async () => {
+        await initAmbiente(ambienteAtual);
+      })();
     }
   }, [ambienteAtual]);
 

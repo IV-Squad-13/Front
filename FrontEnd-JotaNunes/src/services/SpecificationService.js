@@ -2,22 +2,35 @@ import { API_URL } from '@/main';
 import { authFetch } from './AuthService';
 
 export const getAllSpecifications = async () => {
-  const data = await authFetch(`${API_URL}/editor/especificacao`);
+    const queryParams = new URLSearchParams({
+    loadEspecificacao: true,
+    loadMateriais: true,
+    loadMarcas: true,
+    loadLocais: true,
+    loadAmbientes: true,
+    loadItems: true,
+    loadNested: true,
+    loadPadrao: true,
+    loadUsers: true,
+  }).toString();
+
+  const data = await authFetch(`${API_URL}/editor/especificacao?${queryParams}`);
   return data;
 };
 
 export const getAllEmpreendimentos = async () => {
-  const queryParams = new URLSearchParams({
+    const queryParams = new URLSearchParams({
     loadEspecificacao: true,
     loadMateriais: true,
-    loadMarcas: false,
+    loadMarcas: true,
     loadLocais: true,
     loadAmbientes: true,
-    loadItems: false,
-    loadNested: false,
-    loadPadrao: false,
+    loadItems: true,
+    loadNested: true,
+    loadPadrao: true,
     loadUsers: true,
   }).toString();
+
 
   const data = await authFetch(`${API_URL}/editor/empreendimento?${queryParams}`);
   return data;
@@ -42,22 +55,13 @@ export const startProcess = async (data) => {
   return response;
 };
 
-export const createSpecification = async (data) => {
-  const defaultData = {
-    initType: 'AVULSO',
-  };
-
-  const payload = {
-    ...data,
-    ...defaultData,
-  };
-
-  const response = await authFetch(`${API_URL}/editor/especificacao/new`, {
-    method: 'POST',
+export const updateSpecification = async (data, id) => {
+  const response = await authFetch(`${API_URL}/editor/especificacao/${id}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(data),
   });
 
   return response;
