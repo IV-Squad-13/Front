@@ -38,7 +38,9 @@ const toArray = (maybe) => {
 
 // Buscar lista de recursos (padrões, ambientes, etc)
 export const getCatalogByResource = async (resource = 'padrao') => {
-  const response = await authFetch(`${API_URL}/catalogo/${resource}`, {
+  const query = new URLSearchParams({ ['loadAll']: true }).toString();
+
+  const response = await authFetch(`${API_URL}/catalogo/${resource}?${query}`, {
     method: 'GET',
   });
 
@@ -52,7 +54,9 @@ export const getCatalogByResource = async (resource = 'padrao') => {
 // ====================== Funções específicas ======================
 
 export const getAmbienteById = async (id) => {
-  const response = await authFetch(`${API_URL}/catalogo/ambiente/${id}`, {
+  const query = new URLSearchParams({ ['loadAll']: true }).toString();
+
+  const response = await authFetch(`${API_URL}/catalogo/ambiente/${id}?${query}`, {
     method: 'GET',
   });
 
@@ -69,7 +73,9 @@ export const getAmbienteById = async (id) => {
 };
 
 export const getMaterialById = async (id) => {
-  const response = await authFetch(`${API_URL}/catalogo/material/${id}`, {
+  const query = new URLSearchParams({ ['loadAll']: true }).toString();
+
+  const response = await authFetch(`${API_URL}/catalogo/material/${id}?${query}`, {
     method: 'GET',
   });
 
@@ -85,7 +91,9 @@ export const getMaterialById = async (id) => {
 };
 
 export const getItemById = async (id) => {
-  const response = await authFetch(`${API_URL}/catalogo/item/${id}`, {
+  const query = new URLSearchParams({ ['loadAll']: true }).toString();
+
+  const response = await authFetch(`${API_URL}/catalogo/item/${id}?${query}`, {
     method: 'GET',
   });
 
@@ -107,7 +115,9 @@ export const getItemById = async (id) => {
 };
 
 export const getMarcaById = async (id) => {
-  const response = await authFetch(`${API_URL}/catalogo/marca/${id}`, {
+  const query = new URLSearchParams({ ['loadAll']: true }).toString();
+
+  const response = await authFetch(`${API_URL}/catalogo/marca/${id}?${query}`, {
     method: 'GET',
   });
 
@@ -131,8 +141,10 @@ export const getMarcaById = async (id) => {
  * type: 'padrao' | 'ambiente' | 'material' | 'item' | 'marca' | outros
  */
 export const getCatalogItemById = async (type, id) => {
+  const query = new URLSearchParams({ ['loadAll']: true }).toString();
+
   // fallback: tentar buscar diretamente
-  const mainResponse = await authFetch(`${API_URL}/catalogo/${type}/${id}`, {
+  const mainResponse = await authFetch(`${API_URL}/catalogo/${type}/${id}?${query}`, {
     method: 'GET',
   });
 
