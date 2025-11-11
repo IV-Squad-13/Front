@@ -21,6 +21,7 @@ export const getItemTypes = async () => {
 };
 
 export const postCatalogByResource = async (resource, resourceData) => {
+  resourceData.isActive = true;
   const requiredFields = {
     item: ['name','type','desc'],
     ambiente: ['name', 'local'],
