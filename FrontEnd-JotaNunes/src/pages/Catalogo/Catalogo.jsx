@@ -23,6 +23,13 @@ const Catalogo = () => {
 
   const specs = ["padrao", "ambiente", "item", "material", "marca"]
 
+  const [refreshKey, setRefreshKey] = useState(0) 
+
+  // Function to increment the state, forcing a re-render and refetch
+  const forceRefresh = () => { 
+    setRefreshKey(prevKey => prevKey + 1)
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -37,7 +44,7 @@ const Catalogo = () => {
     }
 
     fetchData()
-  }, [activeButton])
+  }, [activeButton, refreshKey])
 
   useLayoutEffect(() => {
     const calculateItems = () => {
@@ -93,6 +100,7 @@ const Catalogo = () => {
 
   const handleSaveItem = (newItem) => {
     console.log("[v0] Novo item salvo:", newItem)
+    forceRefresh()
   }
 
   return (
@@ -146,7 +154,7 @@ const Catalogo = () => {
           Próximo
         </button>
       </div>
-      {isModalOpen && <AddModal activeSpec={activeButton} onSave={handleSaveItem} onClose={handleCloseModal} />}
+      {isModalOpen && <AddModal activeSpec={activeButton} onSave={handleSaveItem} onClose={handleCloseModal}/>}
     </div>
   )
 }

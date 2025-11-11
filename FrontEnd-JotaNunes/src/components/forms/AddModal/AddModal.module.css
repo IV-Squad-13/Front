@@ -74,6 +74,15 @@
   min-height: 100px;
 }
 
+.select{
+  color: var(--font_color-secondary);
+  background-color: transparent;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
 .textarea::placeholder {
   color: var(--cinza);
 }
