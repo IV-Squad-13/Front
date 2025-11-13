@@ -1,4 +1,3 @@
-// src/components/CatalogItemDetails/CatalogItemDetails.jsx
 import { useEffect, useState } from "react";
 import styles from "./CatalogItemDetails.module.css";
 import { getCatalogItemById } from "@/services/CatalogService.js";
@@ -15,7 +14,6 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
       try {
         setIsLoading(true);
         const data = await getCatalogItemById(type, item.id);
-        console.log("📦 Dados recebidos:", data);
         setDetails(data);
       } catch (err) {
         setError(err.message);
@@ -24,11 +22,17 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
       }
     };
 
-    console.log("📦 Item recebido no modal:", item);
     fetchDetails();
   }, [item, type]);
 
-  // --- 🔧 RENDERIZAÇÃO MAIS INTELIGENTE ---
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
   const renderList = (list, emptyMessage) => {
     if (!list || list.length === 0) {
       return <p>{emptyMessage}</p>;
@@ -37,7 +41,6 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
     return (
       <ul>
         {list.map((item, index) => {
-          // Caso seja uma relação material–marca (ex: marca: {...}, material: {...})
           if (item.marca && item.material) {
             return (
               <li key={index}>
@@ -47,7 +50,6 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
             );
           }
 
-          // Caso seja uma relação item–ambiente
           if (item.item && item.ambiente) {
             return (
               <li key={index}>
@@ -58,19 +60,16 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
             );
           }
 
-          // Caso tenha apenas nome
           if (item.name) {
             return <li key={index}>{item.name}</li>;
           }
 
-          // Caso o objeto seja um wrapper com "id" e outro nível de dados
           const innerObj =
             item?.marca || item?.material || item?.padrao || item?.item;
           if (innerObj && innerObj.name) {
             return <li key={index}>{innerObj.name}</li>;
           }
 
-          // Último fallback — mostra JSON se não houver nada legível
           return (
             <li key={index}>
               <pre style={{ whiteSpace: "pre-wrap" }}>
@@ -83,7 +82,6 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
     );
   };
 
-  // --- 🔍 RENDERIZA DETALHES ---
   const renderDetails = () => {
     if (!details) return null;
 
@@ -161,8 +159,14 @@ const CatalogItemDetails = ({ item, type, onClose }) => {
   };
 
   return (
-    <div className={styles.modal}>
-      <div className={styles.modalContent}>
+    <div
+      className={styles.modal}
+      onClick={onClose}
+    >
+      <div
+        className={styles.modalContent}
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className={styles.closeButton} onClick={onClose}>
           Fechar
         </button>
