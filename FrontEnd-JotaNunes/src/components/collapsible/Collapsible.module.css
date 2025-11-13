@@ -1,0 +1,55 @@
+.collapsible {
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  margin-top: 12px;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  width: 100%;
+  background: #f2f2f2;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.header:hover {
+  background: #e7e7e7;
+}
+
+/* Arrow Icon */
+.icon {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.icon.open {
+  transform: rotate(90deg);
+}
+
+/* Collapsible content animation */
+.content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+/* When open */
+.content.open {
+  max-height: 400px; /* you can adjust this if needed */
+}
+
+/* Inner content wrapper */
+.inner {
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}

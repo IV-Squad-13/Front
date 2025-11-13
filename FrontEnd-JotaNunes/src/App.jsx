@@ -7,6 +7,7 @@ import Historico from './pages/Historico/Historico';
 import Especificacoes from './pages/Especificacoes/Especificacoes';
 import Dashboard from './pages/Dashboard/Dashboard';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import ConsultaEmpreendimentos from './pages/ConsultaEmpreendimentos/ConsultaEmpreendimentos';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="historico" element={<Historico />} />
           <Route path="especificacoes" element={<Especificacoes />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="consulta-empreendimentos" element={<ConsultaEmpreendimentos />} />
         </Route>
       </Routes>
     </div>

@@ -1,36 +1,21 @@
 import { API_URL } from '@/main';
 import { authFetch } from './AuthService';
 
+export const searchSpecifications = async (searchParams) => {
+  const queryParams = new URLSearchParams({ ...searchParams, loadAll: true }).toString();
+
+  return await authFetch(`${API_URL}/editor/empreendimento/search?${queryParams}`);
+}
+
 export const getAllSpecifications = async () => {
-    const queryParams = new URLSearchParams({
-    loadEspecificacao: true,
-    loadMateriais: true,
-    loadMarcas: true,
-    loadLocais: true,
-    loadAmbientes: true,
-    loadItems: true,
-    loadNested: true,
-    loadPadrao: true,
-    loadUsers: true,
-  }).toString();
+  const queryParams = new URLSearchParams({ loadAll: true }).toString();
 
   const data = await authFetch(`${API_URL}/editor/especificacao?${queryParams}`);
   return data;
 };
 
 export const getAllEmpreendimentos = async () => {
-    const queryParams = new URLSearchParams({
-    loadEspecificacao: true,
-    loadMateriais: true,
-    loadMarcas: true,
-    loadLocais: true,
-    loadAmbientes: true,
-    loadItems: true,
-    loadNested: true,
-    loadPadrao: true,
-    loadUsers: true,
-  }).toString();
-
+  const queryParams = new URLSearchParams({ loadAll: true }).toString();
 
   const data = await authFetch(`${API_URL}/editor/empreendimento?${queryParams}`);
   return data;
