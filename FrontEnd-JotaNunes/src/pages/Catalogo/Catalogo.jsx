@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from "react"
 import ItemCard from "@/components/ItemCard/ItemCard"
 import styles from "./Catalogo.module.css"
-import { getCatalogByResource } from "@/services/CatalogService"
+import { getCatalogByResource, getCatalogSearch} from "@/services/CatalogService"
 import AddModal from "@/components/forms/AddModal/AddModal"
 
 const Catalogo = () => {
@@ -14,6 +14,7 @@ const Catalogo = () => {
   const [error, setError] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
+  const [selectedName, setSelectedName] = useState('');
   const [activeButton, setActiveButton] = useState("ambiente")
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -22,6 +23,12 @@ const Catalogo = () => {
   const itemRef = useRef(null)
 
   const specs = ["padrao", "ambiente", "item", "material", "marca"]
+
+  const [refreshKey, setRefreshKey] = useState(0) 
+
+  const forceRefresh = () => { 
+    setRefreshKey(prevKey => prevKey + 1)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +44,7 @@ const Catalogo = () => {
     }
 
     fetchData()
-  }, [activeButton])
+  }, [activeButton, refreshKey])
 
   useLayoutEffect(() => {
     const calculateItems = () => {
@@ -93,7 +100,30 @@ const Catalogo = () => {
 
   const handleSaveItem = (newItem) => {
     console.log("[v0] Novo item salvo:", newItem)
+    forceRefresh()
   }
+
+    const handleSearch = async (resourceData) => {
+    setIsLoading(true);
+    setError(null);
+  
+    try {
+      if (!resourceData) {
+        const data = await getCatalogByResource(activeButton);
+        setTotalPages(Math.ceil(data.length / itemsPerPage));
+        setSelectedName('');
+        return;
+      }
+  
+      const data = await getCatalogSearch(activeButton, resourceData);
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
+      setSelectedName(resourceData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+   };
 
   return (
     <div className={styles.container}>
@@ -103,7 +133,7 @@ const Catalogo = () => {
           <p className={styles.subtitle}>Gerencie os seus itens aqui</p>
         </div>
         <div className={styles.buttonsArea}>
-          <input placeholder="buscar" />
+          <input placeholder="buscar" onBlur={handleSearch}/>
           <button className={styles.addButton} onClick={handleOpenModal}>
             Adicionar
           </button>
@@ -146,7 +176,7 @@ const Catalogo = () => {
           Próximo
         </button>
       </div>
-      {isModalOpen && <AddModal activeSpec={activeButton} onSave={handleSaveItem} onClose={handleCloseModal} />}
+      {isModalOpen && <AddModal activeSpec={activeButton} onSave={handleSaveItem} onClose={handleCloseModal}/>}
     </div>
   )
 }
