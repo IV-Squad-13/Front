@@ -2,6 +2,15 @@ import styles from './Table.module.css';
 import SelectItemModal from '../forms/SelectItemModal/SelectItemModal';
 import { useState } from 'react';
 
+// Mapeamento de colunas que possuem recursos de catálogo na API
+const CATALOG_RESOURCE_MAP = {
+  'Ambiente': 'ambiente',
+  'Item': 'item',
+  'Material': 'material',
+  'Marca': 'marca',
+  'Padrão': 'padrao',
+};
+
 const Table = ({ columns, data, setData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -19,10 +28,14 @@ const Table = ({ columns, data, setData }) => {
   };
 
   const handleOpenModal = (title, rowIndex) => {
+    // Só abre o modal se a coluna tiver um recurso válido na API
+    if (!CATALOG_RESOURCE_MAP[title]) {
+      return;
+    }
+
     setIsModalOpen(true);
     setTitle(title);
     setActiveRowIndex(rowIndex);
-
   };
 
 const handleSelectedItems = (items, column) => {
@@ -60,20 +73,24 @@ const handleSelectedItems = (items, column) => {
         <tbody>
           {data.map((line, i) => (
             <tr key={i}>
-              {columns.map((column) => (
-                <td key={column}>
-                  <button
-                    className={styles.cellButton}
-                    onClick={() => handleOpenModal(column, i)}
-                  >
-                    <input
-                      type="text"
-                      value={line[column]}
-                      onChange={(e) => updateCell(i, column, e.target.value)}
-                    />
-                  </button>
-                </td>
-              ))}
+              {columns.map((column) => {
+                const hasResource = !!CATALOG_RESOURCE_MAP[column];
+                return (
+                  <td key={column}>
+                    <button
+                      className={styles.cellButton}
+                      onClick={() => handleOpenModal(column, i)}
+                      style={{ cursor: hasResource ? 'pointer' : 'default' }}
+                    >
+                      <input
+                        type="text"
+                        value={line[column]}
+                        onChange={(e) => updateCell(i, column, e.target.value)}
+                      />
+                    </button>
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
@@ -84,6 +101,7 @@ const handleSelectedItems = (items, column) => {
       {isModalOpen && (
         <SelectItemModal
           header={title}
+          resource={CATALOG_RESOURCE_MAP[title]}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSelectedItems}
         />

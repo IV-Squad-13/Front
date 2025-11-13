@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import styles from './SelectItemModal.module.css';
 import { getCatalogByResource } from '@/services/CatalogService';
 
-const SelectItemModal = ({ header, onClose, onSave }) => {
+const SelectItemModal = ({ header, resource: resourceType, onClose, onSave }) => {
   const [resource, setResource] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     const fetchResource = async () => {
       try {
-        const data = await getCatalogByResource(header.toLowerCase());
+        const data = await getCatalogByResource(resourceType);
         setResource(data);
       } catch (err) {
         console.error('Erro ao buscar recurso: ', err);
       }
     };
     fetchResource();
-  }, [header]);
+  }, [resourceType]);
 
   const toggleItem = (item) => {
     setSelectedItems((prev) =>
