@@ -1,14 +1,37 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styles from "./AddModal.module.css"
 import Input from "@/components/input/Input"
+import {postCatalogByResource, getItemTypes} from "@/services/CatalogService"
 
-const AddModal = ({ activeSpec, onSave, onClose }) => {
+const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
   const [itemData, setItemData] = useState({
     name: "",
     desc: "",
+    type: "",
+    local: ""
   })
+
+  const [itemTypes, setItemTypes] = useState([])
+  const [isLoadingTypes, setIsLoadingTypes] = useState(false)
+
+  useEffect(() => {
+    if (activeSpec === 'item') {
+      const fetchTypes = async () => {
+        setIsLoadingTypes(true)
+        try {
+          const data = await getItemTypes() 
+          setItemTypes(data)
+        } catch (error) {
+          console.error("Erro ao buscar tipos de item:", error)
+        } finally {
+          setIsLoadingTypes(false)
+        }
+      }
+      fetchTypes()
+    }
+  }, [activeSpec])
 
   const handleChange = (e) => {
     setItemData({
@@ -23,16 +46,24 @@ const AddModal = ({ activeSpec, onSave, onClose }) => {
       alert("Por favor, preencha o nome do item")
       return
     }
+    if (activeSpec === "ambiente" && !itemData.local) {
+        alert("Por favor, selecione a Área")
+        return
+    }
+    if (activeSpec === "item" && !itemData.type) {
+        alert("Por favor, selecione o Tipo de item")
+        return
+    }
 
     try {
-      // Aqui você chamará o serviço para adicionar o item
-      // const newItem = await addCatalogItem(activeSpec, itemData);
+      const newItem = await postCatalogByResource(activeSpec, itemData);
       console.log("[v0] Adicionando item:", { spec: activeSpec, data: itemData })
 
-      onSave(itemData)
+      onSave(newItem)
       onClose()
     } catch (error) {
       console.error("Erro ao adicionar item: ", error)
+      alert(`Falha ao adicionar o item. Por favor, tente novamente. Detalhes: ${error.message}`);
     }
   }
 
@@ -56,6 +87,25 @@ const AddModal = ({ activeSpec, onSave, onClose }) => {
             />
           </div>
 
+          {(activeSpec === "ambiente") &&(
+            <div className={styles.inputGroup}>
+              <label htmlFor="areaLabel" className={styles.label}>
+                Área
+              </label>
+              <select 
+                id="local"
+                name="local"
+                className={styles.select} 
+                value={itemData.local || ''} 
+                onChange={handleChange}
+              >
+                <option value="">Selecionar...</option>
+                <option value="UNIDADES_PRIVATIVAS">Unidade Privativa</option>
+                <option value="AREA_COMUM">Área Comum</option>
+              </select>
+            </div>
+          )}
+
           {activeSpec === "item" && (
             <div className={styles.inputGroup}>
               <label htmlFor="desc" className={styles.label}>
@@ -70,6 +120,24 @@ const AddModal = ({ activeSpec, onSave, onClose }) => {
                 className={styles.textarea}
                 rows={4}
               />
+              {isLoadingTypes ? (
+                <p>Carregando tipos de item...</p>
+              ) : (
+                <select
+                  name="type"
+                  id="type"
+                  value={itemData.type}
+                  onChange={handleChange}
+                  className={styles.select}
+                >
+                  <option value="">Selecione o Tipo</option>
+                  {itemTypes.map((type) => (
+                    <option key={type.type} value={type.type}>
+                      {type.name} 
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           )}
         </div>
