@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from "react"
 import ItemCard from "@/components/ItemCard/ItemCard"
 import styles from "./Catalogo.module.css"
-import { getCatalogByResource } from "@/services/CatalogService"
+import { getCatalogByResource, getCatalogSearch} from "@/services/CatalogService"
 import AddModal from "@/components/forms/AddModal/AddModal"
 
 const Catalogo = () => {
@@ -14,6 +14,7 @@ const Catalogo = () => {
   const [error, setError] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
+  const [selectedName, setSelectedName] = useState('');
   const [activeButton, setActiveButton] = useState("ambiente")
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -25,7 +26,6 @@ const Catalogo = () => {
 
   const [refreshKey, setRefreshKey] = useState(0) 
 
-  // Function to increment the state, forcing a re-render and refetch
   const forceRefresh = () => { 
     setRefreshKey(prevKey => prevKey + 1)
   }
@@ -103,6 +103,28 @@ const Catalogo = () => {
     forceRefresh()
   }
 
+    const handleSearch = async (resourceData) => {
+    setIsLoading(true);
+    setError(null);
+  
+    try {
+      if (!resourceData) {
+        const data = await getCatalogByResource(activeButton);
+        setTotalPages(Math.ceil(data.length / itemsPerPage));
+        setSelectedName('');
+        return;
+      }
+  
+      const data = await getCatalogSearch(activeButton, resourceData);
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
+      setSelectedName(resourceData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+   };
+
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
@@ -111,7 +133,7 @@ const Catalogo = () => {
           <p className={styles.subtitle}>Gerencie os seus itens aqui</p>
         </div>
         <div className={styles.buttonsArea}>
-          <input placeholder="buscar" />
+          <input placeholder="buscar" onBlur={handleSearch}/>
           <button className={styles.addButton} onClick={handleOpenModal}>
             Adicionar
           </button>

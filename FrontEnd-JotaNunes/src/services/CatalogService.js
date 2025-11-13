@@ -15,6 +15,20 @@ export const getCatalogByResource = async (resource = 'ambiente') => {
   return data;
 };
 
+export const getCatalogSearch = async (resource, resourceData) => {
+  const response = await authFetch(`${API_URL}/catalogo/${resource}/name/${resourceData}`, {
+    method: 'GET'
+  });
+
+  const data = response;
+
+  if (!response) {
+    throw new Error(data.error || `Falha ao buscar dados: ${resource}`);
+  }
+
+  return data;
+};
+
 export const getItemTypes = async () => {
   const data = await getCatalogByResource('item-types');
   return data;
