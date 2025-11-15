@@ -1,0 +1,46 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input,
+.select {
+  padding: 0.75rem 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--font_color-secondary);
+
+  border: 1px solid var(--cinza);
+  border-radius: 8px;
+  background: transparent;
+
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--font_color-secondary);
+}
+
+label {
+  color: var(--font_color-secondary);
+  font-weight: 500;
+}
+
+.select {
+  cursor: pointer;
+}
+
+.option {
+  background: var(--background-color);
+  color: var(--font_color-secondary);
+}

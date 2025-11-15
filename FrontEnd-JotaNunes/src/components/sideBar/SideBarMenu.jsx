@@ -47,6 +47,14 @@ const items = [
     path: '/home/usuarios',
     adminOnly: true,
   },
+  {
+    id: 6,
+    icon: especificacoes,
+    text: 'Consulta Empreendimentos',
+    alt: 'Empreendimento',
+    path: '/home/consulta-empreendimentos',
+    adminOnly: true,
+  }
 ];
 
 const SideBarMenu = ({ onTitleChange }) => {

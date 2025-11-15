@@ -1,26 +1,30 @@
-"use client"
+"use client";
 
 import { useState, useEffect, useRef, useLayoutEffect } from "react"
 import ItemCard from "@/components/ItemCard/ItemCard"
 import styles from "./Catalogo.module.css"
 import { getCatalogByResource, getCatalogSearch} from "@/services/CatalogService"
 import AddModal from "@/components/forms/AddModal/AddModal"
+import CatalogItemDetails from "@/components/CatalogItemDetails/CatalogItemDetails";
 
 const Catalogo = () => {
-  const [spec, setSpec] = useState([])
-  const [specsPaginados, setSpecsPaginados] = useState([])
+  const [spec, setSpec] = useState([]);
+  const [specsPaginados, setSpecsPaginados] = useState([]);
+
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
   const [selectedName, setSelectedName] = useState('');
-  const [activeButton, setActiveButton] = useState("ambiente")
+  const [activeButton, setActiveButton] = useState("padrao")
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [itemsPerPage, setItemsPerPage] = useState(1)
-  const containerRef = useRef(null)
-  const itemRef = useRef(null)
+  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const containerRef = useRef(null);
+  const itemRef = useRef(null);
 
   const specs = ["padrao", "ambiente", "item", "material", "marca"]
 
@@ -32,76 +36,78 @@ const Catalogo = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const data = await getCatalogByResource(activeButton)
-        setSpec(data)
+        const data = await getCatalogByResource(activeButton);
+        setSpec(data);
       } catch (err) {
-        setError(err.message)
+        console.error("Erro ao buscar dados:", err);
+        setError(err.message);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [activeButton, refreshKey])
+    fetchData();
+  }, [activeButton, refreshKey]);
 
+  // 🔹 Define quantos itens cabem na tela
   useLayoutEffect(() => {
     const calculateItems = () => {
       if (containerRef.current && itemRef.current) {
-        const containerHeight = containerRef.current.clientHeight
-        const itemHeight = itemRef.current.offsetHeight
-        const count = Math.max(1, Math.floor(containerHeight / itemHeight))
-        setItemsPerPage(count)
+        const containerHeight = containerRef.current.clientHeight;
+        const itemHeight = itemRef.current.offsetHeight;
+        const count = Math.max(1, Math.floor(containerHeight / itemHeight));
+        setItemsPerPage(count);
       }
-    }
+    };
 
     if (spec.length > 0) {
-      calculateItems()
+      calculateItems();
     }
 
-    const resizeObserver = new ResizeObserver(calculateItems)
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current)
-    }
-    return () => resizeObserver.disconnect()
-  }, [spec])
+    const resizeObserver = new ResizeObserver(calculateItems);
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
+  }, [spec]);
 
+  // 🔹 Paginação
   useEffect(() => {
-    const paginatedData = spec.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    setSpecsPaginados(paginatedData)
-    setTotalPages(Math.ceil(spec.length / itemsPerPage))
-  }, [currentPage, spec, itemsPerPage])
+    const paginatedData = spec.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+    setSpecsPaginados(paginatedData);
+    setTotalPages(Math.ceil(spec.length / itemsPerPage));
+  }, [currentPage, spec, itemsPerPage]);
 
+  // 🔹 Troca de aba (padrão, ambiente, etc.)
   const handleSpecChange = (newSpec) => {
-    setActiveButton(newSpec)
-    setCurrentPage(1)
-  }
+    setActiveButton(newSpec);
+    setCurrentPage(1);
+  };
 
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((currentPage) => currentPage + 1)
-    }
-  }
+    if (currentPage < totalPages) setCurrentPage((p) => p + 1);
+  };
 
   const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((currentPage) => currentPage - 1)
-    }
-  }
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
+  };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-  }
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const handleSaveItem = (newItem) => {
-    console.log("[v0] Novo item salvo:", newItem)
+    console.log("[v0] Novo item salvo:", newItem);
+  };
+
+  // 🔹 Ao clicar em um item, abre o modal de detalhes
+  const handleOpenDetails = (item) => {
+    setSelectedItem(item);
+    setIsDetailsOpen(true);
     forceRefresh()
-  }
+  };
 
     const handleSearch = async (resourceData) => {
     setIsLoading(true);
@@ -133,21 +139,23 @@ const Catalogo = () => {
           <p className={styles.subtitle}>Gerencie os seus itens aqui</p>
         </div>
         <div className={styles.buttonsArea}>
-          <input placeholder="buscar" onBlur={handleSearch}/>
+          <input placeholder="Buscar" onBlur={handleSearch}/>
           <button className={styles.addButton} onClick={handleOpenModal}>
             Adicionar
           </button>
-          {specs.map((spec) => (
+          {specs.map((specType) => (
             <button
-              key={spec}
-              onClick={() => handleSpecChange(spec)}
-              className={activeButton === spec ? styles.activeButton : ""}
+              key={specType}
+              onClick={() => handleSpecChange(specType)}
+              className={activeButton === specType ? styles.activeButton : ""}
             >
-              {spec.charAt(0).toUpperCase() + spec.slice(1)}
+              {specType.charAt(0).toUpperCase() + specType.slice(1)}
             </button>
           ))}
         </div>
       </div>
+
+      {/* 🔹 Área dos itens */}
       <div className={styles.itemsArea} ref={containerRef}>
         {isLoading ? (
           <p>Carregando itens...</p>
@@ -157,7 +165,10 @@ const Catalogo = () => {
           <ul>
             {specsPaginados.map((item, index) => (
               <li key={item.id} ref={index === 0 ? itemRef : null}>
-                <ItemCard text={item.name} />
+                <ItemCard
+                  text={item.name}
+                  onClick={() => handleOpenDetails(item)}
+                />
               </li>
             ))}
           </ul>
@@ -165,6 +176,8 @@ const Catalogo = () => {
           <p>Nenhum item encontrado para "{activeButton}".</p>
         )}
       </div>
+
+      {/* 🔹 Paginação */}
       <div className={styles.paginationArea}>
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
           Anterior
@@ -176,9 +189,26 @@ const Catalogo = () => {
           Próximo
         </button>
       </div>
-      {isModalOpen && <AddModal activeSpec={activeButton} onSave={handleSaveItem} onClose={handleCloseModal}/>}
-    </div>
-  )
-}
 
-export default Catalogo
+      {/* 🔹 Modal de Adição */}
+      {isModalOpen && (
+        <AddModal
+          activeSpec={activeButton}
+          onSave={handleSaveItem}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {/* 🔹 Modal de Detalhes */}
+      {isDetailsOpen && selectedItem && (
+        <CatalogItemDetails
+          type={activeButton} // tipo: padrao, ambiente, etc
+          item={selectedItem} // item selecionado
+          onClose={() => setIsDetailsOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Catalogo;

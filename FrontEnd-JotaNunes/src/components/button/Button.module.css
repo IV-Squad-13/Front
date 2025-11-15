@@ -1,20 +1,32 @@
 .button {
-    width: 100%;
-    padding: 1rem; 
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s, opacity 0.2s;
-    text-align: center;
-  }
+  width: 100%;
+  padding: 1rem; 
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+  text-align: center;
+}
   
-  .primary {
-    background-color: var(--vermelho);
-    color: #fff;
-  }
+.primary {
+  background-color: var(--vermelho);
+  color: #fff;
+}
   
-  .primary:hover:not(:disabled) {
-    background-color: #c62020; 
-  }
- 
+.primary:hover:not(:disabled) {
+  background-color: #c62020; 
+}
+
+.header {
+  width: auto;
+  background-color: var(--vermelho);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  transition: all 0.2s ease-in-out;
+}
+
+.header:hover:not(:disabled) {
+  background-color: #c62020; 
+}

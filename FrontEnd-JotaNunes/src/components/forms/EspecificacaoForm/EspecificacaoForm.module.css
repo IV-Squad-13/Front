@@ -1,0 +1,39 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.inputArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.inputArea label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--font_color-secondary);
+}
+
+.inputArea input,
+.inputArea textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--cinza);
+  border-radius: 8px;
+  background-color: transparent;
+  color: var(--font_color-secondary);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.inputArea textarea {
+  resize: none;
+  min-height: 10rem;
+}
+
+.inputArea input:focus,
+.inputArea textarea:focus {
+  outline: none;
+  border-color: var(--font_color-secondary);
+}

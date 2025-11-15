@@ -130,9 +130,9 @@ const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
                   onChange={handleChange}
                   className={styles.select}
                 >
-                  <option value="">Selecione o Tipo</option>
+                  <option value="" style={styles.option}>Selecione o Tipo</option>
                   {itemTypes.map((type) => (
-                    <option key={type.type} value={type.type}>
+                    <option key={type.type} value={type.type} style={styles.option}>
                       {type.name} 
                     </option>
                   ))}
