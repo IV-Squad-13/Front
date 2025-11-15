@@ -5,6 +5,7 @@ import Button from '@/components/button/Button';
 import Input from '@/components/input/Input';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -31,6 +32,8 @@ const LoginForm = () => {
     }
   };
 
+  console.log(useTheme());
+
   return (
     <div className={styles.formContainer}>
       <img src={Logo} alt="Logo da empresa Jotanunes" className={styles.logo} />
@@ -44,6 +47,7 @@ const LoginForm = () => {
           placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          defaultcolor={true}
         />
         <Input
           type="password"
@@ -51,6 +55,7 @@ const LoginForm = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          defaultcolor={true}
         />
         <p className={styles.error}>{error}</p>
 

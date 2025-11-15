@@ -1,7 +1,7 @@
 import { API_URL } from '@/main';
 import { authFetch } from './AuthService';
 
-export const searchSpecifications = async (searchParams) => {
+export const searchEmpreendimentos = async (searchParams) => {
   const queryParams = new URLSearchParams({ ...searchParams, loadAll: true }).toString();
 
   return await authFetch(`${API_URL}/editor/empreendimento/search?${queryParams}`);
@@ -20,6 +20,12 @@ export const getAllEmpreendimentos = async () => {
   const data = await authFetch(`${API_URL}/editor/empreendimento?${queryParams}`);
   return data;
 };
+
+export const getEmpreendimentoById = async (id) => {
+  const queryParams = new URLSearchParams({ loadAll: true }).toString();
+
+  return await authFetch(`${API_URL}/editor/empreendimento/${id}?${queryParams}`);
+}
 
 
 export const startProcess = async (data) => {

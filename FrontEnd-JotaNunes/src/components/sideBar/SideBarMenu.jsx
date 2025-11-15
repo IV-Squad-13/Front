@@ -49,9 +49,9 @@ const items = [
   },
   {
     id: 6,
-    icon: users,
-    text: 'Usuários',
-    alt: 'usuários',
+    icon: especificacoes,
+    text: 'Empreendimentos (Nova Especificações)',
+    alt: 'Empreendimento',
     path: '/home/consulta-empreendimentos',
     adminOnly: true,
   }

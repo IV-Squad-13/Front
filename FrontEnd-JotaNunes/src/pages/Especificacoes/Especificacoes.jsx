@@ -95,9 +95,10 @@ const Especificacoes = () => {
         const unidadePrivativa = spec.locais?.find(
           (l) => l.local === 'UNIDADES_PRIVATIVAS',
         );
+
         const parentId = unidadePrivativa?.id;
 
-        if (!currentSpecId || !parentId) {
+        if (!currentSpecId) {
           throw new Error('specId ou parentId não encontrados.');
         }
 
