@@ -56,3 +56,9 @@
 .navLink:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+.navName {
+  flex: 1;
+  padding: 0 0.4rem;
+  font-weight: bold;
+}

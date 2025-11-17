@@ -1,47 +1,67 @@
 import React, { useEffect, useState, useMemo } from "react";
 import EmpreendimentoForm from "@/components/forms/EmpreendimentoForm/EmpreendimentoForm";
 import EspecificacaoForm from "@/components/forms/EspecificacaoForm/EspecificacaoForm";
-import { getEmpreendimentoById, startProcess } from "@/services/SpecificationService";
+import {
+    getEmpreendimentoById,
+    startProcess,
+    updateEmpreendimento
+} from "@/services/SpecificationService";
+
 import styles from "./Empreendimento.module.css";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const Empreendimento = () => {
     const { id } = useParams();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [empreendimento, setEmpreendimento] = useState(null);
+    const [empreendimento, setEmpreendimento] = useState({ name: "", init: "", creatorId: user.id });
     const [loading, setLoading] = useState(false);
-
-    const [title, setTitle] = useState("");
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
-
     const [currentStep, setCurrentStep] = useState(0);
+    const [empId, setEmpId] = useState(id || null);
 
-    const stepStore = useMemo(() => ({
-        0: [EmpreendimentoForm, "Bem vindo ao cadastro de Empreendimentos!"],
-        1: [EspecificacaoForm, "Insira aqui os dados da nova Especificação"],
-    }), []);
+    const handleEmpSubmit = async () => {
+        try {
+            if (!empId) {
+                console.log(empreendimento);
+                const created = await startProcess(empreendimento);
+                setEmpId(created.id);
+            } else {
+                await updateEmpreendimento(empId, empreendimento);
+            }
+        } catch (error) {
+            console.error("Erro ao salvar empreendimento", error);
+        }
+    };
+
+    const handleSpecSubmit = async (name, desc) => {
+    };
+
+    const stepStore = useMemo(
+        () => ({
+            0: [
+                EmpreendimentoForm,
+                "Bem vindo ao cadastro de Empreendimentos!",
+                handleEmpSubmit
+            ],
+            1: [
+                EspecificacaoForm,
+                "Insira aqui os dados da nova Especificação",
+                handleSpecSubmit
+            ]
+        }),
+        [empreendimento, handleEmpSubmit]
+    );
 
     const StepComponent = stepStore[currentStep][0];
     const totalSteps = Object.keys(stepStore).length - 1;
 
     useEffect(() => {
         if (id) {
-            loadEmpreendimento();
-        } else {
-            resetForm();
+            loadEmpreendimento(id);
         }
     }, [id]);
-
-    const resetForm = () => {
-        setEmpreendimento(null);
-        setTitle("");
-        setName("");
-        setDesc("");
-        setCurrentStep(0);
-    };
 
     const loadEmpreendimento = async () => {
         setLoading(true);
@@ -50,13 +70,15 @@ const Empreendimento = () => {
 
             if (!emp) throw new Error("Not found");
 
-            setEmpreendimento(emp);
-            setTitle(emp?.title || "");
-            setName(emp?.name || "");
-            setDesc(emp?.desc || "");
+            setEmpreendimento({
+                ...emp,
+                name: emp.name || "",
+                init: emp.init || "",
+            });
+
+            setEmpId(emp.id);
         } catch (error) {
             console.error("Nenhum Empreendimento encontrado", error);
-            resetForm();
         } finally {
             setLoading(false);
         }
@@ -66,15 +88,15 @@ const Empreendimento = () => {
         if (currentStep === 0) {
             return navigate(`/home/consulta-empreendimentos`);
         }
-
-        if (currentStep > 0) setCurrentStep((s) => s - 1);
+        setCurrentStep((s) => s - 1);
     };
 
     const handleAvancar = async () => {
+        const submitFn = stepStore[currentStep][2];
+        await submitFn();
+
         if (currentStep < totalSteps) {
             setCurrentStep((s) => s + 1);
-        } else {
-            await startProcess();
         }
     };
 
@@ -96,36 +118,20 @@ const Empreendimento = () => {
             </div>
 
             <div className={styles.mainArea}>
-                <StepComponent
-                    title={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    name={name}
-                    onNameChange={(e) => setName(e.target.value)}
-                    desc={desc}
-                    onDescChange={(e) => setDesc(e.target.value)}
-                />
+                <StepComponent emp={empreendimento} setEmp={setEmpreendimento} />
             </div>
 
             <div className={styles.buttonsArea}>
-                <button
-                    onClick={voltar}
-                    className={styles.button}
-                >
+                <button onClick={voltar} className={styles.button}>
                     Voltar
                 </button>
 
                 {currentStep < totalSteps ? (
-                    <button
-                        onClick={handleAvancar}
-                        className={styles.button}
-                    >
+                    <button onClick={handleAvancar} className={styles.button}>
                         Avançar
                     </button>
                 ) : (
-                    <button
-                        className={styles.button}
-                        onClick={handleFinish}
-                    >
+                    <button onClick={handleFinish} className={styles.button}>
                         Finalizar
                     </button>
                 )}

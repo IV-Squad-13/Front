@@ -1,40 +1,99 @@
 import { useState } from "react";
 import styles from "./EmpreendimentoForm.module.css";
+import SearchBar from "@/components/searchBar/SearchBar";
+import { searchEspecificacao } from "@/services/SpecificationService";
+import { getCatalogSearch } from "@/services/CatalogService";
 
-const EmpreendimentoForm = ({ title, onChange, creationType, onCreationTypeChange }) => {
-    const creationOptions = ["PADRAO", "IMPORT", "AVULSO"];
+const EmpreendimentoForm = ({ emp, setEmp }) => {
+    const initOptions = ["PADRAO", "IMPORT", "AVULSO"];
+
+    const [results, setResults] = useState([]);
+
+    const handleSearch = async (init, query) => {
+        const trimmed = query.trim();
+        if (!trimmed) return;
+
+        try {
+            let response = [];
+
+            if (init === "IMPORT") {
+                response = await searchEspecificacao({ name: trimmed });
+            } else if (init === "PADRAO") {
+                response = await getCatalogSearch("padrao", { name: trimmed });
+            }
+
+            setResults(
+                response?.map((r) => ({
+                    label: r.name || r.label || r.titulo || "Item",
+                    ...r
+                })) || []
+            );
+        } catch (err) {
+            console.error("Erro ao buscar:", err);
+            setResults([]);
+        }
+    };
+
+    const handleSelect = (item) => {
+        setEmp({ ...emp });
+
+        if (emp.init === "PADRAO") {
+            setEmp({ ...emp, padraoId: item.id });
+        } else if (emp.init === "IMPORT") {
+            setEmp({ ...emp, docImportId: item.id });
+        }
+    };
 
     return (
         <div className={styles.formContainer}>
-            
             <div className={styles.inputGroup}>
-                <label htmlFor="title">Nome do Empreendimento</label>
+                <label htmlFor="name">Nome do Empreendimento</label>
                 <input
-                    id="title"
+                    id="name"
                     type="text"
-                    value={title}
-                    onChange={onChange}
+                    value={emp.name}
+                    onChange={(e) => setEmp({ ...emp, name: e.target.value })}
                     placeholder="Digite o nome..."
                     className={styles.input}
                 />
             </div>
 
             <div className={styles.inputGroup}>
-                <label htmlFor="creationType">Tipo de Criação</label>
+                <label htmlFor="initType">Tipo de Inicialização</label>
                 <select
-                    id="creationType"
-                    value={creationType}
-                    onChange={onCreationTypeChange}
+                    id="initType"
+                    value={emp.init}
+                    onChange={(e) => {
+                        setEmp({ ...emp, init: e.target.value });
+                        setResults([]);
+                    }}
                     className={styles.select}
+                    disabled={emp.id && emp.init}
                 >
-                    <option className={styles.option} value="">Selecione...</option>
-                    {creationOptions.map((opt) => (
-                        <option className={styles.option} key={opt} value={opt}>
+                    <option value="">Selecione...</option>
+                    {initOptions.map((opt) => (
+                        <option key={opt} value={opt}>
                             {opt}
                         </option>
                     ))}
                 </select>
             </div>
+
+            {emp.init !== "AVULSO" && emp.init && (
+                <SearchBar
+                    title={`Referência para ${emp.init}`}
+                    onSearch={(query) => handleSearch(emp.init, query)}
+                    onSelect={handleSelect}
+                    displayDropDown={true}
+                    displayButton={false}
+                    defaultValue={
+                        emp.init === "PADRAO"
+                            ? emp.padrao?.name ?? emp.padrao?.label ?? ""
+                            : emp.refDoc?.name ?? emp.refDoc?.label ?? ""
+                    }
+                    results={results}
+                />
+            )}
         </div>
     );
 };

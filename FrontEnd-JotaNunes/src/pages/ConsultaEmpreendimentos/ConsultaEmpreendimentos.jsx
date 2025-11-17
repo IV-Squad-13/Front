@@ -67,9 +67,10 @@ const ConsultaEmpreendimentos = () => {
                     <SearchBar
                         title="Buscar Empreendimentos"
                         onSearch={handleSearch}
+                        displayDropDown={false}
                         displayButton={true}
                     />
-
+                    
                     <Button
                         type="button"
                         onClick={() => selectEmpreendimento(null)}
