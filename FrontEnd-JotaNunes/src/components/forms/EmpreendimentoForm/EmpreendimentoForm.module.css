@@ -40,7 +40,7 @@ label {
   cursor: pointer;
 }
 
-.option {
+option {
   background: var(--background-color);
   color: var(--font_color-secondary);
 }

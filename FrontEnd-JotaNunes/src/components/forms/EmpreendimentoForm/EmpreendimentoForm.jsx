@@ -24,7 +24,7 @@ const EmpreendimentoForm = ({ emp, setEmp }) => {
 
             setResults(
                 response?.map((r) => ({
-                    label: r.name || r.label || r.titulo || "Item",
+                    label: r.name,
                     ...r
                 })) || []
             );
@@ -88,8 +88,8 @@ const EmpreendimentoForm = ({ emp, setEmp }) => {
                     displayButton={false}
                     defaultValue={
                         emp.init === "PADRAO"
-                            ? emp.padrao?.name ?? emp.padrao?.label ?? ""
-                            : emp.refDoc?.name ?? emp.refDoc?.label ?? ""
+                            ? emp.padrao?.name ?? ""
+                            : emp.refDoc?.name ?? ""
                     }
                     results={results}
                 />

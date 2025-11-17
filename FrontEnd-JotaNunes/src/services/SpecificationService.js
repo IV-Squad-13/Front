@@ -25,8 +25,8 @@ export const getAllEmpreendimentos = async () => {
   return data;
 };
 
-export const getEmpreendimentoById = async (id) => {
-  const queryParams = new URLSearchParams({ loadAll: true }).toString();
+export const getEmpreendimentoById = async (id, docLoadParams) => {
+  const queryParams = new URLSearchParams({ loadAll: true, ...docLoadParams }).toString();
 
   return await authFetch(`${API_URL}/editor/empreendimento/${id}?${queryParams}`);
 }
@@ -43,8 +43,8 @@ export const startProcess = async (data) => {
   return response;
 };
 
-export const updateEmpreendimento = async (id, data) => {
-  const queryParams = new URLSearchParams({ loadAll: true }).toString();
+export const updateEmpreendimento = async (id, data, docLoadParams) => {
+  const queryParams = new URLSearchParams({ loadAll: true, ...docLoadParams }).toString();
 
   const response = await authFetch(`${API_URL}/editor/empreendimento/${id}?${queryParams}`, {
     method: 'PUT',

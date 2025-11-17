@@ -1,82 +1,59 @@
 import React, { useEffect, useState, useMemo } from "react";
 import EmpreendimentoForm from "@/components/forms/EmpreendimentoForm/EmpreendimentoForm";
 import EspecificacaoForm from "@/components/forms/EspecificacaoForm/EspecificacaoForm";
+import GroupedAssigner from "@/components/groupedAssigner/GroupedAssigner";
+
 import {
     getEmpreendimentoById,
     startProcess,
-    updateEmpreendimento
+    updateEmpreendimento,
+    updateSpecification
 } from "@/services/SpecificationService";
 
 import styles from "./Empreendimento.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
+const INITIAL_DOC = { name: "", desc: "" };
+
+const docLoadParams = {
+    loadLocais: true,
+    loadAmbientes: true,
+    loadItems: true,
+    loadMateriais: true,
+    loadMarcas: true
+};
+
 const Empreendimento = () => {
     const { id } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    const [empreendimento, setEmpreendimento] = useState({ name: "", init: "", creatorId: user.id });
+    const [empreendimento, setEmpreendimento] = useState({
+        name: "",
+        init: "",
+        creatorId: user.id,
+        doc: INITIAL_DOC
+    });
+
     const [loading, setLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [empId, setEmpId] = useState(id || null);
 
-    const handleEmpSubmit = async () => {
-        try {
-            if (!empId) {
-                console.log(empreendimento);
-                const created = await startProcess(empreendimento);
-                setEmpId(created.id);
-            } else {
-                await updateEmpreendimento(empId, empreendimento);
-            }
-        } catch (error) {
-            console.error("Erro ao salvar empreendimento", error);
-        }
-    };
-
-    const handleSpecSubmit = async (name, desc) => {
-    };
-
-    const stepStore = useMemo(
-        () => ({
-            0: [
-                EmpreendimentoForm,
-                "Bem vindo ao cadastro de Empreendimentos!",
-                handleEmpSubmit
-            ],
-            1: [
-                EspecificacaoForm,
-                "Insira aqui os dados da nova Especificação",
-                handleSpecSubmit
-            ]
-        }),
-        [empreendimento, handleEmpSubmit]
-    );
-
-    const StepComponent = stepStore[currentStep][0];
-    const totalSteps = Object.keys(stepStore).length - 1;
-
-    useEffect(() => {
-        if (id) {
-            loadEmpreendimento(id);
-        }
-    }, [id]);
-
     const loadEmpreendimento = async () => {
         setLoading(true);
         try {
-            const emp = await getEmpreendimentoById(id);
-
-            if (!emp) throw new Error("Not found");
+            const data = await getEmpreendimentoById(id, docLoadParams);
+            if (!data) throw new Error("Not found");
 
             setEmpreendimento({
-                ...emp,
-                name: emp.name || "",
-                init: emp.init || "",
+                ...data,
+                name: data.name ?? "",
+                init: data.init ?? "",
+                doc: data.doc ?? INITIAL_DOC
             });
 
-            setEmpId(emp.id);
+            setEmpId(data.id);
         } catch (error) {
             console.error("Nenhum Empreendimento encontrado", error);
         } finally {
@@ -84,23 +61,126 @@ const Empreendimento = () => {
         }
     };
 
+    useEffect(() => {
+        if (id) loadEmpreendimento();
+    }, [id]);
+
+    const handleEmpSubmit = async () => {
+        try {
+            if (!empId) {
+                const created = await startProcess(empreendimento);
+                setEmpId(created.id);
+                setEmpreendimento(created);
+            } else {
+                const updated = await updateEmpreendimento(empId, empreendimento, docLoadParams);
+                setEmpreendimento(updated);
+            }
+            return true;
+        } catch (err) {
+            console.error("Erro ao salvar empreendimento", err);
+            return false;
+        }
+    };
+
+    const handleSpecSubmit = async () => {
+        try {
+            const updatedDoc = await updateSpecification(
+                empreendimento.doc,
+                empreendimento.doc.id
+            );
+
+            setEmpreendimento({
+                ...empreendimento,
+                doc: {
+                    ...empreendimento.doc,
+                    name: updatedDoc.name,
+                    desc: updatedDoc.desc
+                }
+            });
+
+            return true;
+        } catch (err) {
+            console.error("Erro ao salvar especificação", err);
+            return false;
+        }
+    };
+
+    const handleGroupedAssignment = () => {
+        return true;
+    };
+
+    const stepStore = useMemo(
+        () => ({
+            0: {
+                component: EmpreendimentoForm,
+                title: "Bem vindo ao cadastro de Empreendimentos!",
+                action: handleEmpSubmit
+            },
+            1: {
+                component: EspecificacaoForm,
+                title: "Insira aqui os dados da nova Especificação",
+                action: handleSpecSubmit
+            },
+            2: {
+                component: GroupedAssigner,
+                title: `${empreendimento.name} - Unidades privativas`,
+                local: "UNIDADES_PRIVATIVAS",
+                action: handleGroupedAssignment
+            },
+            3: {
+                component: GroupedAssigner,
+                title: `${empreendimento.name} - Área comum`,
+                local: "AREA_COMUM",
+                action: handleGroupedAssignment
+            }
+        }),
+        [empreendimento, empId]
+    );
+
+    const { component: StepComponent, title, action } = stepStore[currentStep];
+    const totalSteps = Object.keys(stepStore).length - 1;
+
+    const groupedAssignment = useMemo(() => {
+        const localKey = stepStore[currentStep]?.local;
+        if (!localKey) return [];
+
+        const doc = empreendimento.doc;
+        if (!doc?.locais) return  [];
+
+        const local = doc.locais.find(l => l.local === localKey);
+        if (!local) return [];
+
+        const ambientes = local.ambientes ?? [];
+
+        return ambientes.map(a => ({
+            name: a.name ?? "Ambiente sem nome",
+            children: a.items.map((item) => {
+                return {
+                    tipo: item.type,
+                    desc: item.desc
+                }
+            })
+        }));
+    }, [empreendimento, currentStep, stepStore]);
+
     const voltar = () => {
         if (currentStep === 0) {
-            return navigate(`/home/consulta-empreendimentos`);
+            navigate("/home/consulta-empreendimentos");
+        } else {
+            setCurrentStep(s => s - 1);
         }
-        setCurrentStep((s) => s - 1);
     };
 
-    const handleAvancar = async () => {
-        const submitFn = stepStore[currentStep][2];
-        await submitFn();
+    const avancar = async () => {
+        const ok = await action();
+        if (!ok) return;
 
         if (currentStep < totalSteps) {
-            setCurrentStep((s) => s + 1);
+            setCurrentStep(s => s + 1);
         }
     };
 
-    const handleFinish = () => {
+    const finalizar = () => {
         console.log("Processo finalizado!");
     };
 
@@ -108,34 +188,30 @@ const Empreendimento = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.headerContainer}>
+            <header className={styles.headerContainer}>
                 <div className={styles.titleArea}>
                     <h1 className={styles.title}>Cadastro de Especificações</h1>
-                    <p className={styles.subtitle}>
-                        {stepStore[currentStep][1]}
-                    </p>
+                    <p className={styles.subtitle}>{title}</p>
                 </div>
-            </div>
+            </header>
 
-            <div className={styles.mainArea}>
-                <StepComponent emp={empreendimento} setEmp={setEmpreendimento} />
-            </div>
+            <main className={styles.mainArea}>
+                <StepComponent
+                    emp={empreendimento}
+                    setEmp={setEmpreendimento}
+                    parentList={groupedAssignment}
+                />
+            </main>
 
-            <div className={styles.buttonsArea}>
-                <button onClick={voltar} className={styles.button}>
-                    Voltar
-                </button>
+            <footer className={styles.buttonsArea}>
+                <button onClick={voltar} className={styles.button}>Voltar</button>
 
                 {currentStep < totalSteps ? (
-                    <button onClick={handleAvancar} className={styles.button}>
-                        Avançar
-                    </button>
+                    <button onClick={avancar} className={styles.button}>Avançar</button>
                 ) : (
-                    <button onClick={handleFinish} className={styles.button}>
-                        Finalizar
-                    </button>
+                    <button onClick={finalizar} className={styles.button}>Finalizar</button>
                 )}
-            </div>
+            </footer>
         </div>
     );
 };

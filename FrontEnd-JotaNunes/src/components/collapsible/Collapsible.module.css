@@ -1,0 +1,39 @@
+.wrapper {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fdfdfd;
+}
+
+.header {
+    width: 100%;
+    background: var(--background-color);
+    color: var(--font_color-secondary);
+    border: none;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.header:hover {
+    background: var(--cinza_claro);
+    color: var(--cinza_media);
+}
+
+.icon {
+    font-size: 16px;
+}
+
+.content {
+    overflow: hidden;
+    transition: height 0.25s ease;
+}
+
+.inner {
+    padding: 12px;
+}
