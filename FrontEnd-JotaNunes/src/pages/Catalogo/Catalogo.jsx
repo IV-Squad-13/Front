@@ -5,6 +5,7 @@ import ItemCard from "@/components/ItemCard/ItemCard"
 import styles from "./Catalogo.module.css"
 import { getCatalogByResource, getCatalogSearch} from "@/services/CatalogService"
 import AddModal from "@/components/forms/AddModal/AddModal"
+import SearchBar from "@/components/searchBar/SearchBar"
 
 const Catalogo = () => {
   const [spec, setSpec] = useState([])
@@ -106,20 +107,27 @@ const Catalogo = () => {
     const handleSearch = async (resourceData) => {
     setIsLoading(true);
     setError(null);
+    setCurrentPage(1);
   
     try {
-      if (!resourceData) {
+      if (!resourceData || resourceData=="") {
         const data = await getCatalogByResource(activeButton);
+        setSpec(data);
+        setCurrentPage(1);
         setTotalPages(Math.ceil(data.length / itemsPerPage));
         setSelectedName('');
         return;
       }
   
-      const data = await getCatalogSearch(activeButton, resourceData);
+      const data = await getCatalogSearch(activeButton, { name: resourceData });
+      setSpec(data);
+      setCurrentPage(1);
       setTotalPages(Math.ceil(data.length / itemsPerPage));
       setSelectedName(resourceData);
     } catch (err) {
       setError(err.message);
+      setSpec([]);
+      setTotalPages(0);
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +141,10 @@ const Catalogo = () => {
           <p className={styles.subtitle}>Gerencie os seus itens aqui</p>
         </div>
         <div className={styles.buttonsArea}>
-          <input placeholder="buscar" onBlur={handleSearch}/>
+          <SearchBar
+            onSearch={(query) => handleSearch(query)}
+            displayButton={false}
+          />
           <button className={styles.addButton} onClick={handleOpenModal}>
             Adicionar
           </button>

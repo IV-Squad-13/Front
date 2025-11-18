@@ -21,9 +21,9 @@ const SearchBar = ({
         setQuery(value);
 
         if (!displayDropDown) return;
-
+        
+        onSearch(value);
         if (value.trim().length > 0) {
-            onSearch(value);
             setShowDropdown(true);
         } else {
             setShowDropdown(false);
