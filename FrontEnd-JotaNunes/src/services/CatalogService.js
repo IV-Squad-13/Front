@@ -16,7 +16,7 @@ export const getCatalogByResource = async (resource = 'ambiente') => {
 };
 
 export const getCatalogSearch = async (resource, resourceData) => {
-  const response = await authFetch(`${API_URL}/catalogo/${resource}/name/${resourceData}`, {
+  const response = await authFetch(`${API_URL}/catalogo/${resource}/search`, {
     method: 'GET'
   });
 
