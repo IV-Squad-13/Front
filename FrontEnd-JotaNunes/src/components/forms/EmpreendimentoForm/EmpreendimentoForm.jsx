@@ -9,6 +9,26 @@ const EmpreendimentoForm = ({ emp, setEmp }) => {
 
     const [results, setResults] = useState([]);
 
+    const getReference = () => {
+        if (emp.init === "PADRAO") {
+            const name = emp?.padrao?.name ?? "";
+            return {
+                disabled: Boolean(name),
+                value: name
+            };
+        }
+
+        if (emp.init === "IMPORT") {
+            const name = emp?.refDoc?.name ?? "";
+            return {
+                disabled: Boolean(name),
+                value: name
+            };
+        }
+
+        return { disabled: false, value: "" };
+    };
+
     const handleSearch = async (init, query) => {
         const trimmed = query.trim();
         if (!trimmed) return;
@@ -79,21 +99,21 @@ const EmpreendimentoForm = ({ emp, setEmp }) => {
                 </select>
             </div>
 
-            {emp.init !== "AVULSO" && emp.init && (
-                <SearchBar
-                    title={`Referência para ${emp.init}`}
-                    onSearch={(query) => handleSearch(emp.init, query)}
-                    onSelect={handleSelect}
-                    displayDropDown={true}
-                    displayButton={false}
-                    defaultValue={
-                        emp.init === "PADRAO"
-                            ? emp.padrao?.name ?? ""
-                            : emp.refDoc?.name ?? ""
-                    }
-                    results={results}
-                />
-            )}
+            {emp.init !== "AVULSO" && emp.init && (() => {
+                const ref = getReference();
+                return (
+                    <SearchBar
+                        title={`Referência para ${emp.init}`}
+                        onSearch={(query) => handleSearch(emp.init, query)}
+                        onSelect={handleSelect}
+                        displayDropDown={true}
+                        displayButton={false}
+                        defaultValue={ref.value}
+                        results={results}
+                        disabled={ref.disabled}
+                    />
+                );
+            })()}
         </div>
     );
 };

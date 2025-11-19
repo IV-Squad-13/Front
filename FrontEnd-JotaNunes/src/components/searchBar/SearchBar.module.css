@@ -85,3 +85,12 @@
     background: var(--cinza-claro);
     color: var(--font_color-primary);
 }
+
+.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.searchInput:disabled {
+    cursor: not-allowed;
+}

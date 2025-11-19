@@ -1,0 +1,26 @@
+.item {
+    cursor: pointer;
+    background-color: var(--cinza_medio);
+    height: 8em;
+    padding: 1rem;
+    min-width: 220px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    color: var(--font_color-secondary);
+    border: 1px solid var(--cinza);
+    transition: 0.15s ease;
+}
+
+.item:hover {
+    background-color: var(--cinza_claro);
+    border-color: var(--font_color-secondary);
+    transform: translateY(-2px);
+    color: var(--font_color-primary);
+}
+
+.title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

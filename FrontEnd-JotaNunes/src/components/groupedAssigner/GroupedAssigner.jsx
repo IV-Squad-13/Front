@@ -1,21 +1,71 @@
 import Collapsible from "@/components/collapsible/Collapsible";
 import AssignmentTable from "@/components/assignmentTable/AssignmentTable";
+import styles from "./GroupedAssigner.module.css";
+import ParentHeader from "./ParentHeader/ParentHeader";
+import { updateDocElement, deleteDocElement } from "@/services/SpecificationService";
+import { updateElementInDoc } from "@/lib/deepUpdateHelper";
 
-const GroupedAssigner = ({ parentList }) => {
+const GroupedAssigner = ({ setEmp, parentList = [] }) => {
+
+    const handleEditParent = async (parent, newName) => {
+        try {
+            const updatedDocElement = await updateDocElement(parent.id_, {
+                name: newName,
+                docType: "AMBIENTE"
+            });
+
+            setEmp(prev => ({
+                ...prev,
+                doc: updateElementInDoc(prev.doc, parent, updatedDocElement)
+            }));
+        } catch (err) {
+            console.error("Failed to update parent:", err);
+        }
+    };
+
+    const handleDeleteParent = async (parent) => {
+        try {
+            await deleteDocElement(parent.id_, "AMBIENTE");
+
+            setEmp(prev => ({
+                ...prev,
+                doc: updateElementInDoc(prev.doc, parent, null, true)
+            }));
+        } catch (err) {
+            console.error("Failed to delete parent:", err);
+        }
+    };
+
+
     return (
-        <div>
-            {parentList.map((parent) => {
+        <div className={styles.container}>
+            {parentList.map(parent => {
                 const children = parent.children ?? [];
-
                 const detectedColumns =
                     children.length > 0 ? Object.keys(children[0]) : [];
 
                 return (
-                    <Collapsible key={parent.id} title={parent.name}>
-                        <AssignmentTable
-                            columns={detectedColumns}
-                            data={children}
-                        />
+                    <Collapsible
+                        key={parent.id_}
+                        title={
+                            <ParentHeader
+                                parent={parent}
+                                onEditParent={(value) =>
+                                    handleEditParent(parent, value)
+                                }
+                                onDeleteParent={() =>
+                                    handleDeleteParent(parent)
+                                }
+                            />
+                        }
+                    >
+                        <div className={styles.tableWrapper}>
+                            <AssignmentTable
+                                setEmp={setEmp}
+                                columns={detectedColumns}
+                                data={children}
+                            />
+                        </div>
                     </Collapsible>
                 );
             })}

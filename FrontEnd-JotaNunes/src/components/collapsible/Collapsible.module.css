@@ -1,9 +1,9 @@
 .wrapper {
     margin-bottom: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cinza);
     border-radius: 6px;
     overflow: hidden;
-    background: #fdfdfd;
+    background: var(--background-color);
 }
 
 .header {
@@ -22,7 +22,6 @@
 
 .header:hover {
     background: var(--cinza_claro);
-    color: var(--cinza_media);
 }
 
 .icon {

@@ -153,11 +153,19 @@ const Empreendimento = () => {
         const ambientes = local.ambientes ?? [];
 
         return ambientes.map(a => ({
+            id_: a.id,
+            docType_: "ambiente",
+            localId_: local.id,
             name: a.name ?? "Ambiente sem nome",
             children: a.items.map((item) => {
                 return {
-                    tipo: item.type,
-                    desc: item.desc
+                    id_: item.id,
+                    docType_: "item",
+                    localId_: local.id,
+                    ambienteId_: a.id,
+                    nome: ['name', item.name],
+                    tipo: ['type', item.type],
+                    desc: ['desc', item.desc]
                 }
             })
         }));

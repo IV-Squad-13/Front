@@ -1,0 +1,103 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.parentHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.25rem 0;
+}
+
+.parentTitle {
+    font-size: 1rem;
+    color: var(--font_color-secondary);
+    font-weight: 600;
+    padding-left: 0.25rem;
+}
+
+.parentActions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.editBtn,
+.deleteBtn,
+.saveBtn,
+.cancelBtn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+}
+
+.editBtn {
+    background-color: var(--vermelho);
+    color: var(--font_color-primary);
+}
+
+.deleteBtn {
+    background: transparent;
+    color: var(--vermelho);
+    border: 1px solid var(--vermelho);
+}
+
+.editForm {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+}
+
+.parentInput {
+    flex: 1;
+    padding: 0.5rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--cinza);
+    background: transparent;
+    color: var(--font_color-secondary);
+    font-size: 1rem;
+}
+
+.saveBtn {
+    background-color: var(--vermelho);
+    color: var(--font_color-primary);
+    border: none;
+}
+
+.cancelBtn {
+    background: transparent;
+    color: var(--cinza);
+    border: 1px solid var(--cinza);
+}
+
+.tableWrapper {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+@media (max-width: 700px) {
+    .parentHeader {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .parentActions {
+        justify-content: flex-end;
+    }
+
+    .editForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .parentInput {
+        width: 100%;
+    }
+}

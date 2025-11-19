@@ -9,14 +9,20 @@ const SearchBar = ({
     displayDropDown = true,
     displayButton,
     results = [],
-    defaultValue = ""
+    defaultValue,
+    disabled = false
 }) => {
-    const [query, setQuery] = useState(defaultValue);
+    const [query, setQuery] = useState(defaultValue ?? "");
     const [showDropdown, setShowDropdown] = useState(false);
 
     const dropdownRef = useRef(null);
 
+    useEffect(() => {
+        setQuery(defaultValue ?? "");
+    }, [defaultValue]);
+
     const handleInputChange = (e) => {
+        if (disabled) return;
         const value = e.target.value;
         setQuery(value);
 
@@ -31,6 +37,7 @@ const SearchBar = ({
     };
 
     const handleKeyDown = (e) => {
+        if (disabled) return;
         if (e.key === "Enter") {
             onSearch(query);
             if (displayDropDown) setShowDropdown(true);
@@ -38,25 +45,30 @@ const SearchBar = ({
     };
 
     const handleSelect = (item) => {
+        if (disabled) return;
         setQuery(item.label || item.toString());
         if (displayDropDown) setShowDropdown(false);
         if (onSelect) onSelect(item);
     };
 
     useEffect(() => {
-        if (!displayDropDown) return;
+        if (!displayDropDown || disabled) return;
 
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
                 setShowDropdown(false);
             }
         };
+
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [displayDropDown]);
+    }, [displayDropDown, disabled]);
 
     return (
-        <div className={displayDropDown ? styles.searchWrapper : ""} ref={dropdownRef}>
+        <div
+            className={`${displayDropDown ? styles.searchWrapper : ""} ${disabled ? styles.disabled : ""}`}
+            ref={dropdownRef}
+        >
             <div className={styles.searchBarContainer}>
                 <div className={styles.searchContainer}>
                     <label className={styles.searchLabel}>{title}</label>
@@ -68,7 +80,9 @@ const SearchBar = ({
                         onKeyDown={handleKeyDown}
                         placeholder="Buscar"
                         className={styles.searchInput}
+                        disabled={disabled}
                         onFocus={() =>
+                            !disabled &&
                             displayDropDown &&
                             query &&
                             results.length > 0 &&
@@ -79,14 +93,19 @@ const SearchBar = ({
 
                 <div className={styles.searchButtonContainer}>
                     {displayButton && (
-                        <Button type="button" onClick={() => onSearch(query)} variant="header">
+                        <Button
+                            type="button"
+                            onClick={() => !disabled && onSearch(query)}
+                            variant="header"
+                            disabled={disabled}
+                        >
                             Buscar
                         </Button>
                     )}
                 </div>
             </div>
 
-            {displayDropDown && showDropdown && results.length > 0 && (
+            {!disabled && displayDropDown && showDropdown && results.length > 0 && (
                 <div className={styles.dropdown}>
                     {results.map((item, index) => (
                         <div
