@@ -1,0 +1,19 @@
+.cardContainer{
+  padding: 15px;
+  border: 1px solid var(--cinza-claro);
+  color: var(--font_color-primary);
+  border-radius: 0.5em;
+  box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+}
+.cardContainer:hover{
+  background-color: var(--cinza);
+  border-radius: 0.2em;
+  color:var(--font_color-secondary);
+  transform: translateY(-3px) scale(1.01);
+}
+
+.cardContainer:hover p{
+  color:var(--font_color-primary);
+  transition: color 0.3s ease-in-out;
+}
