@@ -5,18 +5,22 @@
   height: 100vh;
   background: var(--vermelho);
   color: var(--font_color-primary);
-  width: 300px;
   padding-top: 1rem;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
+  width: 300px;
+  max-width: 100vw;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(0);
 }
 
-.sidebar.closed {
+.sidebar.sidebarClosed {
   transform: translateX(-100%);
+}
+
+.sidebar.sidebarOpen {
+  transform: translateX(0);
 }
 
 .logoImage {
@@ -29,4 +33,26 @@
   font-size: 36px;
   font-weight: 350;
   margin-bottom: 2rem;
+}
+
+.closeButton {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100vw !important;
+    height: 100vh;
+    max-width: 100vw;
+    z-index: 200;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .sidebar.sidebarClosed {
+    transform: translateX(-100%);
+  }
 }
