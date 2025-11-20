@@ -11,7 +11,7 @@ const Catalogo = () => {
   const [spec, setSpec] = useState([]);
   const [specsPaginados, setSpecsPaginados] = useState([]);
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedResourceId, setSelectedResourceId] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +93,7 @@ const Catalogo = () => {
   };
 
   const handleOpenDetails = (item) => {
-    setSelectedItem(item);
+    setSelectedResourceId(item.id);
     setIsDetailsOpen(true);
   };
 
@@ -162,10 +162,12 @@ const Catalogo = () => {
         />
       )}
 
-      {isDetailsOpen && selectedItem && (
+      {isDetailsOpen && selectedResourceId && (
         <CatalogItemDetails
           type={activeButton}
-          id={selectedItem.id}
+          id={selectedResourceId}
+          setSelectedResource={setSelectedResourceId}
+          setSelectedResourceType={setActiveButton}
           onClose={() => setIsDetailsOpen(false)}
         />
       )}

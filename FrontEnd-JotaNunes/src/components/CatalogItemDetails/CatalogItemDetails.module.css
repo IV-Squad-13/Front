@@ -133,3 +133,9 @@
     right: 0.8rem;
   }
 }
+
+.clickable {
+  cursor: pointer;
+  color: #0070f3;
+  text-decoration: underline;
+}

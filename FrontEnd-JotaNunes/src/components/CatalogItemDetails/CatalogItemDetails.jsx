@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./CatalogItemDetails.module.css";
 import { getCatalogItemById } from "@/services/CatalogService.js";
 
-const CatalogItemDetails = ({ id, type, onClose }) => {
+const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResourceType, onClose }) => {
   const [details, setDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +35,12 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-  const renderList = (list, emptyMessage) => {
+  const updateResource = (rel, resourceType) => {
+    setSelectedResource(rel.id);
+    setSelectedResourceType(resourceType);
+  }
+
+  const renderList = (list, emptyMessage, resourceType) => {
     if (!list || list.length === 0) {
       return <p>{emptyMessage}</p>;
     }
@@ -63,13 +68,30 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
           }
 
           if (rel.name) {
-            return <li key={index}>{rel.name}</li>;
+            return (
+              <li
+                key={index}
+                className={styles.clickable}
+                onClick={() => updateResource(rel, resourceType)}
+              >
+                {rel.name}
+              </li>
+            );
           }
 
           const innerObj =
             rel?.marca || rel?.material || rel?.padrao || rel?.item;
+
           if (innerObj && innerObj.name) {
-            return <li key={index}>{innerObj.name}</li>;
+            return (
+              <li
+                key={index}
+                className={styles.clickable}
+                onClick={() => updateResource(rel, resourceType)}
+              >
+                {innerObj.name}
+              </li>
+            );
           }
 
           return (
@@ -92,10 +114,10 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
         return (
           <>
             <h3>Itens e Ambientes associados:</h3>
-            {renderList(details.ambientes, "Nenhum item ou ambiente associado.")}
+            {renderList(details.ambientes, "Nenhum item ou ambiente associado.", 'ambiente')}
 
             <h3>Marcas e Materiais associados:</h3>
-            {renderList(details.materiais, "Nenhuma marca ou material associado.")}
+            {renderList(details.materiais, "Nenhuma marca ou material associado.", 'material')}
           </>
         );
 
@@ -107,10 +129,10 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
             </p>
 
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.")}
+            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
 
             <h3>Itens associados:</h3>
-            {renderList(details.itemSet, "Nenhum item associado.")}
+            {renderList(details.itemSet, "Nenhum item associado.", 'item')}
           </>
         );
 
@@ -126,10 +148,10 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
             </p>
 
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.")}
+            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
 
             <h3>Ambientes associados:</h3>
-            {renderList(details.ambientes, "Nenhum ambiente associado.")}
+            {renderList(details.ambientes, "Nenhum ambiente associado.", 'ambiente')}
           </>
         );
 
@@ -137,10 +159,10 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
         return (
           <>
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.")}
+            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
 
             <h3>Marcas associadas:</h3>
-            {renderList(details.marcas, "Nenhuma marca associada.")}
+            {renderList(details.marcas, "Nenhuma marca associada.", 'marca')}
           </>
         );
 
@@ -148,10 +170,10 @@ const CatalogItemDetails = ({ id, type, onClose }) => {
         return (
           <>
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.")}
+            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
 
             <h3>Materiais associados:</h3>
-            {renderList(details.materiais, "Nenhum material associado.")}
+            {renderList(details.materiais, "Nenhum material associado.", 'material')}
           </>
         );
 
