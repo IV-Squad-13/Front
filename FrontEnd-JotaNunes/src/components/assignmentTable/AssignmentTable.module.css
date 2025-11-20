@@ -53,7 +53,7 @@
 }
 
 .table tbody tr:last-child td {
-    border-bottom: 1px solid var(--cinza_medio);
+    border-bottom: 1px solid var(--cinza);
 }
 
 .tableWrapper::-webkit-scrollbar {

@@ -13,6 +13,7 @@ import {
 import styles from "./Empreendimento.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import AssignmentTable from "@/components/assignmentTable/AssignmentTable";
 
 const INITIAL_DOC = { name: "", desc: "" };
 
@@ -38,6 +39,7 @@ const Empreendimento = () => {
 
     const [loading, setLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
+    const [currentSection, setCurrentSection] = useState("start");
     const [empId, setEmpId] = useState(id || null);
 
     const loadEmpreendimento = async () => {
@@ -105,33 +107,41 @@ const Empreendimento = () => {
         }
     };
 
-    const handleGroupedAssignment = () => {
-        return true;
-    };
+    const handleGroupedAssignment = () => true;
 
     const stepStore = useMemo(
         () => ({
             0: {
                 component: EmpreendimentoForm,
                 title: "Bem vindo ao cadastro de Empreendimentos!",
-                action: handleEmpSubmit
+                action: handleEmpSubmit,
+                section: "start"
             },
             1: {
                 component: EspecificacaoForm,
                 title: "Insira aqui os dados da nova Especificação",
-                action: handleSpecSubmit
+                action: handleSpecSubmit,
+                section: "start"
             },
             2: {
                 component: GroupedAssigner,
                 title: `${empreendimento.name} - Unidades privativas`,
                 local: "UNIDADES_PRIVATIVAS",
-                action: handleGroupedAssignment
+                action: handleGroupedAssignment,
+                section: "ambientes"
             },
             3: {
                 component: GroupedAssigner,
                 title: `${empreendimento.name} - Área comum`,
                 local: "AREA_COMUM",
-                action: handleGroupedAssignment
+                action: handleGroupedAssignment,
+                section: "ambientes"
+            },
+            4: {
+                component: AssignmentTable,
+                title: `${empreendimento.name} - Marcas e materiais`,
+                action: handleGroupedAssignment,
+                section: "materiais"
             }
         }),
         [empreendimento, empId]
@@ -141,42 +151,59 @@ const Empreendimento = () => {
     const totalSteps = Object.keys(stepStore).length - 1;
 
     const groupedAssignment = useMemo(() => {
-        const localKey = stepStore[currentStep]?.local;
-        if (!localKey) return [];
-
         const doc = empreendimento.doc;
-        if (!doc?.locais) return  [];
+        if (!doc) return { ambientes: [], materiais: [] };
 
-        const local = doc.locais.find(l => l.local === localKey);
-        if (!local) return [];
+        const locais = doc.locais ?? [];
+        const materiais = doc.materiais ?? [];
 
-        const ambientes = local.ambientes ?? [];
-
-        return ambientes.map(a => ({
-            id_: a.id,
-            docType_: "ambiente",
-            localId_: local.id,
-            name: a.name ?? "Ambiente sem nome",
-            children: a.items.map((item) => {
-                return {
-                    id_: item.id,
-                    docType_: "item",
+        const ambientesGroup = [];
+        locais.forEach(local => {
+            (local.ambientes ?? []).forEach(a => {
+                ambientesGroup.push({
+                    id_: a.id,
+                    docType_: "ambiente",
                     localId_: local.id,
-                    ambienteId_: a.id,
-                    nome: ['name', item.name],
-                    tipo: ['type', item.type],
-                    desc: ['desc', item.desc]
-                }
-            })
+                    name: a.name,
+                    children: a.items.map(item => ({
+                        id_: item.id,
+                        docType_: "item",
+                        localId_: local.id,
+                        ambienteId_: a.id,
+                        nome: ["name", item.name],
+                        tipo: ["type", item.type],
+                        desc: ["desc", item.desc]
+                    }))
+                });
+            });
+        });
+
+        const materiaisGroup = materiais.map(m => ({
+            id_: m.id,
+            docType_: "material",
+            nome: ["name", m.name],
+            children: m.marcas.map(marca => ({
+                id_: marca.id,
+                docType_: "marca",
+                materialId_: m.id,
+                nome: ["name", marca.name]
+            }))
         }));
-    }, [empreendimento, currentStep, stepStore]);
+
+        return {
+            ambientes: ambientesGroup,
+            materiais: materiaisGroup
+        };
+    }, [empreendimento]);
 
     const voltar = () => {
         if (currentStep === 0) {
             navigate("/home/consulta-empreendimentos");
-        } else {
-            setCurrentStep(s => s - 1);
+            return;
         }
+        const prev = currentStep - 1;
+        setCurrentStep(prev);
+        setCurrentSection(stepStore[prev].section);
     };
 
     const avancar = async () => {
@@ -184,7 +211,9 @@ const Empreendimento = () => {
         if (!ok) return;
 
         if (currentStep < totalSteps) {
-            setCurrentStep(s => s + 1);
+            const next = currentStep + 1;
+            setCurrentStep(next);
+            setCurrentSection(stepStore[next].section);
         }
     };
 
@@ -207,7 +236,7 @@ const Empreendimento = () => {
                 <StepComponent
                     emp={empreendimento}
                     setEmp={setEmpreendimento}
-                    parentList={groupedAssignment}
+                    parentList={groupedAssignment[currentSection]}
                 />
             </main>
 

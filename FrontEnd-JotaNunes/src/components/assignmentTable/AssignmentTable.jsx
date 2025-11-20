@@ -34,7 +34,7 @@ const AssignmentTable = ({ setEmp, columns, data }) => {
         }
     };
 
-    const handleLocalEdit = (row, col, newValue) => {
+    const handleFieldEdit = (row, col, newValue) => {
         setTableData(prev =>
             prev.map(r =>
                 r.id_ === row.id_
@@ -86,7 +86,7 @@ const AssignmentTable = ({ setEmp, columns, data }) => {
                                             className={styles.cellInput}
                                             value={fieldValue}
                                             onChange={(e) =>
-                                                handleLocalEdit(row, col, e.target.value)
+                                                handleFieldEdit(row, col, e.target.value)
                                             }
                                             onBlur={(e) =>
                                                 update(row, fieldKey, e.target.value)
@@ -102,13 +102,13 @@ const AssignmentTable = ({ setEmp, columns, data }) => {
                             <td className={styles.actionsCell}>
                                 <span className={styles.actionColumn}>
                                     {
-                                    <Button
-                                        type="button"
-                                        onClick={() => handleDeleteRow(row)}
-                                        variant="header"
-                                    >
-                                        Deletar
-                                    </Button>
+                                        <Button
+                                            type="button"
+                                            onClick={() => handleDeleteRow(row)}
+                                            variant="header"
+                                        >
+                                            Deletar
+                                        </Button>
                                     }
                                 </span>
                             </td>
