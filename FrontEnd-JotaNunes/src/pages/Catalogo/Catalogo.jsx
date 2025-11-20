@@ -165,7 +165,7 @@ const Catalogo = () => {
       {isDetailsOpen && selectedItem && (
         <CatalogItemDetails
           type={activeButton}
-          item={selectedItem}
+          id={selectedItem.id}
           onClose={() => setIsDetailsOpen(false)}
         />
       )}
