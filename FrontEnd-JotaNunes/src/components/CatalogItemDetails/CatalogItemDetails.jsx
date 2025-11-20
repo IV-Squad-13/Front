@@ -51,8 +51,8 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
           if (rel.marca && rel.material) {
             return (
               <li key={index}>
-                <strong>Marca:</strong> {rel.marca?.name || "Sem nome"} <br />
-                <strong>Material:</strong> {rel.material?.name || "Sem nome"}
+                <strong onClick={() => updateResource(rel?.marca, 'marca')}>Marca:</strong> {rel.marca?.name || "Sem nome"} <br />
+                <strong onClick={() => updateResource(rel?.material, 'material')}>Material:</strong> {rel.material?.name || "Sem nome"}
               </li>
             );
           }
@@ -60,9 +60,9 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
           if (rel.item && rel.ambiente) {
             return (
               <li key={index}>
-                <strong>Item:</strong> {rel.item?.name || "Sem nome"} —{" "}
+                <strong onClick={() => updateResource(rel?.item, 'item')}>Item:</strong> {rel.item?.name || "Sem nome"} —{" "}
                 {rel.item?.desc || "Sem descrição"} <br />
-                <strong>Ambiente:</strong> {rel.ambiente?.name || "Sem nome"}
+                <strong onClick={() => updateResource(rel?.ambiente, 'ambiente')}>Ambiente:</strong> {rel.ambiente?.name || "Sem nome"}
               </li>
             );
           }
@@ -95,7 +95,7 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
           }
 
           return (
-            <li key={index}>
+            <li key={index} onClick={() => updateResource(rel, resourceType)}>
               <pre style={{ whiteSpace: "pre-wrap" }}>
                 {JSON.stringify(rel, null, 2)}
               </pre>
