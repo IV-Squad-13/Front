@@ -138,6 +138,7 @@ export function useSideEditor({ elementToAdd, parent, local, specId, setEmp }) {
                             localId_: parent?.localId_ ?? null,
                             local: local,
                             ambienteId_: parent?.id_ ?? null,
+                            materialId_: parent?.id_ ?? null,
                             id_: null
                         },
                         null,
@@ -186,6 +187,7 @@ export function useSideEditor({ elementToAdd, parent, local, specId, setEmp }) {
                             localId_: parent?.localId_ ?? null,
                             local: local,
                             ambienteId_: parent?.id_ ?? null,
+                            materialId_: parent?.id_ ?? null,
                             id_: null
                         },
                         null,

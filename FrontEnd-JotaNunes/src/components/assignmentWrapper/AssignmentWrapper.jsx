@@ -19,6 +19,7 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
     const handleAddAmbiente = () => {
         if (currentElement === ELEMENTS.AMBIENTE) {
             setCurrentElement(null);
+            return;
         }
 
         setParent(null);
@@ -30,11 +31,35 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
 
         if (currentElement === ELEMENTS.ITEM) {
             setCurrentElement(null);
+            return;
         }
 
         setParent(selectedParent);
         setCurrentElement(ELEMENTS.ITEM);
     };
+
+    const handleAddMaterial = () => {
+        if (currentElement === ELEMENTS.MATERIAL) {
+            setCurrentElement(null);
+            return;
+        }
+
+        setParent(null);
+        setCurrentElement(ELEMENTS.MATERIAL);
+    }
+
+    const handleAddMarca = (selectedParent) => {
+        if (!selectedParent) return;
+
+        if (currentElement === ELEMENTS.MARCA) {
+            setCurrentElement(null);
+            return;
+        }
+
+        setParent(selectedParent);
+        setCurrentElement(ELEMENTS.MARCA);
+    };
+
 
     return (
         <div className={styles.wrapper}>
@@ -51,6 +76,8 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
                         <SimpleAssignmentTable
                             setEmp={setEmp}
                             data={parentList.data}
+                            addMaterial={handleAddMaterial}
+                            addMarca={handleAddMarca}
                         />
                     )}
                 </div>

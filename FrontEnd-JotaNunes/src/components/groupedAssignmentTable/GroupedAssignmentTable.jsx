@@ -11,7 +11,7 @@ const GroupedAssignmentTable = ({ groups = [], setEmp, addChildren, addParent })
     const handleEditParent = async (parent, newName) => {
         try {
             const updated = await updateDocElement(parent.id_, { name: newName, docType: "AMBIENTE" });
-            setEmp(prev => ({ ...prev, doc: updateElementInDoc(prev.doc, parent, updated) }));
+            setEmp(prev => ({ ...prev, doc: updateElementInDoc(prev.doc, parent, { name: updated.name }) }));
         } catch (err) {
             console.error("Failed to update parent:", err);
         }
@@ -31,7 +31,7 @@ const GroupedAssignmentTable = ({ groups = [], setEmp, addChildren, addParent })
         const fieldKey = tuple[0];
         try {
             const updated = await updateDocElement(row.id_, { [fieldKey]: newValue, docType: "ITEM" });
-            setEmp(prev => ({ ...prev, doc: updateElementInDoc(prev.doc, row, updated) }));
+            setEmp(prev => ({ ...prev, doc: updateElementInDoc(prev.doc, row, { fieldKey: updated[fieldKey] }) }));
         } catch (err) {
             console.error("Failed to update child:", err);
         }

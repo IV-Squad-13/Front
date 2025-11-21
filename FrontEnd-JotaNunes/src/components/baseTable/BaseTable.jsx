@@ -5,8 +5,9 @@ import styles from "./BaseTable.module.css";
 const BaseTable = ({
     columns = [],
     data = [],
-    onEdit = () => {},
-    onDelete = () => {}
+    onEdit = () => { },
+    onDelete = () => { },
+    selectRow = () => { }
 }) => {
 
     const visibleColumns = columns.filter(col => !col.key.endsWith("_"));
@@ -41,12 +42,22 @@ const BaseTable = ({
                             <td className={styles.actionsCell}>
                                 <div className={styles.actionColumn}>
                                     <button
-                                        className={styles.deleteBtn}
+                                        className={styles.actionBtn}
                                         onClick={() => onDelete(row)}
                                         title="Deletar"
                                     >
                                         Deletar
                                     </button>
+
+                                    {selectRow !== undefined && (
+                                        <button
+                                            className={styles.actionBtn}
+                                            onClick={() => selectRow(row)}
+                                            title="Selecionar"
+                                        >
+                                            Selecionar
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>

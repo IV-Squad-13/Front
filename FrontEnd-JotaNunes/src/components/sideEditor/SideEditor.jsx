@@ -34,7 +34,7 @@ const SideEditor = (props) => {
         <div className={styles.sideEditorContainer}>
             <div className={styles.header}>
                 <p>
-                    Adicionar {elementToAdd} {parent ? `em ${parent.name}` : ""}
+                    Adicionar {elementToAdd} {parent ? `em ${parent.name ?? parent.nome[1]}` : ""}
                 </p>
                 <button className={styles.addButton} onClick={handleAdd} disabled={loading}>
                     {loading ? "Adicionando..." : "Adicionar"}

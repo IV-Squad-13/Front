@@ -8,10 +8,32 @@ const updateSpecDoc = (doc, params) => {
         newElement,
         newElementList,
         remove = false,
-        nmLocal
+        nmLocal,
+        materialId
     } = params;
 
     if (remove) {
+        if (docType === "material") {
+            return {
+                ...doc,
+                materiais: doc.materiais.filter(m => m.id !== rowId)
+            };
+        }
+
+        if (docType === "marca") {
+            return {
+                ...doc,
+                materiais: doc.materiais.map(material =>
+                    material.id !== materialId
+                        ? material
+                        : {
+                            ...material,
+                            marcas: material.marcas.filter(m => m.id !== rowId)
+                        }
+                )
+            };
+        }
+
         if (docType === "local") {
             return {
                 ...doc,
@@ -63,6 +85,31 @@ const updateSpecDoc = (doc, params) => {
                 (el, idx, self) =>
                     idx === self.findIndex(x => x.id === el.id)
             );
+
+        if (docType === "material") {
+            const merged = [...doc.materiais, ...toAdd];
+            return {
+                ...doc,
+                materiais: dedupeById(merged)
+            };
+        }
+
+        if (docType === "marca") {
+            return {
+                ...doc,
+                materiais: doc.materiais.map(material => {
+                    if (material.id !== materialId) {
+                        return material;
+                    }
+
+                    const merged = [...material.marcas, ...toAdd];
+                    return {
+                        ...material,
+                        marcas: dedupeById(merged)
+                    };
+                })
+            };
+        }
 
         if (docType === "local") {
             const merged = [...doc.locais, ...toAdd];
@@ -144,6 +191,24 @@ const updateSpecDoc = (doc, params) => {
                     };
                 })
             };
+        }),
+        materiais: doc.materiais.map(material => {
+            if (docType === "material" && material.id === rowId) {
+                return { ...material, ...updatedFields };
+            }
+
+            if (material.id !== materialId) return material;
+
+            return {
+                ...material,
+                marcas: material.marcas.map(mar => {
+                    if (docType === "marca" && mar.id === rowId) {
+                        return { ...mar, ...updatedFields };
+                    }
+
+                    return mar;
+                })
+            }
         })
     };
 };
@@ -165,7 +230,8 @@ export const updateElementInDoc = (
         newElement,
         newElementList,
         remove,
-        nmLocal: row.local
+        nmLocal: row.local,
+        materialId: row.materialId_
     });
 };
 

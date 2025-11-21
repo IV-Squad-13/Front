@@ -3,6 +3,7 @@ import styles from "./EmpreendimentoForm.module.css";
 import SearchBar from "@/components/searchBar/SearchBar";
 import { searchEspecificacao } from "@/services/SpecificationService";
 import { getCatalogSearch } from "@/services/CatalogService";
+import SelectInput from "@/components/selectInput/SelectInput";
 
 const EmpreendimentoForm = ({ emp, setEmp }) => {
     const initOptions = ["PADRAO", "IMPORT", "AVULSO"];
@@ -79,24 +80,18 @@ const EmpreendimentoForm = ({ emp, setEmp }) => {
             </div>
 
             <div className={styles.inputGroup}>
-                <label htmlFor="initType">Tipo de Inicialização</label>
-                <select
+                <SelectInput
                     id="initType"
+                    label="Tipo de Inicialização"
                     value={emp.init}
                     onChange={(e) => {
                         setEmp({ ...emp, init: e.target.value });
                         setResults([]);
                     }}
-                    className={styles.select}
+                    options={initOptions}
                     disabled={emp.id && emp.init}
-                >
-                    <option value="">Selecione...</option>
-                    {initOptions.map((opt) => (
-                        <option key={opt} value={opt}>
-                            {opt}
-                        </option>
-                    ))}
-                </select>
+                    placeholder="Selecione..."
+                />
             </div>
 
             {emp.init !== "AVULSO" && emp.init && (() => {

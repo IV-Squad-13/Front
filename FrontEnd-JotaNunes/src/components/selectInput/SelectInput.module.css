@@ -1,0 +1,61 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+label {
+    color: var(--font_color-secondary);
+    font-weight: 500;
+}
+
+.selectContainer {
+    position: relative;
+    width: 100%;
+}
+
+.selectContainer::after {
+    content: "▾";
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: var(--font_color-secondary);
+    pointer-events: none;
+}
+
+select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    padding-right: 2.2rem;
+
+    border: 1px solid var(--cinza);
+    border-radius: 8px;
+
+    background-color: var(--background-color);
+    color: var(--font_color-secondary);
+    font-size: 1rem;
+    font-family: inherit;
+
+    cursor: pointer;
+    appearance: none;
+
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--font_color-secondary);
+}
+
+.disabled select {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+select option {
+    background-color: var(--background-color) !important;
+    color: var(--font_color-secondary) !important;
+}

@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./SimpleAssignmentTable.module.css";
 import { updateDocElement, deleteDocElement } from "@/services/SpecificationService";
 import { updateElementInDoc } from "@/lib/deepUpdateHelper";
 import BaseTable from "../baseTable/BaseTable";
+import Button from "../button/Button";
 
-const SimpleAssignmentTable = ({ data = [], setEmp }) => {
+const SimpleAssignmentTable = ({ data = [], setEmp, addMaterial, addMarca }) => {
     const columns = [
         { key: "material", label: "Material", type: "tuple" },
         { key: "marcas", label: "Marcas", type: "commaList" }
     ];
+
+    const [selectedMaterial, setSelectedMaterial] = useState(null);
 
     const handleEdit = async (row, key, payload) => {
         if (key === "material") {
@@ -22,7 +25,7 @@ const SimpleAssignmentTable = ({ data = [], setEmp }) => {
                     doc: updateElementInDoc(prev.doc, {
                         docType_: "material",
                         id_: row.material.id_,
-                    }, updated)
+                    }, { fieldKey: updated[fieldKey] })
                 }));
             } catch (err) {
                 console.error("Failed to update material:", err);
@@ -38,7 +41,8 @@ const SimpleAssignmentTable = ({ data = [], setEmp }) => {
                         doc: updateElementInDoc(prev.doc, {
                             docType_: "marca",
                             id_: payload.id,
-                        }, updated)
+                            materialId_: row.material.id_
+                        }, { name: updated.name })
                     }));
                 } catch (err) {
                     console.error("Failed to rename marca:", err);
@@ -51,6 +55,7 @@ const SimpleAssignmentTable = ({ data = [], setEmp }) => {
                         doc: updateElementInDoc(prev.doc, {
                             docType_: "marca",
                             id_: payload.id,
+                            materialId_: row.material.id_
                         }, null, true)
                     }));
                 } catch (err) {
@@ -77,13 +82,31 @@ const SimpleAssignmentTable = ({ data = [], setEmp }) => {
         }
     };
 
+    const handleMaterialSelect = (row) => {
+        if (selectedMaterial?.id !== undefined && (row.material?.id_ === selectedMaterial?.id_)) 
+            return setSelectedMaterial(null);
+        
+        return setSelectedMaterial(row.material);
+    }
+
     return (
-        <BaseTable
-            columns={columns}
-            data={data}
-            onEdit={handleEdit}
-            onDelete={handleDeleteRow}
-        />
+        <div>
+            <div className={styles.actions}>
+                <Button type="button" onClick={() => addMaterial && addMaterial()} variant="header">
+                    Adicionar Material
+                </Button>
+                <Button disabled={selectedMaterial === null} type="button" onClick={() => addMarca(selectedMaterial)} variant="header">
+                    Adicionar Marca
+                </Button>
+            </div>
+            <BaseTable
+                columns={columns}
+                data={data}
+                onEdit={handleEdit}
+                onDelete={handleDeleteRow}
+                selectRow={handleMaterialSelect}
+            />
+        </div>
     );
 }
 

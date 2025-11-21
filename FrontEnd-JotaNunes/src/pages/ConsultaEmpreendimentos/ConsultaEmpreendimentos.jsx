@@ -3,12 +3,11 @@ import SearchBar from "@/components/searchBar/SearchBar";
 import SelectItem from "@/components/selectItem/SelectItem";
 import { getAllEmpreendimentos, searchEmpreendimentos } from "@/services/SpecificationService";
 import { useNavigate } from "react-router-dom";
-import styles from "./ConsultaEmpreendimentos.module.css";
 import Button from "@/components/button/Button";
+import styles from "./ConsultaEmpreendimentos.module.css";
 
 const ConsultaEmpreendimentos = () => {
     const [empreendimentos, setEmpreendimentos] = useState([]);
-    const [searchParams, setSearchParams] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -16,87 +15,87 @@ const ConsultaEmpreendimentos = () => {
         loadAllEmpreendimentos();
     }, []);
 
-    useEffect(() => {
-        if (searchParams) searchEmps(searchParams);
-    }, [searchParams]);
-
     const loadAllEmpreendimentos = async () => {
         setLoading(true);
         try {
-            const emps = await getAllEmpreendimentos();
-            setEmpreendimentos(emps || []);
-        } catch (error) {
-            console.error("Erro ao buscar empreendimentos:", error);
+            const data = await getAllEmpreendimentos();
+            setEmpreendimentos(data || []);
+        } catch {
             alert("Erro ao buscar empreendimentos");
         } finally {
             setLoading(false);
         }
     };
 
-    const searchEmps = async (params) => {
+    const handleSearch = async (query) => {
+        const trimmed = query.trim();
+
+        if (!trimmed) {
+            await loadAllEmpreendimentos();
+            return;
+        }
+
         setLoading(true);
         try {
-            const emps = await searchEmpreendimentos(params);
-            setEmpreendimentos(emps || []);
-        } catch (error) {
-            console.error("Erro ao buscar empreendimentos:", error);
+            const data = await searchEmpreendimentos({ name: trimmed });
+            setEmpreendimentos(data || []);
+        } catch {
             alert("Erro ao buscar empreendimentos");
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleSearch = (query) => {
-        const trimmed = query.trim();
-        if (!trimmed) return loadAllEmpreendimentos();
-        setSearchParams({ name: trimmed });
     };
 
     const selectEmpreendimento = (id) => {
-        if (!id) return navigate(`/home/empreendimento`);
-        navigate(`/home/empreendimento/${encodeURIComponent(id)}`);
+        navigate(id ? `/home/empreendimento/${encodeURIComponent(id)}` : `/home/empreendimento`);
     };
 
     return (
         <div className={styles.container}>
-            <div className={styles.headerContainer}>
-                <h1 className={styles.title}>Consulta de Empreendimentos</h1>
-                <p className={styles.subtitle}>Busque, visualize ou cadastre um novo empreendimento.</p>
+            <header className={styles.header}>
+                <div className={styles.headerText}>
+                    <h1 className={styles.title}>Consulta de Empreendimentos</h1>
+                    <p className={styles.subtitle}>
+                        Busque, visualize ou cadastre um novo empreendimento.
+                    </p>
+                </div>
 
-                <div className={styles.topActions}>
+                <div className={styles.headerActions}>
                     <SearchBar
                         title="Buscar Empreendimentos"
                         onSearch={handleSearch}
                         displayDropDown={false}
                         displayButton={true}
                     />
-                    
-                    <Button
-                        type="button"
-                        onClick={() => selectEmpreendimento(null)}
-                        variant="header"
-                    >
-                        Criar Empreendimento
-                    </Button>
-                </div>
-            </div>
 
-            <div className={styles.mainArea}>
+                    <div className={styles.headerBtnContainer}>
+                        <Button
+                            type="button"
+                            onClick={() => selectEmpreendimento(null)}
+                            variant="header"
+                        >
+                            Criar Empreendimento
+                        </Button>
+                    </div>
+                </div>
+            </header>
+
+            <main className={styles.gridArea}>
                 {loading ? (
-                    <p>Carregando empreendimentos...</p>
+                    <div className={styles.spinner}></div>
                 ) : empreendimentos.length > 0 ? (
                     empreendimentos.map((emp) => (
                         <SelectItem
                             key={emp.id}
                             id={emp.id}
-                            onSelect={() => selectEmpreendimento(emp.id)}
                             content={emp.name}
+                            onSelect={() => selectEmpreendimento(emp.id)}
                         />
                     ))
                 ) : (
                     <p className={styles.emptyMsg}>Nenhum empreendimento encontrado.</p>
                 )}
-            </div>
+            </main>
         </div>
     );
 };

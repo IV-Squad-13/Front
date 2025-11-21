@@ -82,7 +82,7 @@
 }
 
 .dropdownItem:hover {
-    background: var(--cinza-claro);
+    background: var(--cinza);
     color: var(--font_color-primary);
 }
 
