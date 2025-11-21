@@ -6,7 +6,10 @@ const CellEditor = ({ row, column, onEdit }) => {
     const type = column.type || "text";
 
     if (type === "tuple") {
-        const tuple = row[column.key] || ["", ""];
+        const tuple = column.key === 'material'
+            ? row[column.key]['nome']
+            : row[column.key] || ["", ""];
+            
         const fieldKey = tuple[0];
         const initial = tuple[1] ?? "";
 
