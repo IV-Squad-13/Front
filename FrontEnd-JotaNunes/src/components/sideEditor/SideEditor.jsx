@@ -6,7 +6,7 @@ import SearchResultsPanel from "./components/SearchResultsPanel/SearchResultsPan
 import FieldSearchPanel from "./components/FieldSearchPanel/FieldSearchPanel";
 import ConstraintPanel from "./components/ConstraintPanel/ConstraintPanel";
 
-export default function SideEditor(props) {
+const SideEditor = (props) => {
     const {
         TABS,
         currentTab,
@@ -85,3 +85,5 @@ export default function SideEditor(props) {
         </div>
     );
 }
+
+export default SideEditor;

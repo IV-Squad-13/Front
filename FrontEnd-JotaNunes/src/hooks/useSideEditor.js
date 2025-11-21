@@ -108,7 +108,7 @@ export function useSideEditor({ elementToAdd, parent, local, specId, setEmp }) {
         }
 
         const type = elementToAdd.toUpperCase();
-        const parentId = parent?.id ?? null;
+        const parentId = parent?.id_ ?? null;
 
         setLoading(true);
         if (currentTab === "catalogo") {

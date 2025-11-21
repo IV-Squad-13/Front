@@ -1,0 +1,82 @@
+.pillsRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 0;
+}
+
+.pill {
+    display: flex;
+    align-items: center;
+    background: var(--cinza_medio);
+    border: 1px solid var(--light-border);
+    color: var(--light-font_color);
+    padding: 4px 8px;
+    border-radius: 6px;
+    gap: 6px;
+    transition: background 0.2s ease;
+}
+
+.pill:hover {
+    background: var(--cinza);
+    color: var(--font_color-primary);
+}
+
+.pillLabel {
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.88rem;
+}
+
+.pillDel {
+    background: transparent;
+    border: none;
+    color: var(--vermelho);
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+}
+
+.pillDel:hover {
+    filter: brightness(0.8);
+}
+
+.pillEditing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--cinza_medio);
+    border: 1px solid var(--light-border);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.pillInput {
+    border: 1px solid var(--light-border);
+    background: var(--cinza_claro);
+    color: var(--light-font_color);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.88rem;
+    outline: none;
+}
+
+.pillInput:focus {
+    border-color: var(--cinza);
+}
+
+.pillSave {
+    background: var(--vermelho);
+    color: var(--font_color-primary);
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.pillSave:hover {
+    filter: brightness(1.1);
+}

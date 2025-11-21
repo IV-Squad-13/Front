@@ -156,7 +156,7 @@ export const updateElementInDoc = (
     newElement = null,
     newElementList = null
 ) => {
-    const d = updateSpecDoc(doc, {
+    return updateSpecDoc(doc, {
         docType: row.docType_,
         localId: row.localId_,
         ambienteId: row.ambienteId_,
@@ -167,7 +167,7 @@ export const updateElementInDoc = (
         remove,
         nmLocal: row.local
     });
-
-    console.log(d);
-    return d;
 };
+
+
+// desculpa

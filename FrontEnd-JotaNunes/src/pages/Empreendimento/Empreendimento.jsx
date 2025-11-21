@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import EmpreendimentoForm from "@/components/forms/EmpreendimentoForm/EmpreendimentoForm";
 import EspecificacaoForm from "@/components/forms/EspecificacaoForm/EspecificacaoForm";
-import GroupedAssigner from "@/components/groupedAssigner/GroupedAssigner";
+import GroupedAssigner from "@/components/groupedAssignmentTable/GroupedAssignmentTable";
 
 import {
     getEmpreendimentoById,
@@ -13,7 +13,7 @@ import {
 import styles from "./Empreendimento.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import AssignmentTable from "@/components/assignmentTable/AssignmentTable";
+import AssignmentTable from "@/components/simpleAssignmentTable/SimpleAssignmentTable";
 import AssignmentWrapper from "@/components/assignmentWrapper/AssignmentWrapper";
 
 const INITIAL_DOC = { name: "", desc: "" };
@@ -181,20 +181,25 @@ const Empreendimento = () => {
         });
 
         const materiaisGroup = materiais.map(m => ({
-            id_: m.id,
-            docType_: "material",
-            nome: ["name", m.name],
-            children: m.marcas.map(marca => ({
-                id_: marca.id,
-                docType_: "marca",
-                materialId_: m.id,
-                nome: ["name", marca.name]
-            }))
+            material: {
+                id_: m.id,
+                docType_: "material",
+                nome: ["name", m.name]
+            },
+            marcas: {
+                isCollection: true,
+                data: m.marcas.map(marca => ({
+                    id_: marca.id,
+                    docType_: "marca",
+                    materialId_: m.id,
+                    nome: ["name", marca.name]
+                }))
+            }
         }));
 
         return {
-            ambientes: ambientesGroup,
-            materiais: materiaisGroup
+            ambientes: { type: 'ambiente', data: ambientesGroup },
+            materiais: { type: 'material', data: materiaisGroup }
         };
     }, [empreendimento]);
 
@@ -208,7 +213,7 @@ const Empreendimento = () => {
         if (currentSection === "ambientes") {
             const localKey = stepCfg.local;
             if (!localKey) return [];
-            return group.filter(amb => amb.local_ === localKey);
+            return { type: group.type, data: group.data.filter(amb => amb.local_ === localKey) };
         }
 
         return group;

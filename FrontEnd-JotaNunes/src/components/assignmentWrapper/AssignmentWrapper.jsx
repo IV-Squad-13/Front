@@ -1,8 +1,9 @@
 import { useState } from "react";
-import AssignmentTable from "../assignmentTable/AssignmentTable";
-import GroupedAssigner from "../groupedAssigner/GroupedAssigner";
 import SideEditor from "../sideEditor/SideEditor";
 import styles from "./AssignmentWrapper.module.css";
+
+import GroupedAssignmentTable from "../groupedAssignmentTable/GroupedAssignmentTable";
+import SimpleAssignmentTable from "../simpleAssignmentTable/SimpleAssignmentTable";
 
 const ELEMENTS = {
     AMBIENTE: "AMBIENTE",
@@ -16,15 +17,20 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
     const [currentElement, setCurrentElement] = useState(null);
 
     const handleAddAmbiente = () => {
-        if (currentElement === ELEMENTS.AMBIENTE) setCurrentElement(null);
+        if (currentElement === ELEMENTS.AMBIENTE) {
+            setCurrentElement(null);
+        }
 
         setParent(null);
         setCurrentElement(ELEMENTS.AMBIENTE);
     };
 
     const handleAddItem = (selectedParent) => {
-        if (currentElement === ELEMENTS.ITEM) setCurrentElement(null);
         if (!selectedParent) return;
+
+        if (currentElement === ELEMENTS.ITEM) {
+            setCurrentElement(null);
+        }
 
         setParent(selectedParent);
         setCurrentElement(ELEMENTS.ITEM);
@@ -32,18 +38,23 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
 
     return (
         <div className={styles.wrapper}>
-            {Array.isArray(parentList) && (<div className={styles.docData}>
-                {parentList !== undefined ? (
-                    <GroupedAssigner
-                        setEmp={setEmp}
-                        parentList={parentList}
-                        addAmbiente={handleAddAmbiente}
-                        addChildren={handleAddItem}
-                    />
-                ) : (
-                    <AssignmentTable />
-                )}
-            </div>)}
+            {parentList && (
+                <div className={styles.docData}>
+                    {parentList.type === "ambiente" ? (
+                        <GroupedAssignmentTable
+                            groups={parentList.data}
+                            setEmp={setEmp}
+                            addParent={handleAddAmbiente}
+                            addChildren={handleAddItem}
+                        />
+                    ) : (
+                        <SimpleAssignmentTable
+                            setEmp={setEmp}
+                            data={parentList.data}
+                        />
+                    )}
+                </div>
+            )}
 
             {currentElement && (
                 <div className={styles.sideEditor}>
@@ -55,7 +66,6 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
                         elementToAdd={currentElement.toLowerCase()}
                     />
                 </div>
-
             )}
         </div>
     );

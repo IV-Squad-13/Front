@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "@/components/groupedAssigner/GroupedAssigner.module.css";
+import styles from "@/components/groupedAssignmentTable/GroupedAssignmentTable.module.css";
 
 const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
     const [editing, setEditing] = useState(false);
@@ -43,7 +43,7 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
             onClick={(e) => e.stopPropagation?.()}
         >
             {!editing ? (
-                <>
+                <div className={styles.headerContent}>
                     <div className={styles.parentTitle}>{parent.name}</div>
 
                     <div className={styles.parentActions}>
@@ -69,7 +69,7 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
                             </button>
                         )}
                     </div>
-                </>
+                </div>
             ) : (
                 <form className={styles.editForm} onSubmit={finishEdit}>
                     <input
