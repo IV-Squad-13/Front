@@ -14,6 +14,7 @@ import styles from "./Empreendimento.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import AssignmentTable from "@/components/assignmentTable/AssignmentTable";
+import AssignmentWrapper from "@/components/assignmentWrapper/AssignmentWrapper";
 
 const INITIAL_DOC = { name: "", desc: "" };
 
@@ -124,21 +125,21 @@ const Empreendimento = () => {
                 section: "start"
             },
             2: {
-                component: GroupedAssigner,
+                component: AssignmentWrapper,
                 title: `${empreendimento.name} - Unidades privativas`,
                 local: "UNIDADES_PRIVATIVAS",
                 action: handleGroupedAssignment,
                 section: "ambientes"
             },
             3: {
-                component: GroupedAssigner,
+                component: AssignmentWrapper,
                 title: `${empreendimento.name} - Área comum`,
                 local: "AREA_COMUM",
                 action: handleGroupedAssignment,
                 section: "ambientes"
             },
             4: {
-                component: AssignmentTable,
+                component: AssignmentWrapper,
                 title: `${empreendimento.name} - Marcas e materiais`,
                 action: handleGroupedAssignment,
                 section: "materiais"
@@ -164,6 +165,7 @@ const Empreendimento = () => {
                     id_: a.id,
                     docType_: "ambiente",
                     localId_: local.id,
+                    local_: a.local,
                     name: a.name,
                     children: a.items.map(item => ({
                         id_: item.id,
@@ -195,6 +197,22 @@ const Empreendimento = () => {
             materiais: materiaisGroup
         };
     }, [empreendimento]);
+
+    const parentList = useMemo(() => {
+        const group = groupedAssignment[currentSection];
+
+        if (!group) return [];
+
+        const stepCfg = stepStore[currentStep];
+
+        if (currentSection === "ambientes") {
+            const localKey = stepCfg.local;
+            if (!localKey) return [];
+            return group.filter(amb => amb.local_ === localKey);
+        }
+
+        return group;
+    }, [groupedAssignment, currentSection, stepStore, currentStep]);
 
     const voltar = () => {
         if (currentStep === 0) {
@@ -235,18 +253,26 @@ const Empreendimento = () => {
             <main className={styles.mainArea}>
                 <StepComponent
                     emp={empreendimento}
+                    specId={empreendimento.doc?.id}
                     setEmp={setEmpreendimento}
-                    parentList={groupedAssignment[currentSection]}
+                    parentList={parentList}
+                    local={stepStore[currentStep]?.local ?? null}
                 />
             </main>
 
             <footer className={styles.buttonsArea}>
-                <button onClick={voltar} className={styles.button}>Voltar</button>
+                <button onClick={voltar} className={styles.button}>
+                    Voltar
+                </button>
 
                 {currentStep < totalSteps ? (
-                    <button onClick={avancar} className={styles.button}>Avançar</button>
+                    <button onClick={avancar} className={styles.button}>
+                        Avançar
+                    </button>
                 ) : (
-                    <button onClick={finalizar} className={styles.button}>Finalizar</button>
+                    <button onClick={finalizar} className={styles.button}>
+                        Finalizar
+                    </button>
                 )}
             </footer>
         </div>

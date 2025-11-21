@@ -1,0 +1,56 @@
+.wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input {
+    width: 100%;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--cinza_claro);
+    border-radius: 6px;
+    font-size: 0.93rem;
+    background: var(--background-color);
+    color: var(--font_color-secondary);
+    transition: box-shadow 0.12s, border-color 0.12s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: rgba(223, 26, 26, 0.9);
+    box-shadow: 0 4px 14px rgba(223, 26, 26, 0.06);
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: var(--background-color);
+    border: 1px solid var(--light-border);
+    border-radius: 8px;
+    z-index: 60;
+    box-shadow: 0 8px 30px rgba(12, 12, 12, 0.06);
+    overflow: hidden;
+    max-height: 14rem;
+    overflow-y: auto;
+}
+
+.item {
+    padding: 0.5rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.92rem;
+    color: #222;
+}
+
+.item:hover {
+    background: var(--cinza_claro);
+}
+
+.dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 6px;
+}

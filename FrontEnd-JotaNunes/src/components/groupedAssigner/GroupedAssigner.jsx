@@ -4,8 +4,9 @@ import styles from "./GroupedAssigner.module.css";
 import ParentHeader from "./ParentHeader/ParentHeader";
 import { updateDocElement, deleteDocElement } from "@/services/SpecificationService";
 import { updateElementInDoc } from "@/lib/deepUpdateHelper";
+import Button from "../button/Button";
 
-const GroupedAssigner = ({ setEmp, parentList = [] }) => {
+const GroupedAssigner = ({ setEmp, parentList = [], addAmbiente, addChildren }) => {
 
     const handleEditParent = async (parent, newName) => {
         try {
@@ -36,9 +37,18 @@ const GroupedAssigner = ({ setEmp, parentList = [] }) => {
         }
     };
 
-
     return (
         <div className={styles.container}>
+            <div className={styles.actions}>
+                <Button
+                    type="button"
+                    onClick={() => addAmbiente()}
+                    variant="header"
+                >
+                    Adicionar Ambiente
+                </Button>
+            </div>
+
             {parentList.map(parent => {
                 const children = parent.children ?? [];
                 const detectedColumns =
@@ -59,13 +69,26 @@ const GroupedAssigner = ({ setEmp, parentList = [] }) => {
                             />
                         }
                     >
-                        <div className={styles.tableWrapper}>
-                            <AssignmentTable
-                                setEmp={setEmp}
-                                columns={detectedColumns}
-                                data={children}
-                            />
-                        </div>
+                        <>
+                            <div className={styles.actions}>
+                                <Button
+                                    type="button"
+                                    onClick={() => addChildren(parent)}
+                                    variant="header"
+                                >
+                                    Adicionar Item
+                                </Button>
+                            </div>
+                            {children?.length > 0 && (
+                                <div className={styles.tableWrapper}>
+                                    <AssignmentTable
+                                        setEmp={setEmp}
+                                        columns={detectedColumns}
+                                        data={children}
+                                    />
+                                </div>
+                            )}
+                        </>
                     </Collapsible>
                 );
             })}

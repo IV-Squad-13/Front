@@ -18,13 +18,13 @@ const Collapsible = ({ title, children }) => {
 
   return (
     <div className={styles.wrapper}>
-      <button
+      <div
         className={styles.header}
         onClick={toggle}
       >
         <span>{title}</span>
         <span className={styles.icon}>{isOpen ? "▾" : "▸"}</span>
-      </button>
+      </div>
 
       <div
         className={styles.content}

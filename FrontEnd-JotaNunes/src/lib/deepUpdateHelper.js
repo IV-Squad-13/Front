@@ -3,16 +3,19 @@ const updateSpecDoc = (doc, params) => {
         docType,
         localId,
         ambienteId,
-        updatedFields,
         rowId,
-        remove = false
+        updatedFields,
+        newElement,
+        newElementList,
+        remove = false,
+        nmLocal
     } = params;
 
     if (remove) {
         if (docType === "local") {
             return {
                 ...doc,
-                locais: doc.locais.filter(local => local.id !== rowId)
+                locais: doc.locais.filter(l => l.id !== rowId)
             };
         }
 
@@ -24,11 +27,65 @@ const updateSpecDoc = (doc, params) => {
                         ? local
                         : {
                             ...local,
-                            ambientes: local.ambientes.filter(
-                                amb => amb.id !== rowId
+                            ambientes: local.ambientes.filter(a => a.id !== rowId)
+                        }
+                )
+            };
+        }
+
+        if (docType === "item") {
+            return {
+                ...doc,
+                locais: doc.locais.map(local =>
+                    local.id !== localId
+                        ? local
+                        : {
+                            ...local,
+                            ambientes: local.ambientes.map(a =>
+                                a.id !== ambienteId
+                                    ? a
+                                    : {
+                                        ...a,
+                                        items: a.items.filter(i => i.id !== rowId)
+                                    }
                             )
                         }
                 )
+            };
+        }
+    }
+
+    if (newElement || newElementList) {
+        const toAdd = newElementList ?? [newElement];
+
+        const dedupeById = (arr) =>
+            arr.filter(
+                (el, idx, self) =>
+                    idx === self.findIndex(x => x.id === el.id)
+            );
+
+        if (docType === "local") {
+            const merged = [...doc.locais, ...toAdd];
+            return {
+                ...doc,
+                locais: dedupeById(merged)
+            };
+        }
+
+        if (docType === "ambiente") {
+            return {
+                ...doc,
+                locais: doc.locais.map(local => {
+                    if (local.id !== localId && local.local !== nmLocal) {
+                        return local;
+                    }
+
+                    const merged = [...local.ambientes, ...toAdd];
+                    return {
+                        ...local,
+                        ambientes: dedupeById(merged)
+                    };
+                })
             };
         }
 
@@ -45,9 +102,10 @@ const updateSpecDoc = (doc, params) => {
                                     ? amb
                                     : {
                                         ...amb,
-                                        items: amb.items.filter(
-                                            item => item.id !== rowId
-                                        )
+                                        items: dedupeById([
+                                            ...amb.items,
+                                            ...toAdd
+                                        ])
                                     }
                             )
                         }
@@ -55,6 +113,7 @@ const updateSpecDoc = (doc, params) => {
             };
         }
     }
+
 
     return {
         ...doc,
@@ -89,14 +148,26 @@ const updateSpecDoc = (doc, params) => {
     };
 };
 
-export const updateElementInDoc = (doc, row, updatedDocElement, remove = false) => {
-    return updateSpecDoc(doc, {
+export const updateElementInDoc = (
+    doc,
+    row,
+    updatedDocElement,
+    remove = false,
+    newElement = null,
+    newElementList = null
+) => {
+    const d = updateSpecDoc(doc, {
         docType: row.docType_,
         localId: row.localId_,
         ambienteId: row.ambienteId_,
-        itemId: row.itemId_,
-        updatedFields: updatedDocElement,
         rowId: row.id_,
-        remove
+        updatedFields: updatedDocElement,
+        newElement,
+        newElementList,
+        remove,
+        nmLocal: row.local
     });
+
+    console.log(d);
+    return d;
 };

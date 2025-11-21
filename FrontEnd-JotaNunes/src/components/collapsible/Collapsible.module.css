@@ -21,7 +21,8 @@
 }
 
 .header:hover {
-    background: var(--cinza_claro);
+    background: var(--light-border);
+    color: var(--light-font_color);
 }
 
 .icon {

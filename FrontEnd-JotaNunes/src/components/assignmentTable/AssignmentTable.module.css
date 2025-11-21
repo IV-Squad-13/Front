@@ -38,11 +38,12 @@
 }
 
 .table tbody tr:nth-child(even) {
-    background-color: var(--cinza_claro);
+    background-color: var(--light-border);
+    color: var(--light-font_color);
 }
 
 .table tr:hover {
-    background-color: var(--cinza_medio);
+    background-color: var(--cinza_claro);
 }
 
 .table td {

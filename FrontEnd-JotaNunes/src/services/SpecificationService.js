@@ -11,6 +11,12 @@ export const searchEspecificacao = async (searchParams) => {
   return await authFetch(`${API_URL}/editor/especificacao/search?${queryParams}`)
 }
 
+export const searchDocElement = async (searchParams) => {
+  const queryParams = new URLSearchParams({ ...searchParams, loadAll: true }).toString();
+  return await authFetch(`${API_URL}/editor/document/search?${queryParams}`)
+}
+
+
 export const getAllSpecifications = async () => {
   const queryParams = new URLSearchParams({ loadAll: true }).toString();
 
