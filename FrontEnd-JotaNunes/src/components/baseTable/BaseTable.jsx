@@ -1,6 +1,7 @@
 import React from "react";
 import CellEditor from "../cellEditor/CellEditor";
 import styles from "./BaseTable.module.css";
+import Button from "../button/Button";
 
 const BaseTable = ({
     columns = [],
@@ -41,23 +42,24 @@ const BaseTable = ({
 
                             <td className={styles.actionsCell}>
                                 <div className={styles.actionColumn}>
-                                    <button
-                                        className={styles.actionBtn}
-                                        onClick={() => onDelete(row)}
-                                        title="Deletar"
-                                    >
-                                        Deletar
-                                    </button>
-
                                     {selectRow !== undefined && (
-                                        <button
-                                            className={styles.actionBtn}
+                                        <Button
+                                            type="button"
+                                            variant="outline small"
                                             onClick={() => selectRow(row)}
                                             title="Selecionar"
                                         >
                                             Selecionar
-                                        </button>
+                                        </Button>
                                     )}
+                                    <Button
+                                        type="button"
+                                        variant="outline small"
+                                        onClick={() => onDelete(row)}
+                                        title="Deletar"
+                                    >
+                                        Deletar
+                                    </Button>
                                 </div>
                             </td>
                         </tr>

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./Collapsible.module.css";
 
-const Collapsible = ({ title, children }) => {
+const Collapsible = ({ title, children, titleStyle = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
@@ -22,7 +22,7 @@ const Collapsible = ({ title, children }) => {
         className={styles.header}
         onClick={toggle}
       >
-        <span>{title}</span>
+        <span className={titleStyle}>{title}</span>
         <span className={styles.icon}>{isOpen ? "▾" : "▸"}</span>
       </div>
 

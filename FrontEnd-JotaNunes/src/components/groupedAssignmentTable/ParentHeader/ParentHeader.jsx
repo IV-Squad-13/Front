@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "@/components/groupedAssignmentTable/GroupedAssignmentTable.module.css";
+import Button from "@/components/button/Button";
 
 const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
     const [editing, setEditing] = useState(false);
@@ -40,7 +41,6 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
     return (
         <div
             className={styles.parentHeader}
-            onClick={(e) => e.stopPropagation?.()}
         >
             {!editing ? (
                 <div className={styles.headerContent}>
@@ -48,25 +48,25 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
 
                     <div className={styles.parentActions}>
                         {onEditParent && (
-                            <button
+                            <Button
                                 type="button"
-                                className={styles.editBtn}
+                                variant="edit small"
                                 onClick={startEdit}
                                 title="Editar nome do grupo"
                             >
                                 Editar
-                            </button>
+                            </Button>
                         )}
 
                         {onDeleteParent && (
-                            <button
+                            <Button
                                 type="button"
-                                className={styles.deleteBtn}
+                                variant="delete small"
                                 onClick={handleDelete}
                                 title="Remover grupo"
                             >
                                 Remover
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>

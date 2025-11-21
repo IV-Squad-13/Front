@@ -111,3 +111,10 @@
     display: flex;
     justify-content: center;
 }
+
+.actions {
+    padding: 0.6rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+}

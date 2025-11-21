@@ -65,6 +65,30 @@
 }
 
 .ghost:hover:not(:disabled) {
-  color: var(--vermelho);
+  color: var(--soft-red);
   opacity: 0.8;
+}
+
+.edit {
+  background-color: var(--vermelho);
+  color: var(--font_color-primary);
+}
+
+.edit:hover:not(:disabled) {
+  --bg: #c62020;
+}
+
+.delete {
+  background: transparent;
+  color: var(--vermelho);
+  border: 1px solid var(--vermelho);
+}
+
+.small {
+  padding: 0.4rem 0.8rem;
+  font-size: 1.8ch;
+}
+
+.contained {
+  width: auto;
 }

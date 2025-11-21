@@ -92,10 +92,10 @@ const SimpleAssignmentTable = ({ data = [], setEmp, addMaterial, addMarca }) => 
     return (
         <div>
             <div className={styles.actions}>
-                <Button type="button" onClick={() => addMaterial && addMaterial()} variant="header">
+                <Button type="button" onClick={() => addMaterial && addMaterial()} variant="primary contained">
                     Adicionar Material
                 </Button>
-                <Button disabled={selectedMaterial === null} type="button" onClick={() => addMarca(selectedMaterial)} variant="header">
+                <Button disabled={selectedMaterial === null} type="button" onClick={() => addMarca(selectedMaterial)} variant="primary contained">
                     Adicionar Marca
                 </Button>
             </div>

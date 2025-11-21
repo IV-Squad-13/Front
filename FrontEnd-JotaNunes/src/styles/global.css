@@ -23,13 +23,13 @@
   --light-border: #e0e0e0;
   --light-font_color: #3d3d3d;
   --background-even: #efefef;
+  --soft-red: #4e1414;
 }
 
 body.dark-mode {
   --background-color: #303030;
   --font_color-primary: #000;
   --font_color-secondary: #fff;
-  --vermelho: #bc1f1b;
   --cinza_claro: #f8f8f8;
   --cinza_medio: #2a2a2a;
   --cinza: #a7a7a7;
@@ -45,6 +45,7 @@ body.dark-mode {
   --light-border: #535353;
   --light-font_color: #cecece;
   --background-even: #3e3e3e;
+  --soft-red: #e1cdcd;
 }
 
 body {

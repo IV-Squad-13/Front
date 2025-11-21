@@ -49,7 +49,7 @@ const GroupedAssignmentTable = ({ groups = [], setEmp, addChildren, addParent })
     return (
         <div className={styles.container}>
             <div className={styles.actions}>
-                <Button type="button" onClick={() => addParent && addParent()} variant="header">
+                <Button type="button" onClick={() => addParent && addParent()} variant="primary contained">
                     Adicionar Ambiente
                 </Button>
             </div>
@@ -65,11 +65,12 @@ const GroupedAssignmentTable = ({ groups = [], setEmp, addChildren, addParent })
                     <Collapsible
                         className={styles.headerCollapsible}
                         key={parent.id_}
+                        titleStyle={styles.titleContainer}
                         title={<ParentHeader parent={parent} onEditParent={(v) => handleEditParent(parent, v)} onDeleteParent={() => handleDeleteParent(parent)} />}
                     >
                         <>
                             <div className={styles.actions}>
-                                <Button type="button" onClick={() => addChildren(parent)} variant="header">
+                                <Button type="button" onClick={() => addChildren(parent)} variant="outline contained">
                                     Adicionar Item
                                 </Button>
                             </div>

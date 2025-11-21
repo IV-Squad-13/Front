@@ -8,6 +8,10 @@
     flex: 1;
 }
 
+.titleContainer {
+    flex: 1;
+}
+
 .parentHeader {
     display: flex;
     align-items: center;
@@ -18,7 +22,11 @@
 }
 
 .headerContent {
-    flex: 1
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 0.4rem;
+    align-items: center;
 }
 
 .parentTitle {
@@ -33,28 +41,6 @@
     gap: 0.5rem;
     align-items: center;
     padding: 0.4rem 0;
-}
-
-.editBtn,
-.deleteBtn,
-.saveBtn,
-.cancelBtn {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.9rem;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
-}
-
-.editBtn {
-    background-color: var(--vermelho);
-    color: var(--font_color-primary);
-}
-
-.deleteBtn {
-    background: transparent;
-    color: var(--vermelho);
-    border: 1px solid var(--vermelho);
 }
 
 .editForm {

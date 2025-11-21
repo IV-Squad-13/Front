@@ -1,65 +1,31 @@
-import { useState } from "react";
-import SideEditor from "../sideEditor/SideEditor";
+import React, { useState } from "react";
+import SideEditor from "@/components/sideEditor/SideEditor";
 import styles from "./AssignmentWrapper.module.css";
 
-import GroupedAssignmentTable from "../groupedAssignmentTable/GroupedAssignmentTable";
-import SimpleAssignmentTable from "../simpleAssignmentTable/SimpleAssignmentTable";
+import GroupedAssignmentTable from "@/components/groupedAssignmentTable/GroupedAssignmentTable";
+import SimpleAssignmentTable from "@/components/simpleAssignmentTable/SimpleAssignmentTable";
 
 const ELEMENTS = {
-    AMBIENTE: "AMBIENTE",
-    ITEM: "ITEM",
-    MATERIAL: "MATERIAL",
-    MARCA: "MARCA",
+    AMBIENTE: "ambiente",
+    ITEM: "item",
+    MATERIAL: "material",
+    MARCA: "marca",
 };
 
 const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
     const [parent, setParent] = useState(null);
     const [currentElement, setCurrentElement] = useState(null);
 
-    const handleAddAmbiente = () => {
-        if (currentElement === ELEMENTS.AMBIENTE) {
+    const toggle = (element, selectedParent = null) => {
+        if (currentElement === element) {
             setCurrentElement(null);
+            setParent(null);
             return;
         }
 
-        setParent(null);
-        setCurrentElement(ELEMENTS.AMBIENTE);
+        setCurrentElement(element);
+        setParent(selectedParent ?? null);
     };
-
-    const handleAddItem = (selectedParent) => {
-        if (!selectedParent) return;
-
-        if (currentElement === ELEMENTS.ITEM) {
-            setCurrentElement(null);
-            return;
-        }
-
-        setParent(selectedParent);
-        setCurrentElement(ELEMENTS.ITEM);
-    };
-
-    const handleAddMaterial = () => {
-        if (currentElement === ELEMENTS.MATERIAL) {
-            setCurrentElement(null);
-            return;
-        }
-
-        setParent(null);
-        setCurrentElement(ELEMENTS.MATERIAL);
-    }
-
-    const handleAddMarca = (selectedParent) => {
-        if (!selectedParent) return;
-
-        if (currentElement === ELEMENTS.MARCA) {
-            setCurrentElement(null);
-            return;
-        }
-
-        setParent(selectedParent);
-        setCurrentElement(ELEMENTS.MARCA);
-    };
-
 
     return (
         <div className={styles.wrapper}>
@@ -69,15 +35,15 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
                         <GroupedAssignmentTable
                             groups={parentList.data}
                             setEmp={setEmp}
-                            addParent={handleAddAmbiente}
-                            addChildren={handleAddItem}
+                            addParent={() => toggle(ELEMENTS.AMBIENTE)}
+                            addChildren={selected => toggle(ELEMENTS.ITEM, selected)}
                         />
                     ) : (
                         <SimpleAssignmentTable
                             setEmp={setEmp}
                             data={parentList.data}
-                            addMaterial={handleAddMaterial}
-                            addMarca={handleAddMarca}
+                            addMaterial={() => toggle(ELEMENTS.MATERIAL)}
+                            addMarca={selected => toggle(ELEMENTS.MARCA, selected)}
                         />
                     )}
                 </div>
@@ -90,7 +56,7 @@ const AssignmentWrapper = ({ specId, setEmp, parentList, local }) => {
                         setEmp={setEmp}
                         parent={parent}
                         local={local}
-                        elementToAdd={currentElement.toLowerCase()}
+                        elementToAdd={currentElement}
                     />
                 </div>
             )}

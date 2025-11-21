@@ -43,7 +43,7 @@ const CellEditor = ({ row, column, onEdit }) => {
 
     if (type === "commaList") {
         const collection = row[column.key];
-        const items = (collection && Array.isArray(collection.data)) ? collection.data : [];
+        const items = (collection && Array.isArray(collection)) ? collection : [];
 
         return (
             <CommaListEditor
