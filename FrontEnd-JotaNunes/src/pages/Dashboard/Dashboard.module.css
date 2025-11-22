@@ -1,0 +1,13 @@
+p, h2{
+    color: var(--font_color-secondary);
+}
+.cardGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em; 
+  padding: 1.5em 0em;
+  border-style: solid;
+  border-color:var(--cinza);
+  border-radius:0.5em;
+  justify-content: space-around;
+}
