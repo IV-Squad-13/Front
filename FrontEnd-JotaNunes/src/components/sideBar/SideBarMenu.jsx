@@ -57,11 +57,12 @@ const items = [
   }
 ];
 
-const SideBarMenu = ({ onTitleChange }) => {
+const SideBarMenu = ({ onTitleChange, onClose }) => {
   const { user } = useAuth();
 
   const handleItemClick = (title) => {
     onTitleChange(title);
+    if (onClose) onClose();
   };
 
   return (
@@ -69,8 +70,7 @@ const SideBarMenu = ({ onTitleChange }) => {
       <ul>
         {items
           .filter(
-            (item) =>
-              !item.adminOnly || (user && user.papel?.nome === 'ADMIN'),
+            (item) => !item.adminOnly || (user && user.papel?.nome === 'ADMIN'),
           )
           .map((item) => (
             <li

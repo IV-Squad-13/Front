@@ -1,10 +1,13 @@
 .container {
   padding: 1rem;
-  padding-left: 1.5rem;
+  padding: 1rem 2rem;
   list-style: none;
   font-weight: 500;
   font-size: 20px;
   border-bottom: 2px solid var(--cinza);
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-  color: var(--font_color-secondary);
+  box-shadow: rgba(0, 0, 0, 0.15) 0.1em 0.15em 0.3em;
+}
+.container p {
+  color: var(--font_color-secondary); 
+  transition: color 0.3s ease-in-out;
 }

@@ -1,15 +1,25 @@
 .container {
-  height: 100vh;
+  height: 100dvh;
   display: flex;
 }
 
 .mainContainer {
-  width: 100%;
   display: flex;
-  margin-left: 300px;
   flex-direction: column;
   flex-grow: 1;
   transition: margin-left 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .mainContainer {
+    margin-left: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContainer {
+    margin-left: 0;
+  }
 }
 
 .mainContainer.sidebarClosed {

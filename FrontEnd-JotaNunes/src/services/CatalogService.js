@@ -204,8 +204,18 @@ export const getCatalogItemById = async (type, id) => {
 };
 
 
+
+/*
+Busca por nome:
+
+resourceData = {
+  name: [valor]
+}
+
+*/
 export const getCatalogSearch = async (resource, resourceData) => {
-  const response = await authFetch(`${API_URL}/catalogo/${resource}/name/${resourceData}`, {
+  const queryParams = new URLSearchParams({ ...resourceData }).toString();
+  const response = await authFetch(`${API_URL}/catalogo/${resource}/search?${queryParams}`, {
     method: 'GET'
   });
 
