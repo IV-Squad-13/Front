@@ -27,9 +27,9 @@ const items = [
   {
     id: 3,
     icon: especificacoes,
-    text: 'Consulta Empreendimentos',
-    alt: 'Empreendimento',
-    path: '/home/consulta-empreendimentos',
+    text: 'Empreendimentos',
+    alt: 'Empreendimentos',
+    path: '/home/empreendimentos',
   },
   {
     id: 4,

@@ -1,0 +1,44 @@
+.carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.navBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+}
+
+.dots {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--cinza);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.activeDot {
+    background-color: var(--vermelho);
+    transform: scale(1.2);
+}
+
+.carouselPanel {
+    padding: 1rem 0;
+}
+
+.empty {
+    text-align: center;
+    color: var(--font_color-secondary);
+    padding: 2rem 0;
+    font-size: 1rem;
+}

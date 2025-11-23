@@ -10,6 +10,7 @@
 
     display: flex;
     align-items: center;
+    flex-direction: column;
 
     transition: 0.15s ease;
 }
@@ -26,4 +27,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.btnContainer {
+    flex: 1;
+    margin-top: 0.4rem;
 }

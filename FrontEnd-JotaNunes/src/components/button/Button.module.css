@@ -92,3 +92,16 @@
 .contained {
   width: auto;
 }
+
+.carouselNav {
+  background-color: var(--cinza);
+  color: var(--font_color-primary);
+  width: auto;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 1.1rem;
+}
+
+.carouselNav:hover:not(:disabled) {
+  background-color: var(--soft-red);
+}

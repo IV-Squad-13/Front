@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "@/components/searchBar/SearchBar";
-import SelectItem from "@/components/selectItem/SelectItem";
 import { getAllEmpreendimentos, searchEmpreendimentos } from "@/services/SpecificationService";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/button/Button";
 import styles from "./ConsultaEmpreendimentos.module.css";
+import SelectEmp from "@/components/selectEmp/SelectEmp";
 
 const ConsultaEmpreendimentos = () => {
     const [empreendimentos, setEmpreendimentos] = useState([]);
@@ -46,8 +46,8 @@ const ConsultaEmpreendimentos = () => {
         }
     };
 
-    const selectEmpreendimento = (id) => {
-        navigate(id ? `/home/empreendimento/${encodeURIComponent(id)}` : `/home/empreendimento`);
+    const selectEmpreendimento = (id, page) => {
+        navigate(id ? `/home/${page}/${encodeURIComponent(id)}` : `/home/${page}`);
     };
 
     return (
@@ -85,11 +85,13 @@ const ConsultaEmpreendimentos = () => {
                     <div className={styles.spinner}></div>
                 ) : empreendimentos.length > 0 ? (
                     empreendimentos.map((emp) => (
-                        <SelectItem
+                        <SelectEmp
                             key={emp.id}
                             id={emp.id}
-                            content={emp.name}
-                            onSelect={() => selectEmpreendimento(emp.id)}
+                            name={emp.name}
+                            author={emp.creator.user.name}
+                            dtCreated={emp.createdAt}
+                            onSelect={selectEmpreendimento}
                         />
                     ))
                 ) : (

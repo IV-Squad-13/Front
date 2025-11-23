@@ -1,0 +1,64 @@
+.ambienteContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    border: 1px solid var(--light-border);
+    border-radius: 10px;
+    padding: 0.9rem;
+
+    background: var(--background);
+}
+
+
+.contentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ambienteIdentifier {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.ambienteIdentifier p:first-child {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--font_color-secondary);
+}
+
+.ambienteIdentifier p:last-child {
+    font-size: 0.9rem;
+    color: var(--cinza);
+}
+
+.btnContainer {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contentChildren {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.itemContainer {
+    border: 1px solid var(--light-border);
+    border-radius: 6px;
+    background: var(--background-even);
+
+    padding: 1rem;
+}
+
+.itemRow {
+    margin-bottom: 0.8rem;
+}
+
+.itemFieldContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}

@@ -25,7 +25,7 @@ const Empreendimento = () => {
 
     const voltar = () => {
         if (current === 0) {
-            navigate("/home/consulta-empreendimentos");
+            navigate("/home/empreendimentos");
             return;
         }
         setCurrent(s => s - 1);
@@ -39,7 +39,8 @@ const Empreendimento = () => {
     };
 
     const finalizar = () => {
-        console.log("Processo finalizado!");
+        navigate(id ? `/home/resumo/${encodeURIComponent(id)}` : `/home/resumo`);
+        return;
     };
 
     if (loading) return <div className={styles.container}>Carregando...</div>;

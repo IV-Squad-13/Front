@@ -42,7 +42,7 @@ const BaseTable = ({
 
                             <td className={styles.actionsCell}>
                                 <div className={styles.actionColumn}>
-                                    {selectRow !== undefined && (
+                                    {row.docType_ !== "item" && (
                                         <Button
                                             type="button"
                                             variant="outline small"

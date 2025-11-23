@@ -10,14 +10,14 @@ const useSteps = ({ empreendimento, saveEmp, saveSpec }) => {
         key: "emp",
         Component: EmpreendimentoForm,
         title: "Bem vindo ao cadastro de Empreendimentos!",
-        onSubmit: saveEmp,
+        onSubmit: saveEmp ?? null,
         section: "start",
       },
       {
         key: "spec",
         Component: EspecificacaoForm,
         title: "Insira aqui os dados da nova Especificação",
-        onSubmit: saveSpec,
+        onSubmit: saveSpec ?? null,
         section: "start",
       },
       {

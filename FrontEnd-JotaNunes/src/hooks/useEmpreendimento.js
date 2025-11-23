@@ -8,6 +8,7 @@ import {
 
 const INITIAL_DOC = { name: "", desc: "" };
 const docLoadParams = {
+  loadEspecificacao: true,
   loadLocais: true,
   loadAmbientes: true,
   loadItems: true,
