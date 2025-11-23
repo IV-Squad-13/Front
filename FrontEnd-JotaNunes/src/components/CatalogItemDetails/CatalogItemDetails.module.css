@@ -1,129 +1,141 @@
-/* === Modal base === */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.55);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 999;
+  animation: fadeIn 0.3s ease;
   backdrop-filter: blur(4px);
+  padding: 1rem;
 }
 
-/* === Conteúdo interno do modal === */
 .modalContent {
-  background: #ffffff;
-  width: 80%;
-  max-width: 900px;
-  max-height: 80vh;
-  border-radius: 16px;
+  background-color: var(--background-color);
+  color: var(--font_color-secondary);
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease;
   position: relative;
-  animation: fadeIn 0.3s ease-out;
 }
 
-/* === Botão de fechar === */
 .closeButton {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: #ef4444;
-  color: white;
+  top: 1rem;
+  right: 1rem;
+  background: var(--vermelho);
+  color: var(--font_color-primary);
   border: none;
-  border-radius: 8px;
-  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
+  font-weight: bold;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .closeButton:hover {
-  background: #dc2626;
+  background: #a31313;
+  transform: scale(1.05);
 }
 
-/* === Título === */
 .modalContent h2 {
+  margin-bottom: 1rem;
+  color: var(--font_color-secondary);
   font-size: 1.5rem;
-  color: #1f2937;
-  margin-bottom: 1.2rem;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 0.5rem;
+  text-align: center;
 }
 
-/* === Subtítulos (categorias de associação) === */
 .modalContent h3 {
-  margin-top: 1.8rem;
-  margin-bottom: 0.6rem;
-  font-size: 1.1rem;
-  color: #374151;
-  border-left: 4px solid #3b82f6;
-  padding-left: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--font_color-secondary);
+  border-bottom: 1px solid var(--cinza);
+  padding-bottom: 0.3rem;
 }
 
-/* === Parágrafos e listas === */
 .modalContent p {
-  color: #4b5563;
   line-height: 1.5;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
 .modalContent ul {
   list-style: none;
   padding-left: 0;
-  margin: 0 0 1rem 0;
+  margin-bottom: 1rem;
 }
 
 .modalContent li {
-  background: #f3f4f6; /* cinza mais visível */
+  background: var(--cinza_medio);
+  color: var(--font_color-secondary);
   padding: 0.6rem 1rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;
-  border: 1px solid #d1d5db;
   transition: background 0.2s ease;
-  color: #111827; /* texto escuro e visível */
 }
-
-.modalContent li {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
 
 .modalContent li:hover {
-  background: #f3f4f6;
+  background: var(--cinza);
 }
 
-/* === Scrollbar customizada === */
 .modalContent::-webkit-scrollbar {
-  width: 10px;
-}
-
-.modalContent::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  width: 8px;
 }
 
 .modalContent::-webkit-scrollbar-thumb {
-  background: #9ca3af;
+  background-color: var(--scrollbar-thumb-color);
   border-radius: 10px;
 }
 
 .modalContent::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background-color: var(--scrollbar-thumb-hover-color);
 }
 
-/* === Animação === */
 @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
   from {
+    transform: translateY(40px);
     opacity: 0;
-    transform: scale(0.95);
   }
   to {
+    transform: translateY(0);
     opacity: 1;
-    transform: scale(1);
   }
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 1.2rem;
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .closeButton {
+    padding: 0.4rem 0.8rem;
+    top: 0.8rem;
+    right: 0.8rem;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+  color: #0070f3;
+  text-decoration: underline;
 }

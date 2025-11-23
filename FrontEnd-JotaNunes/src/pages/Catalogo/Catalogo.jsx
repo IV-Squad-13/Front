@@ -12,7 +12,7 @@ const Catalogo = () => {
   const [spec, setSpec] = useState([]);
   const [specsPaginados, setSpecsPaginados] = useState([]);
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedResourceId, setSelectedResourceId] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true)
@@ -52,7 +52,6 @@ const Catalogo = () => {
     fetchData();
   }, [activeButton, refreshKey]);
 
-  // 🔹 Define quantos itens cabem na tela
   useLayoutEffect(() => {
     const calculateItems = () => {
       if (containerRef.current && itemRef.current) {
@@ -72,7 +71,6 @@ const Catalogo = () => {
     return () => resizeObserver.disconnect();
   }, [spec]);
 
-  // 🔹 Paginação
   useEffect(() => {
     const paginatedData = spec.slice(
       (currentPage - 1) * itemsPerPage,
@@ -82,7 +80,6 @@ const Catalogo = () => {
     setTotalPages(Math.ceil(spec.length / itemsPerPage));
   }, [currentPage, spec, itemsPerPage]);
 
-  // 🔹 Troca de aba (padrão, ambiente, etc.)
   const handleSpecChange = (newSpec) => {
     setActiveButton(newSpec);
     setCurrentPage(1);
@@ -103,9 +100,8 @@ const Catalogo = () => {
     console.log("[v0] Novo item salvo:", newItem);
   };
 
-  // 🔹 Ao clicar em um item, abre o modal de detalhes
   const handleOpenDetails = (item) => {
-    setSelectedItem(item);
+    setSelectedResourceId(item.id);
     setIsDetailsOpen(true);
     forceRefresh()
   };
@@ -166,7 +162,6 @@ const Catalogo = () => {
         </div>
       </div>
 
-      {/* 🔹 Área dos itens */}
       <div className={styles.itemsArea} ref={containerRef}>
         {isLoading ? (
           <p>Carregando itens...</p>
@@ -188,7 +183,6 @@ const Catalogo = () => {
         )}
       </div>
 
-      {/* 🔹 Paginação */}
       <div className={styles.paginationArea}>
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
           Anterior
@@ -201,7 +195,6 @@ const Catalogo = () => {
         </button>
       </div>
 
-      {/* 🔹 Modal de Adição */}
       {isModalOpen && (
         <AddModal
           activeSpec={activeButton}
@@ -210,11 +203,12 @@ const Catalogo = () => {
         />
       )}
 
-      {/* 🔹 Modal de Detalhes */}
-      {isDetailsOpen && selectedItem && (
+      {isDetailsOpen && selectedResourceId && (
         <CatalogItemDetails
-          type={activeButton} // tipo: padrao, ambiente, etc
-          item={selectedItem} // item selecionado
+          type={activeButton}
+          id={selectedResourceId}
+          setSelectedResource={setSelectedResourceId}
+          setSelectedResourceType={setActiveButton}
           onClose={() => setIsDetailsOpen(false)}
         />
       )}
