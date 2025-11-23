@@ -16,10 +16,26 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
-    }else {
+    } else {
       localStorage.removeItem('user');
     }
-  })
+  }, [user])
+
+  useEffect(() => {
+  const stored = localStorage.getItem('user');
+  if (!stored) return;
+
+  (async () => {
+    try {
+      const me = await getMe();
+      setUser(me);
+    } catch (err) {
+      setUser(null);
+      localStorage.removeItem('user');
+      navigate('/');
+    }
+  })();
+}, []);
 
   const login = async (email, password) => {
     try {

@@ -1,0 +1,14 @@
+.mainSearch {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.4rem 0.6rem;
+}
+
+.fieldSearch {
+    width: 100%;
+    width: 100%;
+    padding: 0.4rem 0.2rem;
+    border: 1px solid var(--light-border);
+    border-radius: 4px;
+}

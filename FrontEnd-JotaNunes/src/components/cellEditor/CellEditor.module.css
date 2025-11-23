@@ -1,0 +1,113 @@
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-y: auto;
+    border: 1px solid var(--cinza);
+    border-radius: 8px;
+    background: transparent;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background: transparent;
+    border-bottom: 1px solid var(--cinza_medio);
+}
+
+.table th {
+    padding: 0.85rem 0.8rem;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--font_color-secondary);
+}
+
+.table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: var(--cinza_claro);
+}
+
+.table tbody tr:hover {
+    background-color: var(--cinza);
+}
+
+.table td {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.95rem;
+    color: var(--font_color-secondary);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--cinza_medio);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: 1px solid var(--cinza);
+}
+
+.cellInput {
+    width: 100%;
+    padding: 0.45rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--cinza);
+    background: transparent;
+    color: var(--font_color-secondary);
+    font-size: 0.95rem;
+}
+
+.cellInput:focus {
+    outline: 2px solid var(--vermelho);
+}
+
+.marcasContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.marcaPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.55rem;
+    background: var(--vermelho);
+    color: var(--font_color-primary);
+    font-size: 0.85rem;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.marcaDelete {
+    border: none;
+    background: transparent;
+    color: var(--font_color-primary);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    margin: 0;
+}
+
+.marcaDelete:hover {
+    opacity: 0.75;
+}
+
+.actionsCell {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.actionColumn {
+    display: flex;
+    justify-content: center;
+}

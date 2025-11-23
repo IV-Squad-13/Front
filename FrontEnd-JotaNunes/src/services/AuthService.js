@@ -9,20 +9,17 @@ export const loginUser = async (email, password) => {
     body: JSON.stringify({ email, password }),
   });
 
-  // Pega o token como texto (não JSON)
   const token = await response.text();
 
   if (!response.ok) {
     throw new Error('Falha no login');
   }
 
-  // 🔹 Valida se o token parece um JWT
   if (!token.startsWith('ey')) {
     console.error('Resposta inesperada no login:', token);
     throw new Error('Resposta inválida do servidor');
   }
 
-  // 🔹 Salva corretamente no localStorage
   localStorage.setItem('bearerToken', token);
 };
 export const authFetch = async (url, options = {}) => {
@@ -39,8 +36,6 @@ export const authFetch = async (url, options = {}) => {
     headers,
   });
 
-  // 🔹 Aqui o erro mais comum:
-  // O back-end pode retornar texto, JSON, ou nada — vamos proteger
   let data;
   const contentType = response.headers.get('content-type');
 

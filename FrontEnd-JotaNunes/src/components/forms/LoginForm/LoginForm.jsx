@@ -32,8 +32,6 @@ const LoginForm = () => {
     }
   };
 
-  console.log(useTheme());
-
   return (
     <div className={styles.formContainer}>
       <img src={Logo} alt="Logo da empresa Jotanunes" className={styles.logo} />
@@ -47,7 +45,7 @@ const LoginForm = () => {
           placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          defaultcolor={true}
+          defaultcolor="true"
         />
         <Input
           type="password"
@@ -55,7 +53,7 @@ const LoginForm = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          defaultcolor={true}
+          defaultcolor="true"
         />
         <p className={styles.error}>{error}</p>
 

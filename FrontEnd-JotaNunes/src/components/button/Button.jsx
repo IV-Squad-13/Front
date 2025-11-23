@@ -1,11 +1,15 @@
 import styles from './Button.module.css';
 
-const Button = ({children, type= 'button', variant= 'primary', ...props}) => {
-    
-    const buttonClassName = `${styles.button} ${styles[variant]}`
+const Button = ({ children, type = 'button', variant = 'primary', ...props }) => {
+
+  const buttonClassName = [
+    styles.button,
+    ...variant.split(" ").map(v => styles[v])
+  ].join(" ");
+
   return (
     <button type={type} className={buttonClassName} {...props}>
-        {children}
+      {children}
     </button>
   )
 }

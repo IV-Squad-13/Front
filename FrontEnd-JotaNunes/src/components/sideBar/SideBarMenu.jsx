@@ -27,32 +27,30 @@ const items = [
   {
     id: 3,
     icon: especificacoes,
+    text: 'Empreendimentos',
+    alt: 'Empreendimentos',
+    path: '/home/empreendimentos',
+  },
+  {
+    id: 4,
+    icon: especificacoes,
     text: 'Especificações',
     alt: 'Especificações',
     path: '/home/especificacoes',
   },
   {
-    id: 4,
+    id: 5,
     icon: historico,
     text: 'Histórico',
     alt: 'Histórico',
     path: '/home/historico',
   },
-
   {
-    id: 5,
+    id: 6,
     icon: users,
     text: 'Usuários',
     alt: 'usuários',
     path: '/home/usuarios',
-    adminOnly: true,
-  },
-  {
-    id: 6,
-    icon: especificacoes,
-    text: 'Empreendimentos (Nova Especificações)',
-    alt: 'Empreendimento',
-    path: '/home/consulta-empreendimentos',
     adminOnly: true,
   }
 ];
@@ -84,7 +82,7 @@ const SideBarMenu = ({ onTitleChange, onClose }) => {
                   alt={item.alt}
                   className={styles.navIcon}
                 />
-                <span>{item.text}</span>
+                <span className={styles.navName}>{item.text}</span>
               </Link>
             </li>
           ))}

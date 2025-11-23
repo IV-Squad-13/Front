@@ -1,0 +1,53 @@
+.materialContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    border: 1px solid var(--light-border);
+    border-radius: 10px;
+    padding: 0.9rem;
+
+    background: var(--background);
+}
+
+.contentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.materialIdentifier {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.materialIdentifier p:first-child {
+    font-size: 2ch;
+    font-weight: 600;
+    color: var(--font_color-secondary);
+}
+
+.materialIdentifier p:last-child {
+    font-size: 2ch;
+    color: var(--cinza);
+}
+
+.btnContainer {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contentChildren {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.marcaContainer {
+    border: 1px solid var(--light-border);
+    border-radius: 6px;
+    background-color: var(--background-even);
+    padding: 0 0.4rem;
+}

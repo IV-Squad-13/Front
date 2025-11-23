@@ -8,7 +8,6 @@ import {
   getAllSpecifications,
   addDocElementBulk,
 } from '@/services/SpecificationService';
-
 import { getCatalogByResource } from '@/services/CatalogService';
 import { useAuth } from '@/context/AuthContext';
 

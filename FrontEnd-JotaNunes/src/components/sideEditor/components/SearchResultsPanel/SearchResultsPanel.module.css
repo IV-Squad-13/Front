@@ -1,0 +1,18 @@
+/* SearchResultsPanel.module.css */
+.resultsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modeToggle {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* small hint */
+.hint {
+  font-size: 0.8rem;
+  color: #8a8a8a;
+}

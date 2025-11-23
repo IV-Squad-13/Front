@@ -1,109 +1,86 @@
-import React, { useEffect, useState } from "react";
-import EmpreendimentoForm from "@/components/forms/EmpreendimentoForm/EmpreendimentoForm";
-import EspecificacaoForm from "@/components/forms/EspecificacaoForm/EspecificacaoForm";
-import { getEmpreendimentoById, startProcess } from "@/services/SpecificationService";
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import useEmpreendimento from "@/hooks/useEmpreendimento";
+import useGroupedAssignment from "@/hooks/useGroupedAssignment";
+import useSteps from "@/hooks/useSteps";
 import styles from "./Empreendimento.module.css";
-import { useParams } from "react-router-dom";
 
 const Empreendimento = () => {
     const { id } = useParams();
-    const [empreendimento, setEmpreendimento] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [title, setTitle] = useState("");
-    const [name, setName] = useState("");
-    const [desc, setDesc] = useState("");
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
-    const [currentStep, setCurrentStep] = useState(0);
+    const { empreendimento, setEmpreendimento, loading, saveEmp, saveSpec } = useEmpreendimento(id, user);
+    const { groupedAssignment, filterByLocal } = useGroupedAssignment(empreendimento.doc);
+    const steps = useSteps({ empreendimento, saveEmp, saveSpec });
 
-    const stepStore = {
-        0: [
-            EmpreendimentoForm,
-            'Bem vindo ao cadastro de Empreendimentos!',
-            () => loadEspecificacao()
-        ],
-        1: [
-            EspecificacaoForm,
-            'Insira aqui os dados da nova Especificação',
-            () => loadAmbientes()
-        ],
-    };
+    const [current, setCurrent] = useState(0);
+    const total = steps.length - 1;
 
-    const StepComponent = stepStore[currentStep][0];
-    const totalSteps = Object.keys(stepStore).length - 1;
+    const stepCfg = steps[current];
+    const StepComponent = stepCfg.Component;
 
-    useEffect(() => {
-        loadEmpreendimento();
-    }, []);
+    const parentList = filterByLocal(stepCfg.section, stepCfg.local);
 
-    const loadEmpreendimento = async () => {
-        setLoading(true);
-        try {
-            const emp = await getEmpreendimentoById(id);
-            setEmpreendimento(emp);
-        } catch (error) {
-            console.error("Erro ao buscar empreendimento:", error);
-            alert("Erro ao buscar empreendimento");
-        } finally {
-            setLoading(false);
+    const voltar = () => {
+        if (current === 0) {
+            navigate("/home/empreendimentos");
+            return;
         }
+        setCurrent(s => s - 1);
     };
 
-    const voltar = () => currentStep > 0 && setCurrentStep(currentStep - 1);
+    const avancar = async () => {
+        const result = await stepCfg.onSubmit();
+        if (!result || !result.ok) return;
 
-    const handleAvancar = async () => {
-        if (currentStep < totalSteps) {
-            setCurrentStep(currentStep + 1);
-        } else {
-            await startProcess();
-        }
+        if (current < total) setCurrent(s => s + 1);
     };
 
-    const handleFinish = () => {
-        console.log("Processo finalizado!");
+    const finalizar = () => {
+        navigate(id ? `/home/resumo/${encodeURIComponent(id)}` : `/home/resumo`);
+        return;
     };
+
+    if (loading) return <div className={styles.container}>Carregando...</div>;
 
     return (
         <div className={styles.container}>
-            <div className={styles.headerContainer}>
+            <header className={styles.headerContainer}>
                 <div className={styles.titleArea}>
                     <h1 className={styles.title}>Cadastro de Especificações</h1>
-                    <p className={styles.subtitle}>
-                        {stepStore[currentStep][1] || "Carregando..."}
-                    </p>
+                    <p className={styles.subtitle}>{stepCfg.title}</p>
                 </div>
-            </div>
+            </header>
 
-            <div className={styles.mainArea}>
+            <main className={styles.mainArea}>
                 <StepComponent
-                    title={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    name={name}
-                    onNameChange={(e) => setName(e.target.value)}
-                    desc={desc}
-                    onDescChange={(e) => setDesc(e.target.value)}
+                    emp={empreendimento}
+                    specId={empreendimento.doc?.id}
+                    setEmp={setEmpreendimento}
+                    parentList={parentList}
+                    local={stepCfg.local ?? null}
                 />
-            </div>
+            </main>
 
-            <div className={styles.buttonsArea}>
-                <button
-                    onClick={voltar}
-                    disabled={currentStep === 0}
-                    className={styles.button}
-                >
+            <footer className={styles.buttonsArea}>
+                <button onClick={voltar} className={styles.button}>
                     Voltar
                 </button>
-                {currentStep < totalSteps ? (
-                    <button onClick={handleAvancar} className={styles.button}>
+
+                {current < total ? (
+                    <button onClick={avancar} className={styles.button}>
                         Avançar
                     </button>
                 ) : (
-                    <button className={styles.button} onClick={handleFinish}>
+                    <button onClick={finalizar} className={styles.button}>
                         Finalizar
                     </button>
                 )}
-            </div>
+            </footer>
         </div>
     );
-};
+}
 
 export default Empreendimento;
