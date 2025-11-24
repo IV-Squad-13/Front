@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "@/components/searchBar/SearchBar";
-import { getAllEmpreendimentos, searchEmpreendimentos } from "@/services/SpecificationService";
+import { deleteEmp, getAllEmpreendimentos, searchEmpreendimentos } from "@/services/SpecificationService";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/button/Button";
 import styles from "./ConsultaEmpreendimentos.module.css";
@@ -50,6 +50,20 @@ const ConsultaEmpreendimentos = () => {
         navigate(id ? `/home/${page}/${encodeURIComponent(id)}` : `/home/${page}`);
     };
 
+    const handleEmpDelete = async (id) => {
+        setLoading(true);
+
+        try {
+            await deleteEmp(id);
+            setEmpreendimentos((prev) => prev.filter((emp) => emp.id !== id));
+        } catch (err) {
+            console.error(err);
+            alert("Erro ao deletar empreendimento");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
@@ -71,7 +85,7 @@ const ConsultaEmpreendimentos = () => {
                     <div className={styles.headerBtnContainer}>
                         <Button
                             type="button"
-                            onClick={() => selectEmpreendimento(null)}
+                            onClick={() => selectEmpreendimento(null, "empreendimento")}
                             variant="header"
                         >
                             Criar Empreendimento
@@ -92,6 +106,8 @@ const ConsultaEmpreendimentos = () => {
                             author={emp.creator.user.name}
                             dtCreated={emp.createdAt}
                             onSelect={selectEmpreendimento}
+                            onDelete={(id) => handleEmpDelete(id)}
+                            rev={emp?.revision ?? null}
                         />
                     ))
                 ) : (

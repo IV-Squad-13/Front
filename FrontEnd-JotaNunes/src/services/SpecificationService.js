@@ -128,3 +128,12 @@ export const deleteDocElement = async (id, docType) => {
     }
   });
 }
+
+export const deleteEmp = async (id) => {
+  return await authFetch(`${API_URL}/editor/empreendimento/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}

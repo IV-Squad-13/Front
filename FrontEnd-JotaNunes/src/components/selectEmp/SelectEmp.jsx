@@ -1,29 +1,52 @@
-import { useNavigate } from "react-router-dom";
 import Button from "../button/Button";
 import styles from "./SelectEmp.module.css";
 
-const SelectEmp = ({ onSelect, id, name, author, dtCreated }) => {
+const SelectEmp = ({ onSelect, onDelete, id, name, author, dtCreated, rev }) => {
+    const formattedDate = new Date(dtCreated).toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
     return (
-        <div className={styles.item}>
-            <div className={styles.titleContainer}>
-                <h1 className={styles.title}>{name}</h1>
+        <div className={styles.card}>
+            <button
+                className={styles.deleteBtn}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(id);
+                }}
+            >
+                ✕
+            </button>
+
+            <div className={styles.info}>
                 <span>
-                    <p>{author}</p>
-                    <p>{dtCreated}</p>
+                    <h1 className={styles.title}>{name}</h1>
+                    {rev && (<p>Revisão Pendente</p>)}
                 </span>
+
+                <div className={styles.meta}>
+                    <p className={styles.author}>{author}</p>
+                    <p className={styles.date}>{formattedDate}</p>
+                </div>
             </div>
-            <div className={styles.btnContainer}>
+
+            <div className={styles.actions}>
                 <Button
                     type="button"
                     onClick={() => onSelect(id, "empreendimento")}
-                    variant="ghost contained"
+                    variant="outline contained"
                 >
                     Editor
                 </Button>
+
                 <Button
                     type="button"
                     onClick={() => onSelect(id, "resumo")}
-                    variant="ghost contained"
+                    variant="outline contained"
                 >
                     Resumo
                 </Button>

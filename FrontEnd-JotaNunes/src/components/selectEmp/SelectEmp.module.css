@@ -1,35 +1,90 @@
-.item {
+.card {
+    position: relative;
     cursor: pointer;
-    background-color: var(--cinza_medio);
-    padding: 1rem;
-    min-height: 7rem;
+    background: var(--background);
+    padding: 1.1rem;
 
-    border-radius: 10px;
-    border: 1px solid var(--cinza);
+    border-radius: 12px;
+    border: 1px solid var(--light-border);
+
     color: var(--font_color-secondary);
 
     display: flex;
-    align-items: center;
     flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+
+    transition: 0.18s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.card:hover {
+    background-color: var(--background-even);
+    border-color: var(--font_color-secondary);
+    transform: translateY(-3px);
+}
+
+.deleteBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    background: transparent;
+    border: none;
+    color: var(--cinza);
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
 
     transition: 0.15s ease;
 }
 
-.item:hover {
-    background-color: var(--backgorund-even);
-    border-color: var(--font_color-secondary);
-    transform: translateY(-2px);
+.deleteBtn:hover {
+    background: var(--cinza_medio);
     color: var(--light-font_color);
 }
 
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
 .title {
-    font-size: 1rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--font_color-secondary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.btnContainer {
+.meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+
+    font-size: 0.85rem;
+    color: var(--cinza);
+}
+
+.author {
+    font-weight: 500;
+}
+
+.date {
+    opacity: 0.9;
+}
+
+.actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: auto;
+}
+
+.actions button {
     flex: 1;
-    margin-top: 0.4rem;
 }
