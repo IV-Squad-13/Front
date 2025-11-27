@@ -41,15 +41,15 @@ export const getCatalogByResource = async (resource = 'padrao') => {
   return response;
 };
 
-export const getAmbienteById = async (id) => {
+export const getAmbienteById = async (resource = 'ambiente') => {
   const query = new URLSearchParams({ ['loadAll']: true }).toString();
 
-  const response = await authFetch(`${API_URL}/catalogo/ambiente/${id}?${query}`, {
+  const response = await authFetch(`${API_URL}/catalogo/${resource}?${query}`, {
     method: 'GET',
   });
 
   if (!response || response.error) {
-    throw new Error(response?.error || `Falha ao buscar o ambiente ID ${id}`);
+    throw new Error(response?.error || `Falha ao buscar o ambiente ID ${resource}`);
   }
 
   return {

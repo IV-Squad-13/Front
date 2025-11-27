@@ -1,30 +1,42 @@
-// CÓDIGO OFICIAL COM ENDPOINTS está comentado, pois o mapeamento de algumas coisas ainda não está 100%, ficar com código mockado por enquanto
-
 import { useEffect, useState } from "react";
 import styles from "./CatalogItemDetails.module.css";
 import { getCatalogItemById } from "@/services/CatalogService.js";
+
+import { authFetch } from "@/services/AuthService";
+import { API_URL } from "@/main.jsx";
 
 const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResourceType, onClose }) => {
   const [details, setDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const [addRelationType, setAddRelationType] = useState("");
+  const [candidates, setCandidates] = useState([]);
+  const [selectedCandidateId, setSelectedCandidateId] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  const fetchDetails = async () => {
     if (!id || !type) return;
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await getCatalogItemById(type, id);
+      setDetails(data);
+    } catch (err) {
+      console.error("Erro ao buscar detalhes:", err);
+      setError(err.message || "Erro desconhecido");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const fetchDetails = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getCatalogItemById(type, id);
-        setDetails(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchDetails();
+    setAddRelationType("");
+    setCandidates([]);
+    setSelectedCandidateId(null);
+    setMessage(null);
   }, [id, type]);
 
   useEffect(() => {
@@ -38,12 +50,10 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
   const updateResource = (rel, resourceType) => {
     setSelectedResource(rel.id);
     setSelectedResourceType(resourceType);
-  }
+  };
 
   const renderList = (list, emptyMessage, resourceType) => {
-    if (!list || list.length === 0) {
-      return <p>{emptyMessage}</p>;
-    }
+    if (!list || list.length === 0) return <p>{emptyMessage}</p>;
 
     return (
       <ul>
@@ -51,8 +61,10 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
           if (rel.marca && rel.material) {
             return (
               <li key={index}>
-                <strong onClick={() => updateResource(rel?.marca, 'marca')}>Marca:</strong> {rel.marca?.name || "Sem nome"} <br />
-                <strong onClick={() => updateResource(rel?.material, 'material')}>Material:</strong> {rel.material?.name || "Sem nome"}
+                <strong onClick={() => updateResource(rel?.marca, "marca")}>Marca:</strong>{" "}
+                {rel.marca?.name || "Sem nome"} <br />
+                <strong onClick={() => updateResource(rel?.material, "material")}>Material:</strong>{" "}
+                {rel.material?.name || "Sem nome"}
               </li>
             );
           }
@@ -60,9 +72,10 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
           if (rel.item && rel.ambiente) {
             return (
               <li key={index}>
-                <strong onClick={() => updateResource(rel?.item, 'item')}>Item:</strong> {rel.item?.name || "Sem nome"} —{" "}
-                {rel.item?.desc || "Sem descrição"} <br />
-                <strong onClick={() => updateResource(rel?.ambiente, 'ambiente')}>Ambiente:</strong> {rel.ambiente?.name || "Sem nome"}
+                <strong onClick={() => updateResource(rel?.item, "item")}>Item:</strong>{" "}
+                {rel.item?.name || "Sem nome"} — {rel.item?.desc || "Sem descrição"} <br />
+                <strong onClick={() => updateResource(rel?.ambiente, "ambiente")}>Ambiente:</strong>{" "}
+                {rel.ambiente?.name || "Sem nome"}
               </li>
             );
           }
@@ -79,9 +92,7 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
             );
           }
 
-          const innerObj =
-            rel?.marca || rel?.material || rel?.padrao || rel?.item;
-
+          const innerObj = rel?.marca || rel?.material || rel?.padrao || rel?.item;
           if (innerObj && innerObj.name) {
             return (
               <li
@@ -96,9 +107,7 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
 
           return (
             <li key={index} onClick={() => updateResource(rel, resourceType)}>
-              <pre style={{ whiteSpace: "pre-wrap" }}>
-                {JSON.stringify(rel, null, 2)}
-              </pre>
+              <pre style={{ whiteSpace: "pre-wrap" }}>{JSON.stringify(rel, null, 2)}</pre>
             </li>
           );
         })}
@@ -106,6 +115,188 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
     );
   };
 
+  const addableRelationsForType = {
+    ambiente: ["padrao", "item"],
+    item: ["padrao", "ambiente"],
+    material: ["marca", "padrao"],
+    marca: ["material", "padrao"],
+    padrao: ["ambiente", "item", "material", "marca"],
+  };
+
+  const candidatesEndpointFor = (candidateType) => {
+    const q = "?loadAll=true";
+    switch (candidateType) {
+      case "padrao":
+        return `${API_URL}/catalogo/padrao${q}`;
+      case "marca":
+        return `${API_URL}/catalogo/marca${q}`;
+      case "material":
+        return `${API_URL}/catalogo/material${q}`;
+      case "item":
+        return `${API_URL}/catalogo/item${q}`;
+      case "ambiente":
+        return `${API_URL}/catalogo/ambiente${q}`;
+      default:
+        return null;
+    }
+  };
+
+  const addRelation = async (currentType, currentId, candidateType, candidateId) => {
+    const mapCompType = (t) => {
+      return t?.toUpperCase();
+    };
+
+    if (candidateType === "padrao") {
+      const compType = mapCompType(currentType);
+      return {
+        url: `${API_URL}/catalogo/padrao/${candidateId}/rel/single?associationId=${currentId}&compType=${compType}`,
+        method: "POST",
+      };
+    }
+
+    if (currentType === "ambiente" && candidateType === "item") {
+      return {
+        url: `${API_URL}/catalogo/ambiente/${currentId}/item?itemId=${candidateId}`,
+        method: "POST",
+      };
+    }
+    if (currentType === "item" && candidateType === "ambiente") {
+      return {
+        url: `${API_URL}/catalogo/item/${currentId}/ambiente?ambienteId=${candidateId}`,
+        method: "POST",
+      };
+    }
+
+    if (currentType === "material" && candidateType === "marca") {
+      return {
+        url: `${API_URL}/catalogo/material/${currentId}/marca?marcaId=${candidateId}`,
+        method: "POST",
+      };
+    }
+    if (currentType === "marca" && candidateType === "material") {
+      return {
+        url: `${API_URL}/catalogo/marca/${currentId}/material?materialId=${candidateId}`,
+        method: "POST",
+      };
+    }
+
+    return {
+      url: `${API_URL}/catalogo/padrao/${candidateId}/rel/single?associationId=${currentId}&compType=${mapCompType(
+        currentType
+      )}`,
+      method: "POST",
+    };
+  };
+
+  useEffect(() => {
+    const loadCandidates = async () => {
+      if (!addRelationType) {
+        setCandidates([]);
+        setSelectedCandidateId(null);
+        return;
+      }
+
+      const endpoint = candidatesEndpointFor(addRelationType);
+      if (!endpoint) {
+        setCandidates([]);
+        return;
+      }
+
+      try {
+        const res = await authFetch(endpoint, { method: "GET" });
+        setCandidates(res || []);
+        setSelectedCandidateId(null);
+      } catch (err) {
+        console.error("Erro ao carregar candidatos:", err);
+        setMessage("Erro ao carregar opções.");
+        setCandidates([]);
+      }
+    };
+
+    loadCandidates();
+  }, [addRelationType]);
+
+  const handleAdd = async () => {
+    setMessage(null);
+    if (!addRelationType || !selectedCandidateId) {
+      setMessage("Escolha o tipo e o item a adicionar.");
+      return;
+    }
+    setIsAdding(true);
+    try {
+      const action = await addRelation(type, details.id, addRelationType, selectedCandidateId);
+      const res = await authFetch(action.url, { method: action.method });
+      setMessage("Relação adicionada com sucesso.");
+      await fetchDetails();
+      setSelectedCandidateId(null);
+    } catch (err) {
+      console.error("Erro ao adicionar relação:", err);
+      setMessage(err.message || "Falha ao adicionar relação.");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+const renderAddSection = () => {
+  const allowed = addableRelationsForType[type] || [];
+  if (allowed.length === 0) return null;
+
+  return (
+    <div className={styles.addRelationSection}>
+      <h3>Adicionar relação</h3>
+
+      <div className={styles.addRelationRow}>
+        <label className={styles.addRelationLabel}>
+          Tipo:
+          <select
+            value={addRelationType}
+            onChange={(e) => {
+              setAddRelationType(e.target.value);
+              setMessage(null);
+            }}
+            className={styles.addRelationSelect}
+          >
+            <option value="">-- selecione --</option>
+            {allowed.map((r) => (
+              <option key={r} value={r}>
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className={styles.addRelationLabel}>
+          Opção:
+          <select
+            disabled={!addRelationType || candidates.length === 0}
+            value={selectedCandidateId ?? ""}
+            onChange={(e) =>
+              setSelectedCandidateId(e.target.value ? Number(e.target.value) : null)
+            }
+            className={styles.addRelationSelect}
+          >
+            <option value="">-- selecione --</option>
+            {candidates.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name || c.nome || `${c.id}`}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <button
+          onClick={handleAdd}
+          disabled={isAdding || !selectedCandidateId}
+          className={styles.addRelationButton}
+        >
+          {isAdding ? "Adicionando..." : "Adicionar"}
+        </button>
+      </div>
+
+      {message && <p className={styles.addRelationMessage}>{message}</p>}
+    </div>
+  );
+};
   const renderDetails = () => {
     if (!details) return null;
 
@@ -114,10 +305,10 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
         return (
           <>
             <h3>Itens e Ambientes associados:</h3>
-            {renderList(details.ambientes, "Nenhum item ou ambiente associado.", 'ambiente')}
+            {renderList(details.ambienteList || details.ambientes || details.ambienteSet, "Nenhum item ou ambiente associado.", "ambiente")}
 
             <h3>Marcas e Materiais associados:</h3>
-            {renderList(details.materiais, "Nenhuma marca ou material associado.", 'material')}
+            {renderList(details.materialList || details.materiais || details.marcaSet, "Nenhuma marca ou material associado.", "material")}
           </>
         );
 
@@ -129,10 +320,12 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
             </p>
 
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
+            {renderList(details.padraoSet || details.padraoList || details.padroes || details.padraoList, "Nenhum padrão associado.", "padrao")}
 
             <h3>Itens associados:</h3>
-            {renderList(details.itemSet, "Nenhum item associado.", 'item')}
+            {renderList(details.itemSet || details.itemList || details.itens, "Nenhum item associado.", "item")}
+
+            {renderAddSection()}
           </>
         );
 
@@ -140,18 +333,19 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
         return (
           <>
             <p>
-              <strong>Descrição:</strong> {details.descricao}
+              <strong>Descrição:</strong> {details.descricao || details.desc}
             </p>
             <p>
-              <strong>Tipo:</strong>{" "}
-              {details.tipo?.name || "Sem tipo definido"}
+              <strong>Tipo:</strong> {details.tipo?.name || "Sem tipo definido"}
             </p>
 
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
+            {renderList(details.padraoSet || details.padraoList || details.padroes, "Nenhum padrão associado.", "padrao")}
 
             <h3>Ambientes associados:</h3>
-            {renderList(details.ambientes, "Nenhum ambiente associado.", 'ambiente')}
+            {renderList(details.ambienteSet || details.ambientes || details.ambienteList, "Nenhum ambiente associado.", "ambiente")}
+
+            {renderAddSection()}
           </>
         );
 
@@ -159,10 +353,12 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
         return (
           <>
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
+            {renderList(details.padraoSet || details.padraoList || details.padroes, "Nenhum padrão associado.", "padrao")}
 
             <h3>Marcas associadas:</h3>
-            {renderList(details.marcas, "Nenhuma marca associada.", 'marca')}
+            {renderList(details.marcaSet || details.marcas, "Nenhuma marca associada.", "marca")}
+
+            {renderAddSection()}
           </>
         );
 
@@ -170,10 +366,12 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
         return (
           <>
             <h3>Padrões associados:</h3>
-            {renderList(details.padraoSet, "Nenhum padrão associado.", 'padrao')}
+            {renderList(details.padraoSet || details.padraoList || details.padroes, "Nenhum padrão associado.", "padrao")}
 
             <h3>Materiais associados:</h3>
-            {renderList(details.materiais, "Nenhum material associado.", 'material')}
+            {renderList(details.materialSet || details.materiais || details.marcaSet, "Nenhum material associado.", "material")}
+
+            {renderAddSection()}
           </>
         );
 
@@ -183,14 +381,8 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
   };
 
   return (
-    <div
-      className={styles.modal}
-      onClick={onClose}
-    >
-      <div
-        className={styles.modalContent}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className={styles.modal} onClick={onClose}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <button className={styles.closeButton} onClick={onClose}>
           Fechar
         </button>
@@ -206,165 +398,3 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
 };
 
 export default CatalogItemDetails;
-
-// CÓDIGO COM INFORMAÇÕES MOCKADAS, apagar depois quando resolver a questão do mapeamento
-
-// import styles from "./CatalogItemDetails.module.css";
-
-// const mockData = {
-//   ambiente: {
-//     local: "Cozinha Gourmet",
-//     padroes: [
-//       { id: 1, name: "Vida Bela" },
-//       { id: 2, name: "Mais viver" },
-//     ],
-//     itens: [
-//       { id: 1, name: "Teto" },
-//       { id: 2, name: "Porta" },
-//     ],
-//   },
-
-//   item: {
-//     descricao: "Precisa ser menor.",
-//     tipo: { id: 1, name: "Marcenaria" },
-//     padroes: [
-//       { id: 1, name: "Residence" },
-//       { id: 2, name: "Mais viver" },
-//     ],
-//     ambientes: [
-//       { id: 1, name: "Cozinha/Área de Serviço" },
-//       { id: 2, name: "Garden" },
-//     ],
-//   },
-
-//   material: {
-//     padroes: [
-//       { id: 1, name: "Vida Bela" },
-//       { id: 2, name: "Residence" },
-//     ],
-//     marcas: [
-//       { id: 1, name: "Elizabeth" },
-//       { id: 2, name: "Portobello" },
-//     ],
-//   },
-
-//   marca: {
-//     padroes: [
-//       { id: 1, name: "Residence" },
-//       { id: 2, name: "Mais viver" },
-//     ],
-//     materiais: [
-//       { id: 1, name: "Cerâmica" },
-//       { id: 2, name: "Laminado" },
-//     ],
-//   },
-
-//   padrao: {
-//     ambientes: [
-//       { id: 1, name: "Sala de Estar" },
-//       { id: 2, name: "Quarto" },
-//     ],
-//     itens: [
-//       { id: 1, name: "Porta" },
-//       { id: 2, name: "Rodapé" },
-//     ],
-//     materiais: [
-//       { id: 1, name: "Porta (alumínio)" },
-//       { id: 2, name: "Cerâmica" },
-//     ],
-//     marcas: [
-//       { id: 1, name: "Arielle" },
-//       { id: 2, name: "Pointer" },
-//     ],
-//   },
-// };
-
-// const CatalogItemDetails = ({ item, type, onClose }) => {
-//   const data = mockData[type];
-
-//   if (!data) {
-//     return (
-//       <div className={styles.modal} onClick={onClose}>
-//         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-//           <button className={styles.closeButton} onClick={onClose}>
-//             Fechar
-//           </button>
-//           <p>Tipo não reconhecido: {type}</p>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   const renderSection = (title, list) => (
-//     <>
-//       <h3>{title}</h3>
-//       {(!list || list.length === 0) ? (
-//         <p>Nenhum item associado.</p>
-//       ) : (
-//         <ul>
-//           {list.map((el) => (
-//             <li key={el.id}>{el.name}</li>
-//           ))}
-//         </ul>
-//       )}
-//     </>
-//   );
-
-//   return (
-//     <div className={styles.modal} onClick={onClose}>
-//       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-
-//         {/* Botão de fechar */}
-//         <button className={styles.closeButton} onClick={onClose}>
-//           Fechar
-//         </button>
-
-//         {/* Título */}
-//         <h2>{item?.name || item?.nome || "Detalhes"}</h2>
-
-//         {/* Renderização dinâmica baseada no "type" */}
-//         {type === "ambiente" && (
-//           <>
-//             <p><strong>Local:</strong> {data.local}</p>
-//             {renderSection("Padrões", data.padroes)}
-//             {renderSection("Itens", data.itens)}
-//           </>
-//         )}
-
-//         {type === "item" && (
-//           <>
-//             <p><strong>Descrição:</strong> {data.descricao}</p>
-//             <p><strong>Tipo:</strong> {data.tipo?.name}</p>
-//             {renderSection("Padrões", data.padroes)}
-//             {renderSection("Ambientes", data.ambientes)}
-//           </>
-//         )}
-
-//         {type === "material" && (
-//           <>
-//             {renderSection("Padrões", data.padroes)}
-//             {renderSection("Marcas", data.marcas)}
-//           </>
-//         )}
-
-//         {type === "marca" && (
-//           <>
-//             {renderSection("Padrões", data.padroes)}
-//             {renderSection("Materiais", data.materiais)}
-//           </>
-//         )}
-
-//         {type === "padrao" && (
-//           <>
-//             {renderSection("Ambientes", data.ambientes)}
-//             {renderSection("Itens", data.itens)}
-//             {renderSection("Materiais", data.materiais)}
-//             {renderSection("Marcas", data.marcas)}
-//           </>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CatalogItemDetails;
