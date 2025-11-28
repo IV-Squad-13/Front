@@ -12,7 +12,7 @@ const itemsPerPage = 8;
 const GerenciadorDeUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  const [selectedRole, setSelectedRole] = useState('');
+  const [selectedRole, setSelectedRole] = useState('ADMIN');
   const [usuariosPaginados, setUsuariosPaginados] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +24,7 @@ const GerenciadorDeUsuarios = () => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const data = await getAllUsers();
+        const data = await getUsersByRole('ADMIN');
         setUsuarios(data);
         setTotalPages(Math.ceil(data.length / itemsPerPage));
       } catch (err) {

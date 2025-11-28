@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Carousel from "@/components/carousel/Carousel";
 import Button from "@/components/button/Button";
 import ContentBlock from "@/components/resumo/contentBlock/ContentBlock";
@@ -14,6 +14,7 @@ const Resumo = () => {
     const { id } = useParams();
     const { user } = useAuth();
     const { empreendimento, loading: empLoading } = useEmpreendimento(id, user);
+    const navigate = useNavigate();
 
     const doc = empreendimento?.doc ?? null;
     const empId = empreendimento?.id ?? null;
@@ -185,6 +186,11 @@ const Resumo = () => {
         [specRev, handleMaterialApproval, handleLocalApproval]
     );
 
+    const handleVoltar = useCallback(async () => {
+        navigate("/home/empreendimentos");
+        return;
+    });
+
     const handleRevisionRequest = useCallback(async () => {
         // TODO: criar modal para indicar revisor e regra ou não
         const reqDTO = {
@@ -347,6 +353,13 @@ const Resumo = () => {
                 )}
             </main>
             <footer className={styles.footer}>
+                <Button
+                    type="button"
+                    variant="primary small contained"
+                    onClick={handleVoltar}
+                >
+                    Voltar
+                </Button>
                 {empreendimento.status === "ELABORACAO" && !revision && (
                     <Button
                         type="button"

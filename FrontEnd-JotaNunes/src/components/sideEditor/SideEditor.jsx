@@ -62,6 +62,7 @@ const SideEditor = (props) => {
 
                 <FieldSearchPanel
                     fields={fields}
+                    docType={elementToAdd}
                     onFieldTyping={handleFieldTyping}
                 />
 
