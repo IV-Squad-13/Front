@@ -12,7 +12,7 @@ label {
 
 .selectContainer {
     position: relative;
-    width: 100%;
+    width: max-content;
 }
 
 .selectContainer::after {
@@ -28,7 +28,7 @@ label {
 
 select {
     width: 100%;
-    padding: 0.75rem 0.9rem;
+    padding: 0.5rem 0.9rem;
     padding-right: 2.2rem;
 
     border: 1px solid var(--cinza);
@@ -58,4 +58,8 @@ select:focus {
 select option {
     background-color: var(--background-color) !important;
     color: var(--font_color-secondary) !important;
+}
+
+.contained {
+    width: max-content;
 }

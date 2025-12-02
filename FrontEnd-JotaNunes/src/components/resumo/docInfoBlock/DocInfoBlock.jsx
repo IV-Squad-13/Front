@@ -28,7 +28,7 @@ const DocInfoBlock = ({ doc, rev, onFieldApproval }) => {
                                     : DocStatus.REJEITADO}
                         </span>
 
-                        <div className={styles.revBtns}>
+                        {onFieldApproval && (<div className={styles.revBtns}>
                             <Button
                                 variant="ghost contained"
                                 onClick={() => onFieldApproval(rev.id, fieldName, false)}
@@ -42,7 +42,7 @@ const DocInfoBlock = ({ doc, rev, onFieldApproval }) => {
                             >
                                 Aprovar
                             </Button>
-                        </div>
+                        </div>)}
                     </div>
                 )}
             </div>
@@ -62,7 +62,7 @@ const DocInfoBlock = ({ doc, rev, onFieldApproval }) => {
                 <div className={styles.controls}>
                     {rev && <span className={styles.statusTag}>Status: {statusStr}</span>}
 
-                    {rev && (
+                    {rev && onFieldApproval && (
                         <div className={styles.actionBtns}>
                             <Button
                                 variant="ghost contained"

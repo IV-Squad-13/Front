@@ -9,6 +9,7 @@
   background: var(--background);
   border-radius: 1rem;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  justify-content: space-between;
 }
 
 .topbar {
@@ -98,6 +99,8 @@
   align-items: center;
   gap: 1rem;
   padding-top: 0.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .counter {
@@ -249,11 +252,9 @@ strong {
 .footer {
   position: sticky;
   bottom: 0;
-  width: 100%;
-  background: var(--background);
+  background: var(--background-color);
   padding: 1rem;
   border-top: 1px solid var(--light-border);
-
   display: flex;
   justify-content: flex-end;
   gap: 1rem;

@@ -3,10 +3,17 @@
 import { useState, useEffect, useRef, useLayoutEffect } from "react"
 import ItemCard from "@/components/ItemCard/ItemCard"
 import styles from "./Catalogo.module.css"
-import { getCatalogByResource, getCatalogSearch} from "@/services/CatalogService"
+import { deactivateResource, getCatalogByResource, getCatalogSearch, updateResource } from "@/services/CatalogService"
 import AddModal from "@/components/forms/AddModal/AddModal"
 import SearchBar from "@/components/searchBar/SearchBar"
 import CatalogItemDetails from "@/components/CatalogItemDetails/CatalogItemDetails";
+import SelectInput from "@/components/selectInput/SelectInput";
+
+const ActiveEnum = {
+  Todos: null,
+  Ativo: true,
+  Inativo: false
+}
 
 const Catalogo = () => {
   const [spec, setSpec] = useState([]);
@@ -27,30 +34,19 @@ const Catalogo = () => {
   const containerRef = useRef(null);
   const itemRef = useRef(null);
 
+  const [query, setQuery] = useState({ isActive: ActiveEnum.Ativo });
+
   const specs = ["padrao", "ambiente", "item", "material", "marca"]
 
-  const [refreshKey, setRefreshKey] = useState(0) 
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  const forceRefresh = () => { 
+  const forceRefresh = () => {
     setRefreshKey(prevKey => prevKey + 1)
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getCatalogByResource(activeButton);
-        setSpec(data);
-      } catch (err) {
-        console.error("Erro ao buscar dados:", err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [activeButton, refreshKey]);
+    handleSearch();
+  }, [activeButton, query.isActive]);
 
   useLayoutEffect(() => {
     const calculateItems = () => {
@@ -96,44 +92,62 @@ const Catalogo = () => {
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleSaveItem = (newItem) => {
-    console.log("[v0] Novo item salvo:", newItem);
-  };
-
   const handleOpenDetails = (item) => {
     setSelectedResourceId(item.id);
     setIsDetailsOpen(true);
     forceRefresh()
   };
 
-    const handleSearch = async (resourceData) => {
+  const handleUpdateResource = async (data) => {
+    try {
+      const updated = await updateResource(activeButton, data)
+      const updatedSpecs = spec
+        .map(spec => {
+          if (spec.id === updated.id)
+            return updated
+          return spec
+        })
+      setSpec(updatedSpecs)
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  const handleDeleteResource = async (resource) => {
+    try {
+      await deactivateResource(activeButton, resource.id);
+      handleSearch();
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const handleSearch = async (name) => {
     setIsLoading(true);
     setError(null);
     setCurrentPage(1);
-  
+
+    let newQuery = Object.fromEntries(
+      Object.entries(query).filter(([_, v]) => v != null)
+    );
+
+    if (name) {
+      newQuery.name = name;
+      setQuery(newQuery);
+    }
+
     try {
-      if (!resourceData || resourceData=="") {
-        const data = await getCatalogByResource(activeButton);
-        setSpec(data);
-        setCurrentPage(1);
-        setTotalPages(Math.ceil(data.length / itemsPerPage));
-        setSelectedName('');
-        return;
-      }
-  
-      const data = await getCatalogSearch(activeButton, { name: resourceData });
+      const data = await getCatalogSearch(activeButton, newQuery);
       setSpec(data);
-      setCurrentPage(1);
       setTotalPages(Math.ceil(data.length / itemsPerPage));
-      setSelectedName(resourceData);
     } catch (err) {
       setError(err.message);
       setSpec([]);
-      setTotalPages(0);
     } finally {
       setIsLoading(false);
     }
-   };
+  };
+
 
   return (
     <div className={styles.container}>
@@ -142,23 +156,34 @@ const Catalogo = () => {
           <h1 className={styles.title}>Catálogo</h1>
           <p className={styles.subtitle}>Gerencie os seus itens aqui</p>
         </div>
-        <div className={styles.buttonsArea}>
-          <SearchBar
-            onSearch={(query) => handleSearch(query)}
-            displayButton={false}
-          />
-          <button className={styles.addButton} onClick={handleOpenModal}>
-            Adicionar
-          </button>
-          {specs.map((specType) => (
-            <button
-              key={specType}
-              onClick={() => handleSpecChange(specType)}
-              className={activeButton === specType ? styles.activeButton : ""}
-            >
-              {specType.charAt(0).toUpperCase() + specType.slice(1)}
+        <div className={styles.actions}>
+          <div className={styles.queryFields}>
+            <SearchBar
+              onSearch={(query) => handleSearch(query)}
+              displayButton={false}
+            />
+            <SelectInput
+              id="isActiveFilter"
+              value={query.isActive}
+              onChange={(e) => setQuery({ ...query, isActive: ActiveEnum[e.target.value] })}
+              options={Object.keys(ActiveEnum)}
+              variant="contained"
+            />
+          </div>
+          <div className={styles.buttonsArea}>
+            <button className={styles.addButton} onClick={handleOpenModal}>
+              Adicionar
             </button>
-          ))}
+            {specs.map((specType) => (
+              <button
+                key={specType}
+                onClick={() => handleSpecChange(specType)}
+                className={activeButton === specType ? styles.activeButton : ""}
+              >
+                {specType.charAt(0).toUpperCase() + specType.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -174,6 +199,17 @@ const Catalogo = () => {
                 <ItemCard
                   text={item.name}
                   onClick={() => handleOpenDetails(item)}
+
+                  onAction={() => {
+                    item.isActive
+                      ? handleDeleteResource(item)
+                      : handleUpdateResource({ id: item.id, isActive: true });
+                  }}
+                  action={item.isActive ? "Deletar" : "Reativar"}
+
+                  onEdit={(newName) =>
+                    handleUpdateResource({ id: item.id, name: newName })
+                  }
                 />
               </li>
             ))}
@@ -198,7 +234,6 @@ const Catalogo = () => {
       {isModalOpen && (
         <AddModal
           activeSpec={activeButton}
-          onSave={handleSaveItem}
           onClose={handleCloseModal}
         />
       )}

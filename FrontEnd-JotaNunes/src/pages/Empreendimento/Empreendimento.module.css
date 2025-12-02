@@ -14,6 +14,18 @@
   border-bottom: 1px solid var(--cinza);
 }
 
+.title {
+  font-size: clamp(1.4rem, 2vw, 1.6rem);
+  color: var(--font_color-secondary);
+}
+
+.subtitle {
+  color: var(--cinza);
+  padding-left: 0.6rem;
+  margin-top: 0.3rem;
+  font-size: clamp(0.9rem, 1.8vw, 1rem);
+}
+
 .mainArea {
   flex: 1;
   display: flex;
@@ -23,16 +35,7 @@
   overflow-y: auto;
 }
 
-.title {
-  font-size: 1.6rem;
-  color: var(--font_color-secondary);
-}
-
-.subtitle {
-  color: var(--cinza);
-  padding-left: 0.6rem;
-  margin-top: 0.3rem;
-}
+/* ---------------- INPUTS ---------------- */
 
 .inputArea {
   display: flex;
@@ -42,15 +45,14 @@
 
 .inputArea input,
 .inputArea textarea {
+  width: 100%;
   padding: 0.8rem;
   font-size: 1rem;
   font-family: inherit;
   color: var(--font_color-secondary);
   background-color: transparent;
-
   border: 1px solid var(--cinza);
   border-radius: 8px;
-
   transition: border-color 0.2s ease;
 }
 
@@ -74,6 +76,7 @@ label {
   display: flex;
   justify-content: space-between;
   padding: 1rem 2rem;
+  gap: 1rem;
 }
 
 .button {
@@ -81,15 +84,12 @@ label {
   font-size: 1rem;
   border: none;
   border-radius: 6px;
-
   color: var(--font_color-primary);
   background-color: var(--vermelho);
-
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-
   transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
@@ -137,4 +137,41 @@ label {
 
 .resumo li {
   margin-bottom: 0.25rem;
+}
+
+@media (max-width: 600px) {
+
+  .headerContainer,
+  .mainArea {
+    padding: 1rem;
+  }
+
+  .buttonsArea {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .button {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1.05rem;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    height: auto;
+  }
+
+  .mainArea {
+    padding: 1rem;
+  }
+
+  .buttonsArea {
+    padding: 1rem;
+  }
 }

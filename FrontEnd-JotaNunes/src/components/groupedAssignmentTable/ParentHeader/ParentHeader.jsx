@@ -50,7 +50,7 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
                         {onEditParent && (
                             <Button
                                 type="button"
-                                variant="edit small"
+                                variant="edit contained"
                                 onClick={startEdit}
                                 title="Editar nome do grupo"
                             >
@@ -61,7 +61,7 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
                         {onDeleteParent && (
                             <Button
                                 type="button"
-                                variant="delete small"
+                                variant="delete contained"
                                 onClick={handleDelete}
                                 title="Remover grupo"
                             >
@@ -71,7 +71,7 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
                     </div>
                 </div>
             ) : (
-                <form className={styles.editForm} onSubmit={finishEdit}>
+                <form className={styles.headerContent} onSubmit={finishEdit}>
                     <input
                         className={styles.parentInput}
                         value={value}
@@ -79,17 +79,20 @@ const ParentHeader = ({ parent, onEditParent, onDeleteParent }) => {
                         onClick={(e) => e.stopPropagation?.()}
                         autoFocus
                     />
-                    <div className={styles.editControls}>
-                        <button type="submit" className={styles.saveBtn}>
+                    <div className={styles.parentActions}>
+                        <Button
+                            type="submit"
+                            variant="edit contained"
+                        >
                             Salvar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
-                            className={styles.cancelBtn}
+                            variant="delete contained"
                             onClick={cancelEdit}
                         >
                             Cancelar
-                        </button>
+                        </Button>
                     </div>
                 </form>
             )}

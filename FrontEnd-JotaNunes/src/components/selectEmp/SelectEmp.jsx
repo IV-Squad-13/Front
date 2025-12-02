@@ -1,7 +1,7 @@
 import Button from "../button/Button";
 import styles from "./SelectEmp.module.css";
 
-const SelectEmp = ({ onSelect, onDelete, id, name, author, dtCreated, rev }) => {
+const SelectEmp = ({ onSelect, onDelete, id, name, status, author, dtCreated, rev }) => {
     const formattedDate = new Date(dtCreated).toLocaleString("pt-BR", {
         day: "2-digit",
         month: "2-digit",
@@ -35,13 +35,13 @@ const SelectEmp = ({ onSelect, onDelete, id, name, author, dtCreated, rev }) => 
             </div>
 
             <div className={styles.actions}>
-                <Button
+                {status === "ELABORACAO" && (<Button
                     type="button"
                     onClick={() => onSelect(id, "empreendimento")}
                     variant="outline contained"
                 >
                     Editor
-                </Button>
+                </Button>)}
 
                 <Button
                     type="button"

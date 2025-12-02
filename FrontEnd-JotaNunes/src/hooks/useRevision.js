@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
     getRevisionByEmpId,
     requestRevision,
@@ -27,8 +27,6 @@ const useRevision = (empId, user, participants) => {
             setLoading(true);
             try {
                 const data = await getRevisionByEmpId(idToLoad, docLoadParams);
-                if (!data) throw new Error("Revision not found");
-
                 setRevision(data);
                 return data;
             } catch (err) {
@@ -38,7 +36,7 @@ const useRevision = (empId, user, participants) => {
                 setLoading(false);
             }
         },
-        [empId]
+        [empId, participants]
     );
 
     useEffect(() => {
@@ -47,7 +45,9 @@ const useRevision = (empId, user, participants) => {
 
     const request = useCallback(
         async (dto) => {
-            if (!empId) return { ok: false, error: "empreendimento não fornecido" };
+            if (!empId) {
+                return { ok: false, error: "empreendimento não fornecido" };
+            }
 
             try {
                 const updated = await requestRevision(empId, dto);
@@ -66,11 +66,7 @@ const useRevision = (empId, user, participants) => {
             if (!revision?.id) return { ok: false, error: "revisão não fornecida" };
 
             try {
-                const updated = await startRevision(
-                    revision.id,
-                    revisorId,
-                    docLoadParams
-                );
+                const updated = await startRevision(revision.id, revisorId, docLoadParams);
                 setRevision(updated);
                 return { ok: true, data: updated };
             } catch (err) {
@@ -118,28 +114,30 @@ const useRevision = (empId, user, participants) => {
         []
     );
 
-    if (participants) {
-        const userAccesses = participants
-            .filter((part) => part.user.id === user.id)
-            .map((part) => part.access);
+    const editingDisabled = useMemo(() => {
+        if (!participants || !revision) return false;
 
-        if (!userAccesses.includes("REVISOR")) {
-            return {
-                revision,
-                loading,
-                load,
-                request
-            }
-        }
+        const userAccesses = participants
+            .filter((p) => p.user.id === user.id)
+            .map((p) => p.access);
+
+        const isFinished = ["APROVADA", "REJEITADA"].includes(revision.status);
+        const isRevisor = userAccesses.includes("REVISOR") 
+            ? !isFinished
+            : false;
+    
+        return !isRevisor && isFinished;
+    }, [participants, revision, user.id]);
+
+    const base = { revision, loading, load, request };
+
+    if (editingDisabled) {
+        return base;
     }
 
     return {
-        revision,
+        ...base,
         setRevision,
-        loading,
-        load,
-
-        request,
         start,
         approve,
         reject,

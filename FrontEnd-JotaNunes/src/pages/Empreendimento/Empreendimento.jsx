@@ -5,6 +5,7 @@ import useEmpreendimento from "@/hooks/useEmpreendimento";
 import useGroupedAssignment from "@/hooks/useGroupedAssignment";
 import useSteps from "@/hooks/useSteps";
 import styles from "./Empreendimento.module.css";
+import Button from "@/components/button/Button";
 
 const Empreendimento = () => {
     const { id } = useParams();
@@ -65,18 +66,30 @@ const Empreendimento = () => {
             </main>
 
             <footer className={styles.buttonsArea}>
-                <button onClick={voltar} className={styles.button}>
+                <Button
+                    type="button"
+                    variant="primary contained"
+                    onClick={voltar}
+                >
                     Voltar
-                </button>
+                </Button>
 
                 {current < total ? (
-                    <button onClick={avancar} className={styles.button}>
+                    <Button
+                        type="button"
+                        variant="primary contained"
+                        onClick={avancar}
+                    >
                         Avançar
-                    </button>
+                    </Button>
                 ) : (
-                    <button onClick={finalizar} className={styles.button}>
+                    <Button
+                        type="button"
+                        variant="primary contained"
+                        onClick={finalizar}
+                    >
                         Finalizar
-                    </button>
+                    </Button>
                 )}
             </footer>
         </div>

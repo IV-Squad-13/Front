@@ -61,41 +61,39 @@ const useEmpreendimento = (initialId, user) => {
 
   const saveEmp = useCallback(async () => {
     try {
+      let saved;
+
       if (!empId) {
-        const created = await startProcess(empreendimento);
-        setEmpId(created.id);
-        setEmpreendimento(created);
-        return { ok: true, data: created };
+        saved = await startProcess(empreendimento);
+        setEmpId(saved.id);
+      } else {
+        saved = await updateEmpreendimento(empId, empreendimento, docLoadParams);
       }
 
-      const updated = await updateEmpreendimento(empId, empreendimento, docLoadParams);
-      setEmpreendimento(updated);
-      return { ok: true, data: updated };
+      const reloaded = await load(saved.id);
+
+      return { ok: true, data: reloaded };
     } catch (err) {
       console.error("Erro ao salvar empreendimento", err);
       return { ok: false, error: err };
     }
-  }, [empId, empreendimento]);
+  }, [empId, empreendimento, load]);
 
   const saveSpec = useCallback(async () => {
     try {
-      const updatedDoc = await updateSpecification(empreendimento.doc, empreendimento.doc.id);
+      const updatedDoc = await updateSpecification(
+        empreendimento.doc,
+        empreendimento.doc.id
+      );
 
-      setEmpreendimento(prev => ({
-        ...prev,
-        doc: {
-          ...prev.doc,
-          name: updatedDoc.name,
-          desc: updatedDoc.desc,
-        },
-      }));
+      const reloaded = await load(empreendimento.id);
 
-      return { ok: true, data: updatedDoc };
+      return { ok: true, data: reloaded };
     } catch (err) {
       console.error("Erro ao salvar especificação", err);
       return { ok: false, error: err };
     }
-  }, [empreendimento.doc]);
+  }, [empreendimento.doc, empreendimento.id, load]);
 
   return {
     empreendimento,

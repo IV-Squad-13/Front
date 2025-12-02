@@ -103,6 +103,7 @@ const ConsultaEmpreendimentos = () => {
                             key={emp.id}
                             id={emp.id}
                             name={emp.name}
+                            status={emp.status}
                             author={emp.creator.user.name}
                             dtCreated={emp.createdAt}
                             onSelect={selectEmpreendimento}

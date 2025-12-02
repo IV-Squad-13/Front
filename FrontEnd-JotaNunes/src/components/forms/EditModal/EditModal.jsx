@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './EditModal.module.css';
 import Input from '@/components/input/Input';
-import { updateUser, createUser } from '@/services/UserService';
+import { updateUser, createUser, deleteUser } from '@/services/UserService';
 
 const EditModal = ({ user, onSave, onClose }) => {
   const [userData, setUserData] = useState({
@@ -83,6 +83,15 @@ const EditModal = ({ user, onSave, onClose }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await deleteUser(user.id);
+      onClose();
+    } catch (error) {
+      console.error('Erro ao excluir usuário: ', error);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.mainForm}>
@@ -92,6 +101,7 @@ const EditModal = ({ user, onSave, onClose }) => {
             type="text"
             name="name"
             id="name"
+            placeholder="Nome do usuário"
             value={userData.name}
             onChange={handleChange}
           />
@@ -99,6 +109,7 @@ const EditModal = ({ user, onSave, onClose }) => {
             type="email"
             name="email"
             id="email"
+            placeholder="Email"
             value={userData.email}
             onChange={handleChange}
           />
@@ -149,7 +160,7 @@ const EditModal = ({ user, onSave, onClose }) => {
         </div>
 
         <div className={styles.buttonsArea}>
-          {user? <button className={styles.deleteButton} >Excluir usuário</button>:""}
+          {user? <button className={styles.deleteButton} onClick={handleDelete} >Excluir usuário</button>:""}
           <div className={styles.bottonButtons}>
             <button className={styles.cancelButton} onClick={onClose}>
               Cancelar

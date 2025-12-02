@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import styles from "./AddModal.module.css"
 import Input from "@/components/input/Input"
-import {postCatalogByResource, getItemTypes} from "@/services/CatalogService"
+import { postCatalogByResource, getItemTypes } from "@/services/CatalogService"
 
-const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
+const AddModal = ({ activeSpec, onClose }) => {
   const [itemData, setItemData] = useState({
     name: "",
     desc: "",
@@ -21,7 +21,7 @@ const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
       const fetchTypes = async () => {
         setIsLoadingTypes(true)
         try {
-          const data = await getItemTypes() 
+          const data = await getItemTypes()
           setItemTypes(data)
         } catch (error) {
           console.error("Erro ao buscar tipos de item:", error)
@@ -41,25 +41,22 @@ const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
   }
 
   const handleSubmit = async () => {
-    // Validação básica
     if (!itemData.name.trim()) {
       alert("Por favor, preencha o nome do item")
       return
     }
     if (activeSpec === "ambiente" && !itemData.local) {
-        alert("Por favor, selecione a Área")
-        return
+      alert("Por favor, selecione a Área")
+      return
     }
     if (activeSpec === "item" && !itemData.type) {
-        alert("Por favor, selecione o Tipo de item")
-        return
+      alert("Por favor, selecione o Tipo de item")
+      return
     }
 
     try {
       const newItem = await postCatalogByResource(activeSpec, itemData);
       console.log("[v0] Adicionando item:", { spec: activeSpec, data: itemData })
-
-      onSave(newItem)
       onClose()
     } catch (error) {
       console.error("Erro ao adicionar item: ", error)
@@ -87,16 +84,16 @@ const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
             />
           </div>
 
-          {(activeSpec === "ambiente") &&(
+          {(activeSpec === "ambiente") && (
             <div className={styles.inputGroup}>
               <label htmlFor="areaLabel" className={styles.label}>
                 Área
               </label>
-              <select 
+              <select
                 id="local"
                 name="local"
-                className={styles.select} 
-                value={itemData.local || ''} 
+                className={styles.select}
+                value={itemData.local || ''}
                 onChange={handleChange}
               >
                 <option value="">Selecionar...</option>
@@ -133,7 +130,7 @@ const AddModal = ({ activeSpec, onSave, onClose, changeCount}) => {
                   <option value="" style={styles.option}>Selecione o Tipo</option>
                   {itemTypes.map((type) => (
                     <option key={type.type} value={type.type} style={styles.option}>
-                      {type.name} 
+                      {type.name}
                     </option>
                   ))}
                 </select>

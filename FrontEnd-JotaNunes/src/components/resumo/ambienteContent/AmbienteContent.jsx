@@ -36,7 +36,7 @@ const AmbienteContent = ({ ambiente, revStructure, functions }) => {
                     {revStructure && <p>{status}</p>}
                 </div>
 
-                {revStructure && (
+                {revStructure && functions && (
                     <div className={styles.btnContainer}>
                         {revStructure.comment && (
                             <Button onClick={() => console.log(revStructure.comment)}>

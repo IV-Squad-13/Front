@@ -225,7 +225,7 @@ const Resumo = () => {
             <DocInfoBlock
                 doc={block.doc}
                 rev={block.rev}
-                onFieldApproval={handleSpecFieldApproval}
+                onFieldApproval={rev.reject && rev.approve ? handleSpecFieldApproval : null}
             />
         );
     };
@@ -234,11 +234,11 @@ const Resumo = () => {
         return (
             <ContentBlock
                 key={block.localEnum}
-                functions={{
+                functions={rev.approve && rev.reject ? {
                     sectionApproval: (revId, value, local) => handleSectionApproval(revId, value, local),
                     ambienteApproval: (revId, value) => handleAmbienteApproval(revId, value),
                     itemFieldApproval: (revId, value, field) => handleItemFieldApproval(revId, value, field),
-                }}
+                } : null}
                 content={{
                     secId: block.rev?.id ?? null,
                     local: block.localEnum,
@@ -256,11 +256,11 @@ const Resumo = () => {
         return (
             <ContentBlock
                 key="materiais"
-                functions={{
+                functions={rev.approve && rev.reject ? {
                     sectionApproval: (revId, value) => handleSectionApproval(revId, value, null),
                     materialApproval: (revId, value) => handleMaterialApproval(revId, value),
                     marcaApproval: (revId, value) => handleMarcaApproval(revId, value),
-                }}
+                } : null}
                 content={{ data: block.materiais }}
                 revStructure={
                     block.rev
@@ -353,17 +353,18 @@ const Resumo = () => {
                 )}
             </main>
             <footer className={styles.footer}>
+                {console.log(revision)}
                 <Button
                     type="button"
-                    variant="primary small contained"
+                    variant="primary contained"
                     onClick={handleVoltar}
                 >
                     Voltar
                 </Button>
-                {empreendimento.status === "ELABORACAO" && !revision && (
+                {empreendimento.status === "ELABORACAO" && (
                     <Button
                         type="button"
-                        variant="primary small contained"
+                        variant="primary contained"
                         onClick={handleRevisionRequest}
                     >
                         Encaminhar para Revisão
@@ -373,7 +374,7 @@ const Resumo = () => {
                 {revision?.status === "PENDENTE" && (
                     <Button
                         type="button"
-                        variant="primary small contained"
+                        variant="primary contained"
                         onClick={handleStartRevision}
                     >
                         Iniciar Revisão
@@ -384,7 +385,7 @@ const Resumo = () => {
                     <>
                         <Button
                             type="button"
-                            variant="primary small contained"
+                            variant="primary contained"
                             onClick={handleRejectRevision}
                         >
                             Reenviar para Elaboração
@@ -392,7 +393,7 @@ const Resumo = () => {
 
                         <Button
                             type="button"
-                            variant="primary small contained"
+                            variant="primary contained"
                             onClick={handleApproveRevision}
                         >
                             Finalizar Documento

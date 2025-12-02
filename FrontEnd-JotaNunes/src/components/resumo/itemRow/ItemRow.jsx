@@ -13,12 +13,18 @@ const ItemRow = ({
     fieldName = null,
 }) => {
     const fn = useMemo(() => {
+        if (!functions) {
+            return null;
+        }
+
         return docType === "ITEM"
             ? functions.itemFieldApproval
             : functions.marcaApproval;
     }, [docType, functions]);
 
     const handleApproval = (approve) => {
+        if (!fn) return;
+
         fn(revId, approve, fieldName ?? field);
     };
 
@@ -34,7 +40,7 @@ const ItemRow = ({
             </div>
 
             <div className={styles.itemStatusContainer}>
-                {fieldRev && revId !== null && (
+                {fieldRev && fn && revId && (
                     <div className={styles.itemBtnContainer}>
                         {comment && (
                             <Button onClick={() => console.log(comment)}>Comentário</Button>

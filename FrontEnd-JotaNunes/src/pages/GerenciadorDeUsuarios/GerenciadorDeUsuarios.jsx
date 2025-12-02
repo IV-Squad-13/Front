@@ -6,13 +6,20 @@ import filtro from '@/assets/filtro.svg';
 import pontos from '@/assets/pontos.svg';
 import lupa from '@/assets/lupa.svg';
 import EditModal from '@/components/forms/EditModal/EditModal';
+import SelectInput from '@/components/selectInput/SelectInput';
 
 const itemsPerPage = 8;
+
+const RoleEnum = {
+  ADMIN: "Admin",
+  REVISOR: "Revisor",
+  RELATOR: "Relator"
+}
 
 const GerenciadorDeUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  const [selectedRole, setSelectedRole] = useState('ADMIN');
+  const [selectedRole, setSelectedRole] = useState(RoleEnum.ADMIN);
   const [usuariosPaginados, setUsuariosPaginados] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +31,7 @@ const GerenciadorDeUsuarios = () => {
     const fetchUsers = async () => {
       setIsLoading(true);
       try {
-        const data = await getUsersByRole('ADMIN');
+        const data = await getUsersByRole(selectedRole);
         setUsuarios(data);
         setTotalPages(Math.ceil(data.length / itemsPerPage));
       } catch (err) {
@@ -35,7 +42,7 @@ const GerenciadorDeUsuarios = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [isModalOpen]);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -72,28 +79,28 @@ const GerenciadorDeUsuarios = () => {
 
   // Carrega os Usuários baseado em uma Role selecionada disponível, trazendo getAll se não for selecionado nenhum.
   const handleFilter = async (role) => {
-  setIsLoading(true);
-  setError(null);
+    setIsLoading(true);
+    setError(null);
 
-  try {
-    if (!role) {
-      const data = await getAllUsers();
+    try {
+      if (!role) {
+        const data = await getAllUsers();
+        setUsuarios(data);
+        setTotalPages(Math.ceil(data.length / itemsPerPage));
+        setSelectedRole('');
+        return;
+      }
+
+      const data = await getUsersByRole(role);
       setUsuarios(data);
       setTotalPages(Math.ceil(data.length / itemsPerPage));
-      setSelectedRole('');
-      return;
+      setSelectedRole(role);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
-
-    const data = await getUsersByRole(role);
-    setUsuarios(data);
-    setTotalPages(Math.ceil(data.length / itemsPerPage));
-    setSelectedRole(role);
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setIsLoading(false);
-  }
- };
+  };
 
   return (
     <div className={styles.container}>
@@ -109,16 +116,14 @@ const GerenciadorDeUsuarios = () => {
             <button onClick={() => handleEdit()} className={styles.addButton}>Adicionar</button>
             <div className={styles.filterContainer}>
               <img src={filtro} alt="Filtros" className={styles.filterIcon} />
-              <select
-                 className={styles.filterSelect}
-                 value={selectedRole}
-                 onChange={(e) => handleFilter(e.target.value)}
-              >
-                  <option value="">Todos</option>
-                  <option value="ADMIN">Admin</option>
-                  <option value="REVISOR">Revisor</option>
-                  <option value="RELATOR">Relator</option>
-              </select>
+              <SelectInput
+                id="filterSelect"
+                value={selectedRole}
+                placeholder="Todos"
+                onChange={(e) => handleFilter(e.target.value)}
+                options={Object.values(RoleEnum)}
+                variant="contained"
+              />
             </div>
             <div className={styles.searchContainer}>
               <img src={lupa} alt="Buscar" className={styles.searchIcon} />

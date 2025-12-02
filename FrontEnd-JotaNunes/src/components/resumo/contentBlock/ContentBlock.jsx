@@ -33,13 +33,13 @@ const ContentBlock = ({
             {isLocal ? (
                 <>
                     <p>{content.local}</p>
-                    {content.specId && (<p>{content.status}</p>)}
+                    {content.secId && (<p>{content.status}</p>)}
                 </>
             ) : (
                 <h1>Materiais</h1>
             )}
 
-            {content.specId && (
+            {content.secId && functions && (
                 <div className={styles.fnContainer}>
                     <Button
                         type="button"

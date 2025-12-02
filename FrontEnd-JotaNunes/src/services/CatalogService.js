@@ -55,8 +55,8 @@ export const getAmbienteById = async (resource = 'ambiente') => {
   return {
     ...response,
     locais: response.local ? [response.local] : [],
-    padroes: toArray(firstExisting(response, ['padraoSet', 'padrao_list', 'padraoList', 'padroes', 'padrao'])) ,
-    itens: toArray(firstExisting(response, ['itemSet', 'item_list', 'itemList', 'itens', 'item'])) ,
+    padroes: toArray(firstExisting(response, ['padraoSet', 'padrao_list', 'padraoList', 'padroes', 'padrao'])),
+    itens: toArray(firstExisting(response, ['itemSet', 'item_list', 'itemList', 'itens', 'item'])),
   };
 };
 
@@ -168,13 +168,13 @@ export const getCatalogItemById = async (type, id) => {
       }
 
       default: {
- 
+
         return mainResponse;
       }
     }
   } catch (err) {
     console.error('Erro ao buscar relacionamentos adicionais:', err);
-  
+
     return mainResponse;
   }
 };
@@ -212,7 +212,7 @@ export const getItemTypes = async () => {
 export const postCatalogByResource = async (resource, resourceData) => {
   resourceData.isActive = true;
   const requiredFields = {
-    item: ['name','type','desc'],
+    item: ['name', 'type', 'desc'],
     ambiente: ['name', 'local'],
     padrao: ['name'],
     material: ['name'],
@@ -241,3 +241,22 @@ export const postCatalogByResource = async (resource, resourceData) => {
 
   return data;
 };
+
+export const updateResource = async (resource, data) => {
+  return await authFetch(`${API_URL}/catalogo/${resource}/${data.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+}
+
+export const deactivateResource = async (resource, id) => {
+  return await authFetch(`${API_URL}/catalogo/${resource}/${id}/deactivate`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}

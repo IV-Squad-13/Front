@@ -15,7 +15,7 @@ const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResource
   const [selectedCandidateId, setSelectedCandidateId] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [message, setMessage] = useState(null);
-
+  
   const fetchDetails = async () => {
     if (!id || !type) return;
     try {
@@ -319,13 +319,13 @@ const renderAddSection = () => {
               <strong>Local:</strong> {details.local}
             </p>
 
+            {renderAddSection()}
+
             <h3>Padrões associados:</h3>
             {renderList(details.padraoSet || details.padraoList || details.padroes || details.padraoList, "Nenhum padrão associado.", "padrao")}
 
             <h3>Itens associados:</h3>
             {renderList(details.itemSet || details.itemList || details.itens, "Nenhum item associado.", "item")}
-
-            {renderAddSection()}
           </>
         );
 
@@ -339,39 +339,39 @@ const renderAddSection = () => {
               <strong>Tipo:</strong> {details.tipo?.name || "Sem tipo definido"}
             </p>
 
+            {renderAddSection()}
+
             <h3>Padrões associados:</h3>
             {renderList(details.padraoSet || details.padraoList || details.padroes, "Nenhum padrão associado.", "padrao")}
 
             <h3>Ambientes associados:</h3>
             {renderList(details.ambienteSet || details.ambientes || details.ambienteList, "Nenhum ambiente associado.", "ambiente")}
-
-            {renderAddSection()}
           </>
         );
 
       case "material":
         return (
           <>
+            {renderAddSection()}
+
             <h3>Padrões associados:</h3>
             {renderList(details.padraoSet || details.padraoList || details.padroes, "Nenhum padrão associado.", "padrao")}
 
             <h3>Marcas associadas:</h3>
             {renderList(details.marcaSet || details.marcas, "Nenhuma marca associada.", "marca")}
-
-            {renderAddSection()}
           </>
         );
 
       case "marca":
         return (
           <>
+            {renderAddSection()}
+
             <h3>Padrões associados:</h3>
             {renderList(details.padraoSet || details.padraoList || details.padroes, "Nenhum padrão associado.", "padrao")}
 
             <h3>Materiais associados:</h3>
             {renderList(details.materialSet || details.materiais || details.marcaSet, "Nenhum material associado.", "material")}
-
-            {renderAddSection()}
           </>
         );
 

@@ -39,6 +39,10 @@
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
+strong {
+  padding: 0;
+}
+
 .closeButton:hover {
   background: #a31313;
   transform: scale(1.05);
@@ -80,7 +84,7 @@
 }
 
 .modalContent li:hover {
-  background: var(--cinza);
+  background: var(--background-even);
 }
 
 .modalContent::-webkit-scrollbar {
@@ -97,8 +101,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -106,6 +115,7 @@
     transform: translateY(40px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -142,6 +152,11 @@
   border-radius: 12px;
 }
 
+.addRelationRow {
+  display: flex;
+  flex-direction: column;
+}
+
 .addRelationTitle {
   color: var(--font_color-secondary);
   font-size: 1.2rem;
@@ -159,6 +174,7 @@
   color: var(--font_color-secondary);
   margin-bottom: 1rem;
   transition: background 0.2s ease, border 0.2s ease;
+  margin-top: 0.4rem;
 }
 
 .addRelationSelect:hover {
@@ -174,6 +190,7 @@
   cursor: pointer;
   font-weight: bold;
   transition: background 0.2s ease, transform 0.2s ease;
+  align-self: flex-end;
 }
 
 .addRelationButton:hover {

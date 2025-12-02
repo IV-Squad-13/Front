@@ -71,7 +71,7 @@ const SearchBar = ({
         >
             <div className={styles.searchBarContainer}>
                 <div className={styles.searchContainer}>
-                    <label className={styles.searchLabel}>{title}</label>
+                    {title && (<label className={styles.searchLabel}>{title}</label>)}
 
                     <input
                         type="text"
@@ -91,8 +91,8 @@ const SearchBar = ({
                     />
                 </div>
 
-                <div className={styles.searchButtonContainer}>
-                    {displayButton && (
+                {displayButton && (
+                    <div className={styles.searchButtonContainer}>
                         <Button
                             type="button"
                             onClick={() => !disabled && onSearch(query)}
@@ -101,8 +101,8 @@ const SearchBar = ({
                         >
                             Buscar
                         </Button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             {!disabled && displayDropDown && showDropdown && results.length > 0 && (

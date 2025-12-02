@@ -1,13 +1,42 @@
 .container {
-  padding: 1rem;
   padding: 1rem 2rem;
   list-style: none;
   font-weight: 500;
   font-size: 20px;
   border-bottom: 2px solid var(--cinza);
   box-shadow: rgba(0, 0, 0, 0.15) 0.1em 0.15em 0.3em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.container p {
-  color: var(--font_color-secondary); 
+
+.container p,
+.editInput {
+  color: var(--font_color-secondary);
   transition: color 0.3s ease-in-out;
+}
+
+.container p:hover {
+  color: var(--soft-red);
+  cursor: text;
+}
+
+.editInput {
+  font-size: 20px;
+  font-weight: 500;
+  width: 100%;
+  border: 2px solid var(--cinza);
+  background: var(--branco);
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+
+  outline: none;
+  box-shadow: none;
+
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.editInput:focus {
+  border-color: var(--primary);
+  background: var(--cinza-claro);
 }

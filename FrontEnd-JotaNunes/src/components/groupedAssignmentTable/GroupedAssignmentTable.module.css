@@ -27,6 +27,7 @@
     justify-content: space-between;
     padding-right: 0.4rem;
     align-items: center;
+    gap: 2%;
 }
 
 .parentTitle {
@@ -75,6 +76,10 @@
 .tableWrapper {
     margin-top: 0.5rem;
     padding: 0.5rem 0;
+}
+
+.editControls {
+    display: contents;
 }
 
 @media (max-width: 700px) {

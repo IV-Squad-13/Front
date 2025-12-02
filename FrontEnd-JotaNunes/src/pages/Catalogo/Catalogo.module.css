@@ -26,9 +26,21 @@
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.queryFields {
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+}
+
 .buttonsArea {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -58,6 +70,7 @@
   flex: 1;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  align-items: center;
 }
 
 .buttonsArea > button:hover {
