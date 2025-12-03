@@ -178,7 +178,7 @@ strong {
 }
 
 .addRelationSelect:hover {
-  background: var(--cinza);
+  background: var(--background-even);
 }
 
 .addRelationButton {

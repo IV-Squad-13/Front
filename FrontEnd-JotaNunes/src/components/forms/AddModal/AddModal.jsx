@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import styles from "./AddModal.module.css"
 import Input from "@/components/input/Input"
 import { postCatalogByResource, getItemTypes } from "@/services/CatalogService"
+import useItemTypes from "@/hooks/useItemTypes"
 
 const AddModal = ({ activeSpec, onClose }) => {
   const [itemData, setItemData] = useState({
@@ -13,25 +14,7 @@ const AddModal = ({ activeSpec, onClose }) => {
     local: ""
   })
 
-  const [itemTypes, setItemTypes] = useState([])
-  const [isLoadingTypes, setIsLoadingTypes] = useState(false)
-
-  useEffect(() => {
-    if (activeSpec === 'item') {
-      const fetchTypes = async () => {
-        setIsLoadingTypes(true)
-        try {
-          const data = await getItemTypes()
-          setItemTypes(data)
-        } catch (error) {
-          console.error("Erro ao buscar tipos de item:", error)
-        } finally {
-          setIsLoadingTypes(false)
-        }
-      }
-      fetchTypes()
-    }
-  }, [activeSpec])
+  const { itemTypes, isLoadingTypes } = useItemTypes(activeSpec)
 
   const handleChange = (e) => {
     setItemData({
@@ -108,6 +91,7 @@ const AddModal = ({ activeSpec, onClose }) => {
               <label htmlFor="desc" className={styles.label}>
                 Descrição
               </label>
+
               <textarea
                 name="desc"
                 id="desc"
@@ -117,6 +101,7 @@ const AddModal = ({ activeSpec, onClose }) => {
                 className={styles.textarea}
                 rows={4}
               />
+
               {isLoadingTypes ? (
                 <p>Carregando tipos de item...</p>
               ) : (
@@ -127,9 +112,9 @@ const AddModal = ({ activeSpec, onClose }) => {
                   onChange={handleChange}
                   className={styles.select}
                 >
-                  <option value="" style={styles.option}>Selecione o Tipo</option>
+                  <option value="">Selecione o Tipo</option>
                   {itemTypes.map((type) => (
-                    <option key={type.type} value={type.type} style={styles.option}>
+                    <option key={type.type} value={type.type}>
                       {type.name}
                     </option>
                   ))}

@@ -40,7 +40,7 @@ const Empreendimento = () => {
     };
 
     const finalizar = () => {
-        navigate(id ? `/home/resumo/${encodeURIComponent(id)}` : `/home/resumo`);
+        navigate(empreendimento.id ? `/home/resumo/${encodeURIComponent(empreendimento.id)}` : `/home/resumo`);
         return;
     };
 

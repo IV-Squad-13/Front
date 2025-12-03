@@ -7,13 +7,15 @@ const Carousel = ({ blocks, index, onPrev, onNext, render }) => {
     return (
         <div className={styles.carousel}>
             <div className={styles.navBar}>
-                <Button 
-                    variant="carouselNav"
-                    onClick={onPrev} 
-                    disabled={index <= 0}
-                >
-                    {"<"}
-                </Button>
+                {index > 0 && (
+                    <Button
+                        variant="carouselNav"
+                        onClick={onPrev}
+                        disabled={index <= 0}
+                    >
+                        {"<"}
+                    </Button>
+                )}
 
                 <div className={styles.dots}>
                     {blocks.map((_, i) => (
@@ -24,18 +26,20 @@ const Carousel = ({ blocks, index, onPrev, onNext, render }) => {
                     ))}
                 </div>
 
-                <Button 
-                    variant="carouselNav"
-                    onClick={onNext} 
-                    disabled={index >= blocks.length - 1}
-                >
-                    {">"}
-                </Button>
+                {index < blocks.length - 1 && (
+                    <Button
+                        variant="carouselNav"
+                        onClick={onNext}
+                        disabled={index >= blocks.length - 1}
+                    >
+                        {">"}
+                    </Button>
+                )}
             </div>
 
             <div className={styles.carouselPanel}>
-                {current 
-                    ? render(current) 
+                {current
+                    ? render(current)
                     : <div className={styles.empty}>Sem conteúdo</div>}
             </div>
         </div>

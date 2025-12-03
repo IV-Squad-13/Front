@@ -4,6 +4,11 @@ import MaterialContent from "../materialContent/MaterialContent";
 import styles from "./ContentBlock.module.css";
 import Button from "@/components/button/Button";
 
+const LocalEnum = {
+    UNIDADES_PRIVATIVAS: "Unidades Privativas",
+    AREA_COMUM: "Área Comum"
+}
+
 const ContentBlock = ({
     functions,
     content,
@@ -32,7 +37,7 @@ const ContentBlock = ({
         <div className={styles.sectionTitle}>
             {isLocal ? (
                 <>
-                    <p>{content.local}</p>
+                    <p>{LocalEnum[content.local]}</p>
                     {content.secId && (<p>{content.status}</p>)}
                 </>
             ) : (

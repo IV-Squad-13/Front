@@ -5,10 +5,12 @@ const SelectInput = ({
     value,
     onChange,
     options = [],
-    placeholder = "Selecione...",
+    placeholder,
     disabled = false,
     id,
-    variant = ""
+    variant = "",
+    formatter = (o) => o,
+    getId = (o) => o
 }) => {
 
     const selectClassName = [
@@ -23,14 +25,17 @@ const SelectInput = ({
             <div className={`${styles.selectContainer} ${disabled ? styles.disabled : ""}`}>
                 <select
                     id={id}
-                    value={value}
+                    value={String(value)} 
                     onChange={onChange}
                     disabled={disabled}
                 >
-                    <option value="">{placeholder}</option>
+                    {placeholder && (
+                        <option value="">{placeholder}</option>
+                    )}
+
                     {options.map((opt) => (
-                        <option key={opt} value={opt}>
-                            {opt}
+                        <option key={getId(opt)} value={getId(opt)}>
+                            {formatter(opt)}
                         </option>
                     ))}
                 </select>

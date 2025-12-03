@@ -26,6 +26,8 @@ const App = () => {
             </ProtectedRoute>
           }
         >
+          <Route index element={<Navigate to="dashboard" replace />} />
+          
           <Route path="catalogo" element={<Catalogo />} />
           <Route path="usuarios" element={<GerenciadorDeUsuarios />} />
           <Route path="historico" element={<Historico />} />

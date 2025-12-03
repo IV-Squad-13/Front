@@ -164,8 +164,10 @@ const Catalogo = () => {
             />
             <SelectInput
               id="isActiveFilter"
-              value={query.isActive}
-              onChange={(e) => setQuery({ ...query, isActive: ActiveEnum[e.target.value] })}
+              value={Object.keys(ActiveEnum).find(k => ActiveEnum[k] === query.isActive) ?? ""}
+              onChange={(e) =>
+                setQuery({ ...query, isActive: ActiveEnum[e.target.value] })
+              }
               options={Object.keys(ActiveEnum)}
               variant="contained"
             />
@@ -245,6 +247,7 @@ const Catalogo = () => {
           setSelectedResource={setSelectedResourceId}
           setSelectedResourceType={setActiveButton}
           onClose={() => setIsDetailsOpen(false)}
+          handleUpdate={handleUpdateResource}
         />
       )}
     </div>

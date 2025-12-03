@@ -10,10 +10,24 @@ import { DocStatus } from "@/lib/revisionHelpers";
 import { useAuth } from "@/context/AuthContext";
 import DocInfoBlock from "@/components/resumo/docInfoBlock/DocInfoBlock";
 
+const EmpStatusEnum = {
+    ELABORACAO: "Em Elaboração",
+    SUSPENSO: "Suspenso",
+    FINALIZADO: "Finalizado",
+    CANCELADO: "Cancelado"
+}
+
+const RevStatusEnum = {
+    PENDENTE: "Pendete",
+    INICIADA: "Iniciada",
+    APROVADA: "Aprovada",
+    REJEITADA: "Rejeitada"
+}
+
 const Resumo = () => {
     const { id } = useParams();
     const { user } = useAuth();
-    const { empreendimento, loading: empLoading } = useEmpreendimento(id, user);
+    const { empreendimento, load: empLoad, loading: empLoading } = useEmpreendimento(id, user);
     const navigate = useNavigate();
 
     const doc = empreendimento?.doc ?? null;
@@ -199,7 +213,10 @@ const Resumo = () => {
         };
 
         const r = await rev.request(reqDTO);
-        if (r?.ok) await rev.load(empId);
+        if (r?.ok) {
+            await rev.load(empId);
+            await empLoad();
+        }
     }, [rev, empId]);
 
     const handleStartRevision = useCallback(async () => {
@@ -303,7 +320,8 @@ const Resumo = () => {
                         <p className={styles.subTitle}>{doc?.name ?? "Especificação"}</p>
                     </div>
                     <div className={styles.meta}>
-                        <span className={styles.modeTag}>{viewMode === "partial" ? "Visão parcial" : "Visão completa"}</span>
+                        <span className={styles.modeTag}>{EmpStatusEnum[empreendimento.status]}</span>
+                        {revision?.status && <span className={styles.modeTag}>{RevStatusEnum[revision.status]}</span>}
                         {specRev && <span className={styles.small}>Revisão: #{specRev.id}</span>}
                     </div>
                 </div>

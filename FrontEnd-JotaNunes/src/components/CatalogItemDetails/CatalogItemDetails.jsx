@@ -5,6 +5,11 @@ import { getCatalogItemById } from "@/services/CatalogService.js";
 import { authFetch } from "@/services/AuthService";
 import { API_URL } from "@/main.jsx";
 
+const LocalEnum = {
+  UNIDADES_PRIVATIVAS: "Unidades Privativas",
+  AREA_COMUM: "Área Comum"
+}
+
 const CatalogItemDetails = ({ id, type, setSelectedResource, setSelectedResourceType, onClose }) => {
   const [details, setDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -316,7 +321,7 @@ const renderAddSection = () => {
         return (
           <>
             <p>
-              <strong>Local:</strong> {details.local}
+              <strong>Local:</strong> {LocalEnum[details.local]}
             </p>
 
             {renderAddSection()}

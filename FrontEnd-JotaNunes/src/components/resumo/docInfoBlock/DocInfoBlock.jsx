@@ -60,7 +60,7 @@ const DocInfoBlock = ({ doc, rev, onFieldApproval }) => {
                 </div>
 
                 <div className={styles.controls}>
-                    {rev && <span className={styles.statusTag}>Status: {statusStr}</span>}
+                    {rev && <span className={styles.statusTag}>{statusStr}</span>}
 
                     {rev && onFieldApproval && (
                         <div className={styles.actionBtns}>
