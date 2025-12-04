@@ -1,4 +1,4 @@
-import { API_URL } from '@/main';
+import { API_URL, KURUSH_URL } from '@/main';
 import { authFetch } from './AuthService';
 
 export const searchEmpreendimentos = async (searchParams) => {
@@ -137,3 +137,13 @@ export const deleteEmp = async (id) => {
     }
   });
 }
+
+export const getPdf = async (id) => {
+  const response = await fetch(`${KURUSH_URL}/doc/${id}`, {
+    method: "GET"
+  });
+
+  const blob = await response.blob();
+
+  return { ok: response.ok, blob };
+};

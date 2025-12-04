@@ -9,6 +9,7 @@ import styles from "./Resumo.module.css";
 import { DocStatus } from "@/lib/revisionHelpers";
 import { useAuth } from "@/context/AuthContext";
 import DocInfoBlock from "@/components/resumo/docInfoBlock/DocInfoBlock";
+import { getPdf } from "@/services/SpecificationService";
 
 const EmpStatusEnum = {
     ELABORACAO: "Em Elaboração",
@@ -236,6 +237,19 @@ const Resumo = () => {
         if (r?.ok) await rev.load(empId);
     }, [rev, empId]);
 
+    const handlePdfFile = useCallback(async () => {
+        const result = await getPdf(doc.id);
+
+        if (!result.ok) {
+            console.error("Failed to fetch PDF");
+            return;
+        }
+
+        const pdfUrl = URL.createObjectURL(result.blob);
+
+        window.open(pdfUrl, "_blank");
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 60000);
+    }, [doc?.id]);
 
     const renderDocInfoBlock = (block) => {
         return (
@@ -278,7 +292,7 @@ const Resumo = () => {
                     materialApproval: (revId, value) => handleMaterialApproval(revId, value),
                     marcaApproval: (revId, value) => handleMarcaApproval(revId, value),
                 } : null}
-                content={{ data: block.materiais }}
+                content={{ secId: block.rev?.id ?? null, data: block.materiais }}
                 revStructure={
                     block.rev
                         ? { materialRevs: block.rev.materialRevs, id: block.rev?.id ?? null, isApproved: block.rev.isApproved }
@@ -417,6 +431,16 @@ const Resumo = () => {
                             Finalizar Documento
                         </Button>
                     </>
+                )}
+
+                {empreendimento.status === "FINALIZADO" && revision?.status === "APROVADA" && (
+                    <Button
+                        type="button"
+                        variant="primary contained"
+                        onClick={handlePdfFile}
+                    >
+                        Gerar PDF
+                    </Button>
                 )}
             </footer>
         </div>
