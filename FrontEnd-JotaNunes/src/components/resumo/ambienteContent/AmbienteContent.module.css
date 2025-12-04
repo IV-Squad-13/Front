@@ -62,3 +62,40 @@
     flex-direction: column;
     gap: 0.4rem;
 }
+
+@media (max-width: 768px) {
+    .ambienteContainer {
+        gap: 0.4rem;
+        border-radius: 6px;
+        padding: 0.5rem;
+    }
+
+    .ambienteIdentifier p:first-child {
+        font-size: 0.95rem;
+    }
+
+    .ambienteIdentifier p:last-child {
+        font-size: 0.8rem;
+    }
+
+    .btnContainer {
+        gap: 0.3rem;
+    }
+
+    .contentChildren {
+        gap: 0.4rem;
+    }
+
+    .itemContainer {
+        border-radius: 4px;
+        padding: 0.6rem;
+    }
+
+    .itemRow {
+        margin-bottom: 0.4rem;
+    }
+
+    .itemFieldContainer {
+        gap: 0.2rem;
+    }
+}
