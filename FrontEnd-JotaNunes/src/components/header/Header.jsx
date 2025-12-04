@@ -5,11 +5,11 @@ import userImg from '@/assets/Placeholder_userImg.png';
 
 import { useAuth } from '@/context/AuthContext';
 
-const Header = ({ toggleSidebar }) => {
+const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const { user, logout } = useAuth();
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${isSidebarOpen ? styles.sidebarActive : ''}`}>
       <div className={styles.leftContent}>
         <button onClick={toggleSidebar} className={styles.toggleButton}>
           ☰
