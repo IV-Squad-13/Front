@@ -94,3 +94,21 @@
 .notificationButton:hover .iconHover {
   opacity: 1;
 }
+
+.sidebarActive {
+  /* Classe para quando sidebar está aberto */
+}
+
+@media (max-width: 768px) {
+  .leftContent {
+    width: 100%;
+  }
+
+  .container.sidebarActive .userInfo {
+    display: none;
+  }
+
+  .container.sidebarActive .buttons {
+    display: none;
+  }
+}

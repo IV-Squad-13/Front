@@ -27,7 +27,10 @@ const MainPage = () => {
       <div
         className={`${styles.mainContainer} ${!isSidebarOpen ? styles.sidebarClosed : ''}`}
       >
-        <Header toggleSidebar={toggleSidebar} />
+        <Header 
+          toggleSidebar={toggleSidebar} 
+          isSidebarOpen={isSidebarOpen}
+        />
         <Outlet />
       </div>
     </div>
